@@ -9,14 +9,14 @@ class SecurityHeadersMiddleware:
     def __call__(self, request):
         response = self.get_response(request)
         
-        # Content Security Policy (CSP) header allowing Google OAuth, Google Fonts, Supabase, and internal assets
+        # Content Security Policy (CSP) header allowing Google OAuth, Google Fonts, Tailwind CDN, GSAP, Supabase, and internal assets
         csp_policies = [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://apis.google.com https://accounts.google.com",
-            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com",
-            "font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://apis.google.com https://accounts.google.com",
+            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://api.fontshare.com",
+            "font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net https://api.fontshare.com",
             "img-src 'self' data: blob: https:",
-            "connect-src 'self' https://*.supabase.co https://accounts.google.com https://cdn.jsdelivr.net",
+            "connect-src 'self' https://*.supabase.co https://accounts.google.com https://cdn.jsdelivr.net https://cdn.tailwindcss.com",
             "frame-src 'self' https://accounts.google.com",
             "object-src 'none'",
             "base-uri 'self'",
