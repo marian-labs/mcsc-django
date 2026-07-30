@@ -1,0 +1,8 @@
+/* Custom MCSC Stylesheet */
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -8px rgba(27, 58, 87, 0.12);
+}

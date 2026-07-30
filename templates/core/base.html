@@ -1,0 +1,1765 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="scroll-smooth {% if request.resolver_match.url_name != 'home' %}load-complete{% endif %}" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>{% block title %}Marian College Students Council{% endblock %}</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
+
+    <!-- Initial loading state check -->
+    {% if request.resolver_match.url_name == 'home' %}
+    <script>
+        if (sessionStorage.getItem('mcsc_intro_played') === 'true' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            document.documentElement.classList.add('load-complete');
+        } else {
+            document.documentElement.classList.add('loading-active');
+        }
+    </script>
+    {% endif %}
+
+    <!-- Tailwind CSS with Forms and Container Queries plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- GSAP for TargetCursor animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=nohemi@900,800,700,600&display=swap" rel="stylesheet">
+
+    <!-- Material Symbols Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom Tailwind Configuration to match MCSC Design System -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#f8f9ff",
+                        "surface-dim": "#c1ddff",
+                        "surface-bright": "#f8f9ff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#eef4ff",
+                        "surface-container": "#e4efff",
+                        "surface-container-high": "#daeaff",
+                        "surface-container-highest": "#d0e4ff",
+                        "on-surface": "#001d35",
+                        "on-surface-variant": "#414750",
+                        "inverse-surface": "#12324f",
+                        "inverse-on-surface": "#e9f1ff",
+                        "outline": "#717781",
+                        "outline-variant": "#c1c7d2",
+                        "surface-tint": "#0b61a1",
+                        "primary": "#005c9b",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#2e75b6",
+                        "on-primary-container": "#f5f8ff",
+                        "inverse-primary": "#9ecaff",
+                        "secondary": "#f5a623",
+                        "on-secondary": "#001d35",
+                        "secondary-container": "#feae2c",
+                        "on-secondary-container": "#6b4500",
+                        "tertiary": "#6f5500",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#8d6d00",
+                        "on-tertiary-container": "#fff6ea",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#d1e4ff",
+                        "primary-fixed-dim": "#9ecaff",
+                        "on-primary-fixed": "#001d36",
+                        "on-primary-fixed-variant": "#00497c",
+                        "secondary-fixed": "#ffddb4",
+                        "secondary-fixed-dim": "#ffb955",
+                        "on-secondary-fixed": "#291800",
+                        "on-secondary-fixed-variant": "#633f00",
+                        "tertiary-fixed": "#ffdf94",
+                        "tertiary-fixed-dim": "#efc13e",
+                        "on-tertiary-fixed": "#241a00",
+                        "on-tertiary-fixed-variant": "#594400",
+                        "background": "#f8f9ff",
+                        "on-background": "#001d35",
+                        "surface-variant": "#d0e4ff"
+                    },
+                    "borderRadius": {
+                        "sm": "0.25rem",
+                        "DEFAULT": "0.5rem",
+                        "md": "0.75rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "container-max": "1280px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "48px",
+                        "stack-sm": "12px",
+                        "stack-md": "24px",
+                        "stack-lg": "48px"
+                    },
+                    "fontFamily": {
+                        "sans": ["'Plus Jakarta Sans'", "Outfit", "Inter", "sans-serif"],
+                        "display-lg": ["'Plus Jakarta Sans'", "Outfit", "sans-serif"],
+                        "headline-lg": ["'Plus Jakarta Sans'", "Outfit", "sans-serif"],
+                        "headline-lg-mobile": ["'Plus Jakarta Sans'", "Outfit", "sans-serif"],
+                        "subheading-italic": ["'Plus Jakarta Sans'", "Outfit", "sans-serif"],
+                        "body-md": ["'Plus Jakarta Sans'", "Outfit", "sans-serif"],
+                        "nav-button": ["'Plus Jakarta Sans'", "Outfit", "sans-serif"],
+                        "label-sm": ["'Plus Jakarta Sans'", "Outfit", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "subheading-italic": ["20px", { "lineHeight": "1.4", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "nav-button": ["13px", { "lineHeight": "1", "letterSpacing": "0.08em", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "1.2", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+
+    <style>
+        * {
+            font-family: 'Plus Jakarta Sans', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0, 95, 170, 0.15), 0 8px 10px -6px rgba(0, 95, 170, 0.1);
+        }
+
+        .bg-pattern {
+            background-image: radial-gradient(rgba(0, 95, 170, 0.1) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .icon-fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Page Load Entrance Animations (fadeSlideUp, fadeSlideDown, fadeUp) */
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Direct page load animate rules */
+        main section,
+        main header,
+        main article {
+            opacity: 0;
+            animation: fadeSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            will-change: transform, opacity;
+        }
+
+        /* Staggered delays for sections */
+        main section:nth-of-type(1),
+        main header:nth-of-type(1) {
+            animation-delay: 50ms;
+        }
+
+        main section:nth-of-type(2) {
+            animation-delay: 150ms;
+        }
+
+        main section:nth-of-type(3) {
+            animation-delay: 250ms;
+        }
+
+        main section:nth-of-type(4) {
+            animation-delay: 350ms;
+        }
+
+        main section:nth-of-type(5) {
+            animation-delay: 450ms;
+        }
+
+        /* Staggered delays for cards inside grids */
+        .grid>div,
+        .grid>a,
+        .grid>li,
+        .grid-cols-1>div,
+        .grid-cols-2>div,
+        .grid-cols-3>div,
+        .grid-cols-4>div {
+            opacity: 0;
+            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            will-change: transform, opacity;
+        }
+
+        .grid>*:nth-child(1),
+        .grid-cols-1>*:nth-child(1),
+        .grid-cols-2>*:nth-child(1),
+        .grid-cols-3>*:nth-child(1),
+        .grid-cols-4>*:nth-child(1) {
+            animation-delay: 120ms;
+        }
+
+        .grid>*:nth-child(2),
+        .grid-cols-1>*:nth-child(2),
+        .grid-cols-2>*:nth-child(2),
+        .grid-cols-3>*:nth-child(2),
+        .grid-cols-4>*:nth-child(2) {
+            animation-delay: 190ms;
+        }
+
+        .grid>*:nth-child(3),
+        .grid-cols-1>*:nth-child(3),
+        .grid-cols-2>*:nth-child(3),
+        .grid-cols-3>*:nth-child(3),
+        .grid-cols-4>*:nth-child(3) {
+            animation-delay: 260ms;
+        }
+
+        .grid>*:nth-child(4),
+        .grid-cols-1>*:nth-child(4),
+        .grid-cols-2>*:nth-child(4),
+        .grid-cols-3>*:nth-child(4),
+        .grid-cols-4>*:nth-child(4) {
+            animation-delay: 330ms;
+        }
+
+        .grid>*:nth-child(5),
+        .grid-cols-1>*:nth-child(5),
+        .grid-cols-2>*:nth-child(5),
+        .grid-cols-3>*:nth-child(5),
+        .grid-cols-4>*:nth-child(5) {
+            animation-delay: 400ms;
+        }
+
+        .grid>*:nth-child(6),
+        .grid-cols-1>*:nth-child(6),
+        .grid-cols-2>*:nth-child(6),
+        .grid-cols-3>*:nth-child(6),
+        .grid-cols-4>*:nth-child(6) {
+            animation-delay: 470ms;
+        }
+
+        .grid>*:nth-child(7),
+        .grid-cols-1>*:nth-child(7),
+        .grid-cols-2>*:nth-child(7),
+        .grid-cols-3>*:nth-child(7),
+        .grid-cols-4>*:nth-child(7) {
+            animation-delay: 540ms;
+        }
+
+        .grid>*:nth-child(8),
+        .grid-cols-1>*:nth-child(8),
+        .grid-cols-2>*:nth-child(8),
+        .grid-cols-3>*:nth-child(8),
+        .grid-cols-4>*:nth-child(8) {
+            animation-delay: 610ms;
+        }
+
+        /* Floating header animation (enters smoothly when loading is complete) */
+        header.animate-fade-slide-down {
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
+        }
+
+        html.load-complete header.animate-fade-slide-down {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Loading Overlay Custom Styles */
+        #loading-screen {
+            display: none;
+            transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1), transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
+            transform: scale(1);
+        }
+
+        html.loading-active #loading-screen {
+            display: flex;
+        }
+
+        #loading-screen.opacity-0 {
+            opacity: 0;
+            transform: scale(1.04);
+        }
+
+        html.loading-active,
+        html.loading-active body {
+            overflow: hidden !important;
+            height: 100vh !important;
+        }
+
+        /* Line Mask Split Animation for Loading Tagline */
+        .line-mask-wrapper {
+            display: inline-flex;
+            overflow: hidden;
+            vertical-align: bottom;
+            white-space: nowrap;
+            margin: 0 0.18em;
+            padding-bottom: 0.08em;
+        }
+
+        .line-mask-char {
+            display: inline-block;
+            will-change: transform, filter, opacity;
+            transform: translateY(100%);
+            filter: blur(20px);
+            opacity: 0;
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.8s ease;
+        }
+
+        .line-mask-char.revealed {
+            transform: translateY(0%) !important;
+            filter: blur(0px) !important;
+            opacity: 1 !important;
+        }
+
+        /* Typewriter Cursor blinking animation */
+        .typewriter-cursor {
+            display: inline-block;
+            margin-left: 2px;
+            color: #005c9b;
+            font-weight: 300;
+            animation: cursorBlink 0.8s infinite steps(2, start);
+        }
+
+        @keyframes cursorBlink {
+
+            0%,
+            100% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        #hero-logo-box {
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        html.load-complete #hero-logo-box {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        html.load-complete #hero-logo-box:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes popBounce {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            70% {
+                transform: scale(1.08);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .loading-logo-box.animate-pop {
+            animation: popBounce 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* Ambient Breathing Aura Animation */
+        @keyframes auraBreath {
+
+            0%,
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 0.6;
+                filter: blur(80px);
+            }
+
+            50% {
+                transform: scale(1.3) rotate(180deg);
+                opacity: 0.95;
+                filter: blur(100px);
+            }
+        }
+
+        .animate-aura {
+            animation: auraBreath 6s ease-in-out infinite;
+        }
+
+        /* ── Loading screen background layers ─────────────────────── */
+        /* Slowly morphing mesh gradient on the screen itself */
+        @keyframes meshShift {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        #loading-screen {
+            background: linear-gradient(135deg,
+                #eef4ff 0%, #f8f9ff 30%, #fff8ee 60%, #f0f7ff 100%);
+            background-size: 300% 300%;
+            animation: meshShift 12s ease infinite;
+        }
+
+        /* Floating aurora blobs */
+        @keyframes floatA {
+            0%,100% { transform: translate(0,0) scale(1); }
+            33%      { transform: translate(40px,-30px) scale(1.15); }
+            66%      { transform: translate(-30px,20px) scale(0.9); }
+        }
+        @keyframes floatB {
+            0%,100% { transform: translate(0,0) scale(1); }
+            33%      { transform: translate(-50px,25px) scale(1.2); }
+            66%      { transform: translate(35px,-40px) scale(0.85); }
+        }
+        @keyframes floatC {
+            0%,100% { transform: translate(0,0) scale(1); }
+            50%      { transform: translate(25px,35px) scale(1.1); }
+        }
+        .ls-blob-a { animation: floatA 9s ease-in-out infinite; }
+        .ls-blob-b { animation: floatB 12s ease-in-out infinite; }
+        .ls-blob-c { animation: floatC 7s ease-in-out infinite; }
+
+        /* Unified Diagonal Line Pattern */
+        .ls-line-pattern {
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(
+                -45deg,
+                rgba(0, 92, 155, 0.07) 0px,
+                rgba(0, 92, 155, 0.07) 1.5px,
+                transparent 1.5px,
+                transparent 44px
+            );
+            pointer-events: none;
+        }
+
+        /* Dot-grid shimmer */
+        @keyframes gridFade {
+            0%,100% { opacity: 0.4; }
+            50%      { opacity: 0.7; }
+        }
+        .ls-grid {
+            position: absolute; inset: 0;
+            background-image:
+                radial-gradient(circle, rgba(0,92,155,0.12) 1px, transparent 1px);
+            background-size: 36px 36px;
+            animation: gridFade 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        /* Ambient Ring Pulsing */
+        @keyframes ringPulse {
+
+            0%,
+            100% {
+                transform: scale(0.96);
+                opacity: 0.25;
+            }
+
+            50% {
+                transform: scale(1.04);
+                opacity: 0.55;
+            }
+        }
+
+        .loading-ring-pulse {
+            animation: ringPulse 4s ease-in-out infinite;
+        }
+
+        /* Cinematic Text Glow */
+        @keyframes textGlow {
+
+            0%,
+            100% {
+                text-shadow: 0 0 12px rgba(0, 92, 155, 0.1), 0 0 4px rgba(0, 92, 155, 0.05);
+                opacity: 0.9;
+            }
+
+            50% {
+                text-shadow: 0 0 20px rgba(245, 166, 35, 0.35), 0 0 8px rgba(0, 92, 155, 0.2);
+                opacity: 1;
+            }
+        }
+
+        .aura-text {
+            animation: textGlow 3s ease-in-out infinite;
+            letter-spacing: 0.12em;
+        }
+
+        /* Scroll Reveal CSS */
+        .reveal {
+            opacity: 0;
+            transform: translateY(6rem);
+            /* translate-y-24 is 6rem (96px) */
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
+        }
+
+        .reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Smooth Entrance Animations for Home/Hero sections */
+        .entrance-animate {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 1.3s cubic-bezier(0.16, 1, 0.3, 1), transform 1.3s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
+        }
+
+        html.load-complete .entrance-animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .reveal,
+            .entrance-animate,
+            header.animate-fade-slide-down {
+                opacity: 1 !important;
+                transform: none !important;
+                transition: none !important;
+            }
+
+            .loading-logo-box,
+            .loading-ring {
+                animation: none !important;
+                transform: none !important;
+                opacity: 1 !important;
+                scale: 1 !important;
+            }
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body class="bg-background text-on-surface font-body-md antialiased min-h-screen flex flex-col pt-20 sm:pt-24">
+
+    {% if request.resolver_match.url_name == 'home' %}
+    <!-- Loading/Intro Screen (Plays once per page load, ~5.0s) -->
+    <div id="loading-screen" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center">
+        <!-- Dot-grid overlay -->
+        <div class="ls-grid"></div>
+
+        <!-- Unified diagonal line pattern -->
+        <div class="ls-line-pattern"></div>
+
+        <!-- Aurora blob A — top-left, blue -->
+        <div class="ls-blob-a absolute w-[380px] h-[380px] md:w-[520px] md:h-[520px] rounded-full
+                    bg-gradient-to-br from-[#005c9b]/18 via-[#4faee3]/12 to-transparent
+                    blur-[80px] pointer-events-none" style="top:-10%;left:-8%;"></div>
+
+        <!-- Aurora blob B — bottom-right, amber -->
+        <div class="ls-blob-b absolute w-[340px] h-[340px] md:w-[480px] md:h-[480px] rounded-full
+                    bg-gradient-to-tl from-[#f5a623]/18 via-[#ffca57]/10 to-transparent
+                    blur-[90px] pointer-events-none" style="bottom:-12%;right:-6%;"></div>
+
+        <!-- Aurora blob C — center pulse (original aura, kept) -->
+        <div class="ls-blob-c animate-aura absolute w-[420px] h-[420px] md:w-[580px] md:h-[580px] rounded-full
+                    bg-gradient-to-tr from-[#005c9b]/12 via-[#f5a623]/8 to-[#005c9b]/15
+                    blur-[100px] pointer-events-none"></div>
+
+        <div class="relative flex flex-col items-center justify-center gap-12 z-10">
+            <!-- Decorative Dashed Ring Treatment (from Hero Illustration) -->
+            <div class="relative w-64 h-64 md:w-80 md:h-80 flex items-center justify-center">
+                <!-- Inner glow -->
+                <div
+                    class="absolute inset-4 bg-gradient-to-tr from-primary/10 to-secondary/10 rounded-full blur-xl transform scale-110">
+                </div>
+                <!-- Decorative dashed ring -->
+                <div
+                    class="absolute w-[110%] h-[110%] border border-dashed border-primary/25 rounded-full animate-[spin_50s_linear_infinite] loading-ring-pulse">
+                </div>
+                <!-- Decorative inner ring -->
+                <div class="absolute w-[95%] h-[95%] border border-primary/15 rounded-full loading-ring-pulse"></div>
+                <!-- Logo container -->
+                <div
+                    class="bg-white/95 backdrop-blur-md p-6 md:p-10 rounded-full border border-white/60 shadow-2xl shadow-primary/10 z-10 scale-0 loading-logo-box">
+                    <img alt="MCSC Logo" class="w-36 h-36 md:w-48 md:h-48 object-contain"
+                        src="{% static 'images/mcsc_logo.png' %}?v=1.0" />
+                </div>
+            </div>
+
+            <!-- Text & Progress Container -->
+            <div class="flex flex-col items-center gap-4 text-center">
+                <!-- MCSC Title with Scramble Reveal -->
+                <h1 id="loading-title"
+                    class="font-display text-[56px] md:text-[110px] font-black uppercase text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary leading-none select-none mb-2"
+                    style="letter-spacing: 0.15em; font-family: 'Nohemi', sans-serif;">
+                </h1>
+                <!-- Tagline with Typewriter Reveal -->
+                <h2 id="loading-tagline"
+                    class="font-normal text-[20px] md:text-[32px] text-on-surface/90 text-center leading-[1.4em] select-none min-h-[2.5rem] md:min-h-[3.5rem] flex items-center justify-center"
+                    style="letter-spacing: -0.025em; font-family: 'Inter', sans-serif;">
+                </h2>
+                <!-- Slim Gradient Progress Bar -->
+                <div id="loading-progress-container"
+                    class="w-48 md:w-64 h-1 bg-outline-variant/20 rounded-full overflow-hidden relative">
+                    <div id="loading-progress"
+                        class="absolute left-0 top-0 h-full bg-gradient-to-r from-primary to-secondary w-0 rounded-full transition-all duration-[2400ms] ease-out">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Viewport Top Fading Gradient Mask (Fades scrolled text before it passes behind split navbar) -->
+    <div
+        class="fixed top-0 left-0 w-full h-24 sm:h-28 bg-gradient-to-b from-[#f8f9ff] via-[#f8f9ff]/90 to-transparent z-40 pointer-events-none">
+    </div>
+
+    {% block header %}
+    <!-- Top Navigation (Shared Floating Split Component - Left Aligned & Fitted) -->
+    <header class="fixed top-0 left-0 w-full z-50 pointer-events-none pt-4 animate-fade-slide-down">
+        <div
+            class="flex justify-between items-center w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop gap-4 md:gap-8">
+
+            <!-- Left Brand Logo & Text (Transparent background, logo on left, text to the right) -->
+            <a class="flex items-center gap-3.5 pointer-events-auto hover:opacity-90 transition-opacity shrink-0"
+                href="{% url 'home' %}">
+                <img alt="MCSC Logo" class="w-16 h-16 md:w-20 md:h-20 object-contain"
+                    src="{% static 'images/mcsc_logo-Photoroom.webp' %}?v=1.0" />
+                <span class="font-display-lg text-[22px] md:text-[26px] font-bold uppercase tracking-widest select-none leading-none">
+                    <span class="text-primary">MC</span><span class="text-secondary">SC</span>
+                </span>
+            </a>
+
+            <!-- Right Floating Navigation Bar (Desktop) -->
+            <nav
+                class="hidden lg:flex pointer-events-auto bg-surface/95 backdrop-blur-md border border-outline-variant/30 shadow-md rounded-full px-8 py-3 items-center gap-6 w-auto">
+                <!-- Navigation Links -->
+                <div class="flex items-center gap-6">
+                    <a class="font-label-lg text-label-lg {% if request.resolver_match.url_name == 'home' %}text-secondary border-b-2 border-secondary pb-0.5{% else %}text-on-surface-variant hover:text-primary{% endif %} transition-all duration-300"
+                        href="{% url 'home' %}">Home</a>
+                    <a class="font-label-lg text-label-lg {% if request.resolver_match.url_name == 'about' %}text-secondary border-b-2 border-secondary pb-0.5{% else %}text-on-surface-variant hover:text-primary{% endif %} transition-all duration-300"
+                        href="{% url 'about' %}">About</a>
+                    <a class="font-label-lg text-label-lg {% if request.resolver_match.url_name == 'representatives_list' %}text-secondary border-b-2 border-secondary pb-0.5{% else %}text-on-surface-variant hover:text-primary{% endif %} transition-all duration-300"
+                        href="{% url 'representatives_list' %}">Representatives</a>
+                    <a class="font-label-lg text-label-lg {% if 'news' in request.path %}text-secondary border-b-2 border-secondary pb-0.5{% else %}text-on-surface-variant hover:text-primary{% endif %} transition-all duration-300"
+                        href="{% url 'news_list' %}">News</a>
+                    <a class="font-label-lg text-label-lg {% if 'events' in request.path %}text-secondary border-b-2 border-secondary pb-0.5{% else %}text-on-surface-variant hover:text-primary{% endif %} transition-all duration-300"
+                        href="{% url 'events_list' %}">Events</a>
+                </div>
+
+                {% if user.is_authenticated %}
+                <!-- Inner Divider -->
+                <div class="w-px h-5 bg-outline-variant/30"></div>
+
+                <!-- Trailing Action -->
+                <div class="flex items-center gap-4">
+                    {% if user.is_staff or user.role == 'admin' %}
+                    <a class="bg-secondary text-on-secondary px-4 py-1.5 rounded-full font-label-lg text-xs font-bold hover:shadow-md hover:-translate-y-px transition-all"
+                        href="{% url 'grievance_admin_dashboard' %}">
+                        Dashboard
+                    </a>
+                    {% endif %}
+                    <a class="text-primary hover:text-secondary flex items-center justify-center w-8 h-8 rounded-full bg-primary/5 hover:bg-secondary/10 transition-colors"
+                        href="{% url 'logout' %}" title="Logout">
+                        <span class="material-symbols-outlined text-[20px]">logout</span>
+                    </a>
+                </div>
+                {% endif %}
+            </nav>
+
+            <!-- Trailing Portal & Grievance Quick Actions (Desktop XL) -->
+            <div class="hidden xl:flex items-center gap-4 ml-auto pointer-events-auto">
+                <!-- PYQ Portal Box -->
+                <a href="https://pyqportal.app" target="_blank"
+                    class="group flex items-center gap-3.5 bg-surface/95 border border-outline-variant/30 hover:border-primary/50 shadow-md rounded-2xl px-5 py-2.5 transition-all duration-300 hover:scale-102 hover-lift">
+                    <div
+                        class="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
+                        <span class="material-symbols-outlined text-2xl">folder_open</span>
+                    </div>
+                    <div class="flex flex-col text-left">
+                        <span
+                            class="text-[10px] font-bold text-primary uppercase tracking-wider leading-none mb-1">Resource</span>
+                        <span class="text-sm font-bold text-on-surface leading-tight">PYQ Portal</span>
+                    </div>
+                </a>
+
+                <!-- Grievance Portal Box -->
+                <a href="{% url 'grievance_portal' %}"
+                    class="group flex items-center gap-3.5 bg-surface/95 border border-outline-variant/30 hover:border-secondary/50 shadow-md rounded-2xl px-5 py-2.5 transition-all duration-300 hover:scale-102 hover-lift">
+                    <div
+                        class="w-11 h-11 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-on-secondary transition-all duration-300">
+                        <span class="material-symbols-outlined text-2xl">edit_document</span>
+                    </div>
+                    <div class="flex flex-col text-left">
+                        <span
+                            class="text-[10px] font-bold text-secondary uppercase tracking-wider leading-none mb-1">Support</span>
+                        <span class="text-sm font-bold text-on-surface leading-tight">Submit Grievance</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Right Side Mobile Hamburger Button (Mobile < lg) -->
+            <button id="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle Menu"
+                class="lg:hidden pointer-events-auto bg-surface/95 backdrop-blur-md border border-outline-variant/30 shadow-md text-primary w-12 h-12 rounded-full flex items-center justify-center hover:bg-surface-container active:scale-95 transition-all duration-300">
+                <span id="mobile-menu-icon" class="material-symbols-outlined text-2xl">menu</span>
+            </button>
+
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Drawer Overlay (Full Site Theme Drawer) -->
+    <div id="mobile-menu-overlay"
+        class="fixed inset-0 z-[100] bg-on-surface/40 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300 flex justify-end">
+        <div id="mobile-menu-container"
+            class="w-full max-w-xs sm:max-w-sm bg-gradient-to-b from-[#f8f9ff] via-[#eef4ff] to-[#f8f9ff] text-on-surface h-full border-l border-outline-variant/30 shadow-2xl p-6 flex flex-col justify-between transform translate-x-full transition-transform duration-300 ease-out overflow-y-auto relative">
+            
+            <!-- Ambient Background Glow Accent -->
+            <div class="absolute top-0 right-0 w-48 h-48 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute bottom-0 left-0 w-48 h-48 bg-secondary/10 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <!-- Drawer Header (Logo & Logo Text matching main navbar + Close button) -->
+            <div class="flex items-center justify-between border-b border-outline-variant/20 pb-4">
+                <a class="flex items-center gap-3" href="{% url 'home' %}">
+                    <img alt="MCSC Logo" class="w-14 h-14 object-contain"
+                        src="{% static 'images/mcsc_logo-Photoroom.webp' %}?v=1.0" />
+                    <span class="font-display-lg text-2xl font-bold uppercase tracking-widest leading-none">
+                        <span class="text-primary">MC</span><span class="text-secondary">SC</span>
+                    </span>
+                </a>
+                <button onclick="toggleMobileMenu()"
+                    class="w-10 h-10 rounded-full bg-outline-variant/10 text-on-surface-variant flex items-center justify-center hover:bg-primary/10 hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined text-2xl">close</span>
+                </button>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="flex flex-col gap-2 my-6">
+                <a class="flex items-center gap-4 px-4 py-3 rounded-2xl font-bold text-base {% if request.resolver_match.url_name == 'home' %}bg-primary/10 text-primary border border-primary/20{% else %}text-on-surface-variant hover:bg-surface-container hover:text-primary{% endif %} transition-all"
+                    href="{% url 'home' %}">
+                    <span class="material-symbols-outlined text-xl">home</span> Home
+                </a>
+                <a class="flex items-center gap-4 px-4 py-3 rounded-2xl font-bold text-base {% if request.resolver_match.url_name == 'about' %}bg-primary/10 text-primary border border-primary/20{% else %}text-on-surface-variant hover:bg-surface-container hover:text-primary{% endif %} transition-all"
+                    href="{% url 'about' %}">
+                    <span class="material-symbols-outlined text-xl">info</span> About
+                </a>
+                <a class="flex items-center gap-4 px-4 py-3 rounded-2xl font-bold text-base {% if request.resolver_match.url_name == 'representatives_list' %}bg-primary/10 text-primary border border-primary/20{% else %}text-on-surface-variant hover:bg-surface-container hover:text-primary{% endif %} transition-all"
+                    href="{% url 'representatives_list' %}">
+                    <span class="material-symbols-outlined text-xl">groups</span> Representatives
+                </a>
+                <a class="flex items-center gap-4 px-4 py-3 rounded-2xl font-bold text-base {% if 'news' in request.path %}bg-primary/10 text-primary border border-primary/20{% else %}text-on-surface-variant hover:bg-surface-container hover:text-primary{% endif %} transition-all"
+                    href="{% url 'news_list' %}">
+                    <span class="material-symbols-outlined text-xl">newspaper</span> News
+                </a>
+                <a class="flex items-center gap-4 px-4 py-3 rounded-2xl font-bold text-base {% if 'events' in request.path %}bg-primary/10 text-primary border border-primary/20{% else %}text-on-surface-variant hover:bg-surface-container hover:text-primary{% endif %} transition-all"
+                    href="{% url 'events_list' %}">
+                    <span class="material-symbols-outlined text-xl">event</span> Events
+                </a>
+            </div>
+
+            <!-- Quick Action Cards & Buttons -->
+            <div class="flex flex-col gap-3 pt-4 border-t border-outline-variant/20">
+                <a href="{% url 'grievance_portal' %}"
+                    class="flex items-center gap-3.5 bg-gradient-to-r from-secondary to-amber-500 text-on-secondary px-5 py-3.5 rounded-2xl font-bold shadow-md shadow-amber-500/20 hover:scale-102 transition-transform justify-center">
+                    <span class="material-symbols-outlined text-xl">edit_document</span>
+                    Submit Grievance
+                </a>
+
+                <a href="https://pyqportal.app" target="_blank"
+                    class="flex items-center gap-3.5 bg-primary/10 text-primary border border-primary/25 px-5 py-3.5 rounded-2xl font-bold hover:bg-primary/20 transition-all justify-center">
+                    <span class="material-symbols-outlined text-xl">folder_open</span>
+                    PYQ Portal
+                </a>
+
+                {% if user.is_authenticated %}
+                <div class="flex items-center gap-3 mt-2">
+                    {% if user.is_staff or user.role == 'admin' %}
+                    <a href="{% url 'grievance_admin_dashboard' %}"
+                        class="flex-1 bg-primary text-white text-center py-2.5 rounded-xl font-bold text-xs">
+                        Dashboard
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'logout' %}"
+                        class="flex items-center justify-center gap-2 text-rose-600 bg-rose-50 px-4 py-2.5 rounded-xl font-bold text-xs border border-rose-200">
+                        <span class="material-symbols-outlined text-base">logout</span> Logout
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function toggleMobileMenu() {
+            const overlay = document.getElementById('mobile-menu-overlay');
+            const container = document.getElementById('mobile-menu-container');
+            const icon = document.getElementById('mobile-menu-icon');
+            
+            if (overlay.classList.contains('pointer-events-none')) {
+                overlay.classList.remove('pointer-events-none', 'opacity-0');
+                overlay.classList.add('opacity-100');
+                container.classList.remove('translate-x-full');
+                container.classList.add('translate-x-0');
+                if (icon) icon.textContent = 'close';
+                document.body.style.overflow = 'hidden';
+            } else {
+                overlay.classList.remove('opacity-100');
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+                container.classList.remove('translate-x-0');
+                container.classList.add('translate-x-full');
+                if (icon) icon.textContent = 'menu';
+                document.body.style.overflow = '';
+            }
+        }
+    </script>
+    {% endblock %}
+
+    {% if messages %}
+    <div id="toast-container" class="fixed top-20 sm:top-28 left-1/2 -translate-x-1/2 sm:left-auto sm:right-6 sm:translate-x-0 z-[60] flex flex-col gap-3 w-[calc(100%-2rem)] sm:w-full max-w-sm pointer-events-none transition-all">
+        {% for message in messages %}
+        <div class="django-message-alert pointer-events-auto flex items-center sm:items-start text-center sm:text-left gap-3 p-4 rounded-2xl shadow-xl border backdrop-blur-md transition-all duration-300 transform translate-x-0 opacity-100 relative overflow-hidden
+            {% if message.tags == 'success' %}
+                bg-emerald-50/95 border-emerald-500/30 text-emerald-950
+            {% elif message.tags == 'error' or message.tags == 'danger' %}
+                bg-rose-50/95 border-rose-500/30 text-rose-950
+            {% elif message.tags == 'warning' %}
+                bg-amber-50/95 border-amber-500/30 text-amber-950
+            {% else %}
+                bg-sky-50/95 border-sky-500/30 text-sky-950
+            {% endif %}" role="alert">
+            <!-- Icon -->
+            <span class="material-symbols-outlined shrink-0
+                {% if message.tags == 'success' %}
+                    text-emerald-600
+                {% elif message.tags == 'error' or message.tags == 'danger' %}
+                    text-rose-600
+                {% elif message.tags == 'warning' %}
+                    text-amber-600
+                {% else %}
+                    text-sky-600
+                {% endif %}">
+                {% if message.tags == 'success' %}
+                check_circle
+                {% elif message.tags == 'error' or message.tags == 'danger' %}
+                error
+                {% elif message.tags == 'warning' %}
+                warning
+                {% else %}
+                info
+                {% endif %}
+            </span>
+            <!-- Text Content -->
+            <div class="flex-grow font-body-md text-sm sm:pr-2">
+                {{ message }}
+            </div>
+            <!-- Close Button -->
+            <button onclick="dismissToast(this.closest('.django-message-alert'))"
+                class="text-on-surface-variant hover:text-on-surface shrink-0 flex items-center justify-center w-5 h-5 rounded-full hover:bg-black/5 transition-colors">
+                <span class="material-symbols-outlined text-[16px]">close</span>
+            </button>
+
+            <!-- Progress Bar -->
+            <div class="absolute bottom-0 left-0 h-1 bg-black/10 w-full rounded-b-2xl overflow-hidden">
+                <div class="toast-progress h-full
+                    {% if message.tags == 'success' %}
+                        bg-emerald-500
+                    {% elif message.tags == 'error' or message.tags == 'danger' %}
+                        bg-rose-500
+                    {% elif message.tags == 'warning' %}
+                        bg-amber-500
+                    {% else %}
+                        bg-sky-500
+                    {% endif %}" style="width: 100%;">
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content Area -->
+    {% block content_wrapper %}
+    <main id="page-content" class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+    {% endblock %}
+
+    {% block footer %}
+    <!-- Footer -->
+    <footer
+        class="bg-surface-container-lowest dark:bg-surface-container-high w-full py-8 md:py-stack-lg border-t border-outline-variant/50 dark:border-outline/30 mt-auto select-none">
+        <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+            
+            <!-- Mobile Footer Layout (Single Minimal Block, < md) -->
+            <div class="md:hidden flex flex-col gap-3 text-left">
+                <!-- Brand Logo & Title Left Aligned -->
+                <a class="flex items-center gap-3" href="{% url 'home' %}">
+                    <img alt="MCSC Logo Footer" class="w-11 h-11 object-contain"
+                        src="{% static 'images/mcsc_logo-Photoroom.webp' %}" />
+                    <span class="font-display-lg text-xl font-bold uppercase tracking-widest select-none leading-none">
+                        <span class="text-primary">MC</span><span class="text-secondary">SC</span>
+                    </span>
+                </a>
+
+                <!-- Paragraph Text -->
+                <p class="font-body-md text-on-surface-variant text-xs leading-relaxed">
+                    Empowering students, fostering community, and providing authoritative representation at Marian College.
+                </p>
+
+                <!-- Connect Icons & Copyright Credit -->
+                <div class="flex items-center justify-between pt-3 border-t border-outline-variant/20 mt-1">
+                    <!-- Minimal Connect Icons (Mail & Instagram) -->
+                    <div class="flex items-center gap-2.5">
+                        <a class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-all shadow-sm"
+                            href="mailto:mcsc@mariancollege.org" title="Email Us">
+                            <span class="material-symbols-outlined text-[16px]">mail</span>
+                        </a>
+                        <a class="w-8 h-8 rounded-full bg-secondary/15 text-secondary flex items-center justify-center hover:bg-secondary hover:text-white transition-all shadow-sm"
+                            href="https://www.instagram.com/mcscofficial/" target="_blank" title="Instagram">
+                            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                            </svg>
+                        </a>
+                    </div>
+
+                    <!-- Copyright Credit -->
+                    <span class="text-on-surface-variant/70 text-[10px]">
+                        © 2026 MCSC. All rights reserved.
+                    </span>
+                </div>
+            </div>
+
+            <!-- Desktop Footer Layout (>= md) -->
+            <div class="hidden md:grid md:grid-cols-4 gap-gutter">
+                <div class="flex flex-col gap-4">
+                    <a class="font-display-lg text-xl font-bold text-[#001d35] dark:text-primary-fixed-dim flex items-center gap-3"
+                        href="{% url 'home' %}">
+                        <img alt="MCSC Logo Footer" class="w-14 h-14 object-contain"
+                            src="{% static 'images/mcsc_logo-Photoroom.webp' %}" />
+                        <span
+                            class="font-display-lg text-[22px] font-bold uppercase tracking-widest select-none leading-none">
+                            <span class="text-primary">MC</span><span class="text-secondary">SC</span>
+                        </span>
+                    </a>
+                    <p class="font-body-md text-body-md text-on-surface-variant text-sm">Empowering students, fostering
+                        community, and providing authoritative representation at Marian College.</p>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <h4 class="font-label-lg text-label-lg text-on-surface font-semibold mb-2">Links</h4>
+                    <a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim opacity-80 hover:opacity-100 transition-opacity hover:underline decoration-secondary decoration-2 underline-offset-4 w-fit"
+                        href="{% url 'about' %}">About</a>
+                    <a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim opacity-80 hover:opacity-100 transition-opacity hover:underline decoration-secondary decoration-2 underline-offset-4 w-fit"
+                        href="{% url 'representatives_list' %}">Representatives</a>
+                    <a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim opacity-80 hover:opacity-100 transition-opacity hover:underline decoration-secondary decoration-2 underline-offset-4 w-fit"
+                        href="{% url 'news_list' %}">News</a>
+                    <a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim opacity-80 hover:opacity-100 transition-opacity hover:underline decoration-secondary decoration-2 underline-offset-4 w-fit"
+                        href="{% url 'events_list' %}">Events</a>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <h4 class="font-label-lg text-label-lg text-on-surface font-semibold mb-2">Connect</h4>
+                    <div class="flex gap-4">
+                        <a class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:bg-primary/10 hover:text-primary transition-colors"
+                            href="mailto:mcsc@mariancollege.org" title="Email Us">
+                            <span class="material-symbols-outlined text-[20px]">mail</span>
+                        </a>
+                        <a class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:bg-secondary/15 hover:text-secondary transition-colors"
+                            href="https://www.instagram.com/mcscofficial/" target="_blank" title="Follow MCSC on Instagram">
+                            <svg class="w-[18px] h-[18px] fill-current" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                            </svg>
+                        </a>
+                    </div>
+                    <p class="font-body-md text-body-md text-on-surface-variant text-sm mt-4">
+                        © 2026 Marian College Students Council. All rights reserved.
+                    </p>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <h4 class="font-label-lg text-label-lg text-on-surface font-semibold mb-2">Developer</h4>
+                    <a href="https://www.linkedin.com/in/muhammed-sinan-m/" target="_blank"
+                        class="flex items-center gap-3 w-fit group pointer-events-auto">
+                        <div
+                            class="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-secondary p-[1.5px] shadow-sm transition-transform duration-500 group-hover:scale-110">
+                            <div
+                                class="w-full h-full rounded-full bg-white dark:bg-surface-container-high flex items-center justify-center">
+                                <span class="font-display text-xs font-bold text-primary select-none">MS</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col text-left">
+                            <span
+                                class="text-sm font-bold text-on-surface-variant dark:text-surface-variant group-hover:text-primary transition-colors group-hover:underline decoration-secondary decoration-2 underline-offset-4">
+                                Muhammed Sinan.M
+                            </span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+    {% endblock %}
+
+    {% if request.resolver_match.url_name == 'home' %}
+    <!-- Loading Screen Script -->
+    <script>
+            (function () {
+                const loadingScreen = document.getElementById('loading-screen');
+                if (!loadingScreen) return;
+
+                // Immediately check for prefers-reduced-motion or if intro already played to avoid scroll lock
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || sessionStorage.getItem('mcsc_intro_played') === 'true') {
+                    loadingScreen.remove();
+                    document.documentElement.classList.remove('loading-active');
+                    document.documentElement.classList.add('load-complete');
+                    const heroLogoRM = document.getElementById('hero-logo-box');
+                    if (heroLogoRM) heroLogoRM.style.opacity = '1';
+                    return;
+                }
+
+                document.documentElement.classList.add('loading-active');
+
+
+
+                const logoBox = loadingScreen.querySelector('.loading-logo-box');
+                setTimeout(() => { if (logoBox) logoBox.classList.add('animate-pop'); }, 100);
+
+                const progress = document.getElementById('loading-progress');
+                setTimeout(() => { if (progress) progress.style.width = '100%'; }, 150);
+
+                // MCSC Title Scramble Reveal Animation
+                const titleText = "MCSC";
+                const titleEl = document.getElementById('loading-title');
+                const taglineText = "GET READY FOR THE CHANGE...";
+                const taglineEl = document.getElementById('loading-tagline');
+
+                if (titleEl) {
+                    titleEl.innerHTML = '';
+                    const GLITCH_POOL = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                    const targetLength = titleText.length;
+                    const charSpans = [];
+
+                    // Setup initial random letters
+                    for (let i = 0; i < targetLength; i++) {
+                        const span = document.createElement('span');
+                        span.className = 'inline-block select-none';
+                        span.textContent = GLITCH_POOL[Math.floor(Math.random() * GLITCH_POOL.length)];
+                        titleEl.appendChild(span);
+                        charSpans.push(span);
+                    }
+
+                    setTimeout(() => {
+                        const startTime = performance.now();
+                        const durationMs = 900; // Scramble duration slowed down slightly for premium aesthetic
+
+                        function updateScramble(now) {
+                            const elapsed = now - startTime;
+                            const progress = Math.min(1, elapsed / durationMs);
+
+                            for (let i = 0; i < targetLength; i++) {
+                                // Progressively lock characters from left to right
+                                const lockThreshold = i / targetLength;
+                                if (progress >= lockThreshold) {
+                                    const timeToLock = progress - lockThreshold;
+                                    const charProgress = timeToLock / (1 / targetLength);
+
+                                    if (charProgress >= 0.75) {
+                                        charSpans[i].textContent = titleText[i];
+                                    } else {
+                                        charSpans[i].textContent = GLITCH_POOL[Math.floor(Math.random() * GLITCH_POOL.length)];
+                                    }
+                                } else {
+                                    charSpans[i].textContent = GLITCH_POOL[Math.floor(Math.random() * GLITCH_POOL.length)];
+                                }
+                            }
+
+                            if (progress < 1) {
+                                requestAnimationFrame(updateScramble);
+                            } else {
+                                for (let i = 0; i < targetLength; i++) {
+                                    charSpans[i].textContent = titleText[i];
+                                }
+                                // Start Typewriter tagline reveal once scramble is completed
+                                startTypewriter();
+                            }
+                        }
+                        requestAnimationFrame(updateScramble);
+                    }, 200);
+                } else {
+                    startTypewriter();
+                }
+
+                function startTypewriter() {
+                    if (!taglineEl) return;
+                    taglineEl.innerHTML = '';
+
+                    const textContainer = document.createElement('span');
+                    const cursorSpan = document.createElement('span');
+                    cursorSpan.className = 'typewriter-cursor';
+                    cursorSpan.textContent = '_';
+
+                    taglineEl.appendChild(textContainer);
+                    taglineEl.appendChild(cursorSpan);
+
+                    let charIdx = 0;
+                    const typeSpeed = 100; // Exact and slow (100ms per char)
+                    const initialDelay = 200; // Elegant pause after scramble settles
+
+                    setTimeout(() => {
+                        function typeNextChar() {
+                            if (charIdx < taglineText.length) {
+                                textContainer.textContent += taglineText.charAt(charIdx);
+                                charIdx++;
+                                setTimeout(typeNextChar, typeSpeed);
+                            }
+                        }
+                        typeNextChar();
+                    }, initialDelay);
+                }
+
+                // Fade out the entire loading screen and trigger home page entrance transitions after 5.0 seconds
+                setTimeout(() => {
+                    loadingScreen.classList.add('opacity-0');
+
+                    // Unlock scroll and trigger homepage entrance transitions immediately
+                    document.documentElement.classList.remove('loading-active');
+                    document.documentElement.classList.add('load-complete');
+
+                    // Save intro played flag to session storage
+                    sessionStorage.setItem('mcsc_intro_played', 'true');
+
+                    // Remove the loading screen overlay from DOM once fade transition is complete
+                    setTimeout(() => {
+                        loadingScreen.remove();
+                    }, 1500); // 1.5s fade duration matches style transitions
+                }, 5000);
+            })();
+    </script>
+    {% endif %}
+
+    <!-- Scroll Reveal Intersection Observer Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const revealElements = document.querySelectorAll('.reveal');
+
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                revealElements.forEach(el => el.classList.add('revealed'));
+            } else {
+                const observerOptions = {
+                    root: null,
+                    rootMargin: '0px',
+                    threshold: 0.15
+                };
+
+                const observer = new IntersectionObserver((entries, obs) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('revealed');
+                            obs.unobserve(entry.target);
+                        }
+                    });
+                }, observerOptions);
+
+                revealElements.forEach(el => observer.observe(el));
+            }
+            // Auto-dismiss and progress bar for Django flash messages (toasts)
+            const alerts = document.querySelectorAll('.django-message-alert');
+            alerts.forEach((alert) => {
+                const progress = alert.querySelector('.toast-progress');
+                if (progress) {
+                    setTimeout(() => {
+                        progress.style.transition = 'width 2.5s linear';
+                        progress.style.width = '0%';
+                    }, 50);
+                }
+
+                setTimeout(() => {
+                    dismissToast(alert);
+                }, 2550);
+            });
+        });
+
+        function dismissToast(toast) {
+            if (!toast) return;
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(50px) scale(0.9)';
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }
+    </script>
+
+    {% if user.is_authenticated %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if ('serviceWorker' in navigator && 'PushManager' in window) {
+                navigator.serviceWorker.register('{% url "sw.js" %}')
+                    .then((reg) => {
+                        reg.pushManager.getSubscription()
+                            .then((subscription) => {
+                                if (!subscription) {
+                                    Notification.requestPermission().then(permission => {
+                                        if (permission === 'granted') {
+                                            const vapidPublicKey = '{{ VAPID_PUBLIC_KEY }}';
+                                            if (vapidPublicKey) {
+                                                const applicationServerKey = urlB64ToUint8Array(vapidPublicKey);
+                                                reg.pushManager.subscribe({
+                                                    userVisibleOnly: true,
+                                                    applicationServerKey: applicationServerKey
+                                                })
+                                                    .then((newSub) => {
+                                                        sendSubscriptionToBackend(newSub);
+                                                    })
+                                                    .catch((err) => {
+                                                        console.error('Push subscription failed:', err);
+                                                    });
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    sendSubscriptionToBackend(subscription);
+                                }
+                            });
+                    })
+                    .catch((err) => {
+                        console.error('Service Worker registration failed:', err);
+                    });
+            }
+        });
+
+        function urlB64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding)
+                .replace(/\-/g, '+')
+                .replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+
+        function sendSubscriptionToBackend(subscription) {
+            const jsonSub = subscription.toJSON();
+
+            const data = {
+                endpoint: subscription.endpoint,
+                keys: {
+                    p256dh: jsonSub.keys ? jsonSub.keys.p256dh : null,
+                    auth: jsonSub.keys ? jsonSub.keys.auth : null
+                }
+            };
+
+            if (!data.keys.p256dh || !data.keys.auth) {
+                console.warn('Subscription keys are missing:', data);
+                return;
+            }
+
+            fetch('{% url "push_subscribe" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(res => res.json())
+                .then(resData => {
+                    if (resData.status !== 'success') {
+                        console.error('Failed to sync push subscription:', resData.message);
+                    }
+                })
+                .catch(err => {
+                    console.error('Error syncing push subscription:', err);
+                });
+        }
+    </script>
+    {% endif %}
+
+    <!-- ── TargetCursor System (React Bits Port for Django) ───────────────────── -->
+    <style>
+        /* TargetCursor Styles */
+        @media (pointer: fine) {
+            body.target-cursor-active,
+            body.target-cursor-active a,
+            body.target-cursor-active button,
+            body.target-cursor-active input,
+            body.target-cursor-active select,
+            body.target-cursor-active textarea,
+            body.target-cursor-active label,
+            body.target-cursor-active [role="button"],
+            body.target-cursor-active .cursor-target,
+            body.target-cursor-active .hover-lift,
+            body.target-cursor-active .cf-card,
+            body.target-cursor-active .exec-card {
+                cursor: none !important;
+            }
+        }
+
+        .target-cursor-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            will-change: transform;
+        }
+
+        .target-cursor-dot {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 5px;
+            height: 5px;
+            background: #4a90e2;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            will-change: transform, background-color;
+            box-shadow: 0 0 6px rgba(74, 144, 226, 0.35);
+        }
+
+        .target-cursor-corner {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #4a90e2;
+            opacity: 0.85;
+            will-change: transform, border-color, opacity;
+            box-sizing: border-box;
+        }
+
+        .corner-tl {
+            transform: translate(-150%, -150%);
+            border-right: none;
+            border-bottom: none;
+            border-top-left-radius: 3px;
+        }
+
+        .corner-tr {
+            transform: translate(50%, -150%);
+            border-left: none;
+            border-bottom: none;
+            border-top-right-radius: 3px;
+        }
+
+        .corner-br {
+            transform: translate(50%, 50%);
+            border-left: none;
+            border-top: none;
+            border-bottom-right-radius: 3px;
+        }
+
+        .corner-bl {
+            transform: translate(-150%, 50%);
+            border-right: none;
+            border-top: none;
+            border-bottom-left-radius: 3px;
+        }
+
+        @media (pointer: coarse), (prefers-reduced-motion: reduce) {
+            .target-cursor-wrapper {
+                display: none !important;
+            }
+        }
+    </style>
+
+    <script>
+        (function () {
+            'use strict';
+
+            const isMobile = (function () {
+                if (typeof window === 'undefined') return false;
+                const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+                const isSmall = window.innerWidth <= 768;
+                const userAgent = (navigator.userAgent || navigator.vendor || window.opera || '').toLowerCase();
+                const isMobileUA = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
+                return (hasTouch && isSmall) || isMobileUA;
+            })();
+
+            const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            if (isMobile || prefersReduced || !window.gsap) {
+                return;
+            }
+
+            // Create TargetCursor elements
+            const cursor = document.createElement('div');
+            cursor.className = 'target-cursor-wrapper';
+            cursor.setAttribute('aria-hidden', 'true');
+            cursor.innerHTML = `
+                <div class="target-cursor-dot"></div>
+                <div class="target-cursor-corner corner-tl"></div>
+                <div class="target-cursor-corner corner-tr"></div>
+                <div class="target-cursor-corner corner-br"></div>
+                <div class="target-cursor-corner corner-bl"></div>
+            `;
+            document.body.appendChild(cursor);
+            document.body.classList.add('target-cursor-active');
+
+            const dot = cursor.querySelector('.target-cursor-dot');
+            const corners = Array.from(cursor.querySelectorAll('.target-cursor-corner'));
+
+            // Props & Constants
+            const targetSelector = 'a, button, input, select, textarea, label, [role="button"], .cursor-target, .hover-lift, .cf-card, .exec-card';
+            const spinDuration = 2.4;
+            const hoverDuration = 0.22;
+            const parallaxOn = true;
+            const cursorColor = '#4a90e2'; // Soft Muted Ocean Blue
+            const cursorColorOnTarget = '#feae2c'; // Soft Warm Amber
+
+            const borderWidth = 2;
+            const cornerSize = 12;
+
+
+            let spinTl = null;
+            let activeTarget = null;
+            let currentLeaveHandler = null;
+            let resumeTimeout = null;
+            let targetCornerPositions = null;
+            const activeStrength = { current: 0 };
+            let initialized = false;
+            let containingBlock = null;
+
+            function getContainingBlock(element) {
+                let node = element?.parentElement;
+                while (node && node !== document.documentElement) {
+                    const style = getComputedStyle(node);
+                    if (
+                        style.transform !== 'none' ||
+                        style.perspective !== 'none' ||
+                        style.filter !== 'none' ||
+                        style.willChange.includes('transform') ||
+                        style.willChange.includes('perspective') ||
+                        style.willChange.includes('filter') ||
+                        /paint|layout|strict|content/.test(style.contain)
+                    ) {
+                        return node;
+                    }
+                    node = node.parentElement;
+                }
+                return null;
+            }
+
+            function getContainingBlockOffset(block) {
+                if (!block) return { x: 0, y: 0 };
+                const rect = block.getBoundingClientRect();
+                return { x: rect.left + block.clientLeft, y: rect.top + block.clientTop };
+            }
+
+            containingBlock = getContainingBlock(cursor);
+            function getOffset() {
+                return getContainingBlockOffset(containingBlock);
+            }
+
+            const initialOffset = getOffset();
+            gsap.set(cursor, {
+                xPercent: -50,
+                yPercent: -50,
+                x: window.innerWidth / 2 - initialOffset.x,
+                y: window.innerHeight / 2 - initialOffset.y
+            });
+
+            function createSpinTimeline() {
+                if (spinTl) spinTl.kill();
+                spinTl = gsap.timeline({ repeat: -1 }).to(cursor, { rotation: '+=360', duration: spinDuration, ease: 'none' });
+            }
+            createSpinTimeline();
+
+            function moveCursor(x, y) {
+                const { x: offsetX, y: offsetY } = getOffset();
+                if (!initialized) {
+                    initialized = true;
+                    gsap.to(cursor, { opacity: 1, duration: 0.2 });
+                }
+                gsap.to(cursor, {
+                    x: x - offsetX,
+                    y: y - offsetY,
+                    duration: 0.1,
+                    ease: 'power3.out'
+                });
+            }
+
+            const tickerFn = () => {
+                if (!targetCornerPositions || !cursor || !corners) return;
+
+                const strength = activeStrength.current;
+                if (strength === 0) return;
+
+                const cursorX = gsap.getProperty(cursor, 'x');
+                const cursorY = gsap.getProperty(cursor, 'y');
+
+                corners.forEach((corner, i) => {
+                    const currentX = gsap.getProperty(corner, 'x');
+                    const currentY = gsap.getProperty(corner, 'y');
+
+                    const targetX = targetCornerPositions[i].x - cursorX;
+                    const targetY = targetCornerPositions[i].y - cursorY;
+
+                    const finalX = currentX + (targetX - currentX) * strength;
+                    const finalY = currentY + (targetY - currentY) * strength;
+
+                    const duration = strength >= 0.99 ? (parallaxOn ? 0.2 : 0) : 0.05;
+
+                    gsap.to(corner, {
+                        x: finalX,
+                        y: finalY,
+                        duration: duration,
+                        ease: duration === 0 ? 'none' : 'power1.out',
+                        overwrite: 'auto'
+                    });
+                });
+            };
+
+            window.addEventListener('mousemove', (e) => moveCursor(e.clientX, e.clientY));
+
+            window.addEventListener('scroll', () => {
+                if (!activeTarget || !cursor) return;
+                const { x: offsetX, y: offsetY } = getOffset();
+                const mouseX = gsap.getProperty(cursor, 'x') + offsetX;
+                const mouseY = gsap.getProperty(cursor, 'y') + offsetY;
+                const elementUnderMouse = document.elementFromPoint(mouseX, mouseY);
+                const isStillOverTarget =
+                    elementUnderMouse &&
+                    (elementUnderMouse === activeTarget || elementUnderMouse.closest(targetSelector) === activeTarget);
+                if (!isStillOverTarget && currentLeaveHandler) {
+                    currentLeaveHandler();
+                }
+            }, { passive: true });
+
+            window.addEventListener('mousedown', () => {
+                if (dot) gsap.to(dot, { scale: 0.7, duration: 0.3 });
+                gsap.to(cursor, { scale: 0.9, duration: 0.2 });
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (dot) gsap.to(dot, { scale: 1, duration: 0.3 });
+                gsap.to(cursor, { scale: 1, duration: 0.2 });
+            });
+
+            const enterHandler = (e) => {
+                const directTarget = e.target;
+                let target = null;
+                let current = directTarget;
+                while (current && current !== document.body) {
+                    if (current.matches && current.matches(targetSelector)) {
+                        target = current;
+                        break;
+                    }
+                    current = current.parentElement;
+                }
+
+                if (!target || !cursor || !corners) return;
+                if (activeTarget === target) return;
+                if (activeTarget && currentLeaveHandler) {
+                    currentLeaveHandler();
+                }
+                if (resumeTimeout) {
+                    clearTimeout(resumeTimeout);
+                    resumeTimeout = null;
+                }
+
+                activeTarget = target;
+                corners.forEach(corner => gsap.killTweensOf(corner, 'x,y'));
+
+                gsap.killTweensOf(cursor, 'rotation');
+                spinTl?.pause();
+                gsap.set(cursor, { rotation: 0 });
+
+                gsap.to(corners, {
+                    borderColor: cursorColorOnTarget,
+                    duration: 0.15,
+                    ease: 'power2.out'
+                });
+                if (dot) {
+                    gsap.to(dot, {
+                        backgroundColor: cursorColorOnTarget,
+                        boxShadow: '0 0 8px rgba(254, 174, 44, 0.45)',
+                        duration: 0.15,
+                        ease: 'power2.out'
+                    });
+                }
+
+                const rect = target.getBoundingClientRect();
+                const { x: offsetX, y: offsetY } = getOffset();
+                const cursorX = gsap.getProperty(cursor, 'x');
+                const cursorY = gsap.getProperty(cursor, 'y');
+
+                targetCornerPositions = [
+                    { x: rect.left - borderWidth - offsetX, y: rect.top - borderWidth - offsetY },
+                    { x: rect.right + borderWidth - cornerSize - offsetX, y: rect.top - borderWidth - offsetY },
+                    { x: rect.right + borderWidth - cornerSize - offsetX, y: rect.bottom + borderWidth - cornerSize - offsetY },
+                    { x: rect.left - borderWidth - offsetX, y: rect.bottom + borderWidth - cornerSize - offsetY }
+                ];
+
+                gsap.ticker.add(tickerFn);
+
+                gsap.to(activeStrength, {
+                    current: 1,
+                    duration: hoverDuration,
+                    ease: 'power2.out'
+                });
+
+                corners.forEach((corner, i) => {
+                    gsap.to(corner, {
+                        x: targetCornerPositions[i].x - cursorX,
+                        y: targetCornerPositions[i].y - cursorY,
+                        duration: 0.2,
+                        ease: 'power2.out'
+                    });
+                });
+
+                const leaveHandler = () => {
+                    gsap.ticker.remove(tickerFn);
+
+                    targetCornerPositions = null;
+                    gsap.set(activeStrength, { current: 0, overwrite: true });
+                    activeTarget = null;
+
+                    gsap.to(corners, {
+                        borderColor: cursorColor,
+                        duration: 0.15,
+                        ease: 'power2.out'
+                    });
+                    if (dot) {
+                        gsap.to(dot, {
+                            backgroundColor: cursorColor,
+                            boxShadow: '0 0 6px rgba(74, 144, 226, 0.35)',
+                            duration: 0.15,
+                            ease: 'power2.out'
+                        });
+                    }
+
+                    corners.forEach((corner, index) => {
+                        gsap.killTweensOf(corner, 'x,y');
+                        const positions = [
+                            { x: -cornerSize * 1.5, y: -cornerSize * 1.5 },
+                            { x: cornerSize * 0.5, y: -cornerSize * 1.5 },
+                            { x: cornerSize * 0.5, y: cornerSize * 0.5 },
+                            { x: -cornerSize * 1.5, y: cornerSize * 0.5 }
+                        ];
+                        gsap.to(corner, {
+                            x: positions[index].x,
+                            y: positions[index].y,
+                            duration: 0.3,
+                            ease: 'power3.out'
+                        });
+                    });
+
+                    resumeTimeout = setTimeout(() => {
+                        if (!activeTarget && cursor && spinTl) {
+                            const currentRotation = gsap.getProperty(cursor, 'rotation');
+                            const normalizedRotation = currentRotation % 360;
+                            spinTl.kill();
+                            spinTl = gsap.timeline({ repeat: -1 }).to(cursor, { rotation: '+=360', duration: spinDuration, ease: 'none' });
+                            gsap.to(cursor, {
+                                rotation: normalizedRotation + 360,
+                                duration: spinDuration * (1 - normalizedRotation / 360),
+                                ease: 'none',
+                                onComplete: () => {
+                                    spinTl?.restart();
+                                }
+                            });
+                        }
+                        resumeTimeout = null;
+                    }, 50);
+
+                    if (currentLeaveHandler && target) {
+                        target.removeEventListener('mouseleave', leaveHandler);
+                    }
+                    currentLeaveHandler = null;
+                };
+
+                currentLeaveHandler = leaveHandler;
+                target.addEventListener('mouseleave', leaveHandler);
+            };
+
+            window.addEventListener('mouseover', enterHandler, { passive: true });
+
+            window.addEventListener('resize', () => {
+                containingBlock = getContainingBlock(cursor);
+            });
+
+            document.addEventListener('mouseleave', () => {
+                gsap.to(cursor, { opacity: 0, duration: 0.2 });
+            });
+
+            document.addEventListener('mouseenter', () => {
+                if (initialized) gsap.to(cursor, { opacity: 1, duration: 0.2 });
+            });
+        })();
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

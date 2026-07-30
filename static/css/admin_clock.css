@@ -1,0 +1,82 @@
+/* HH:MM Time Input Styles for Django Admin */
+.time-hhmm-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    vertical-align: middle;
+}
+
+input.vTimeField, .time-hhmm-input {
+    width: 120px !important;
+    padding: 6px 10px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+    color: #0f172a !important; /* Dark slate text for maximum high-contrast visibility */
+    letter-spacing: 0.5px !important;
+    border-radius: 6px !important;
+    border: 1.5px solid #64748b !important;
+    background-color: #ffffff !important;
+    transition: all 0.2s ease !important;
+}
+
+input.vTimeField::placeholder, .time-hhmm-input::placeholder {
+    color: #64748b !important;
+    opacity: 1 !important;
+    font-weight: 400 !important;
+}
+
+input.vTimeField:focus, .time-hhmm-input:focus {
+    border-color: #005c9b !important;
+    color: #0f172a !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(0, 92, 155, 0.2) !important;
+    outline: none !important;
+}
+
+.time-preset-chips {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.time-chip-btn {
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #005c9b;
+    background: #eef4ff;
+    border: 1px solid #c1ddff;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+}
+
+.time-chip-btn:hover {
+    background: #005c9b;
+    color: #ffffff;
+    border-color: #005c9b;
+}
+
+.time-chip-btn.chip-now {
+    background: #f5a623;
+    color: #001d35;
+    border-color: #f5a623;
+    font-weight: 700;
+}
+
+.time-chip-btn.chip-now:hover {
+    background: #feae2c;
+    color: #001d35;
+}
+
+.time-format-hint {
+    font-size: 11px;
+    color: #64748b;
+    margin-left: 4px;
+    font-style: italic;
+}

@@ -1,0 +1,608 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load cache %}
+
+{% block title %}Representatives | MCSC{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* ── Coverflow wrapper ─────────────────────────────────────────────────── */
+    #cf-root {
+        position: relative;
+        width: 100%;
+        height: 370px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        perspective: 1400px;
+        overflow: hidden;
+        outline: none;
+        cursor: grab;
+    }
+
+    #cf-root:active {
+        cursor: grabbing;
+    }
+
+    #cf-stage {
+        position: relative;
+        width: 148px;
+        /* active card width — JS updates */
+        height: 196px;
+        transform-style: preserve-3d;
+    }
+
+    /* ── Individual card ──────────────────────────────────────────────────── */
+    .cf-card {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform-origin: center center;
+        transform-style: preserve-3d;
+        overflow: visible;
+        transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+            opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        pointer-events: none;
+    }
+
+    .cf-card.cf-visible {
+        pointer-events: auto;
+    }
+
+    .cf-card.cf-active {
+        cursor: default;
+        pointer-events: auto;
+    }
+
+    /* Avatar gradient ring */
+    .cf-ring {
+        border-radius: 50%;
+        background: linear-gradient(135deg, #005c9b 0%, #f5a623 100%);
+        padding: 3px;
+        box-shadow: 0 6px 20px rgba(0, 92, 155, 0.20);
+        transition: box-shadow 0.55s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+        flex-shrink: 0;
+    }
+
+    .cf-card.cf-active .cf-ring {
+        box-shadow: 0 14px 40px rgba(0, 92, 155, 0.32), 0 0 0 4px rgba(245, 166, 35, 0.18);
+    }
+
+    .cf-ring-inner {
+        border-radius: 50%;
+        background: #fff;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+    }
+
+    .cf-ring-inner img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .cf-initials {
+        font-family: 'Inter', sans-serif;
+        font-weight: 800;
+        color: #005c9b;
+        background: linear-gradient(135deg, #daeaff 0%, #f5f8ff 100%);
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        letter-spacing: -0.02em;
+    }
+
+    /* Name label */
+    .cf-name {
+        font-family: 'Inter', sans-serif;
+        font-weight: 700;
+        color: #001d35;
+        text-align: center;
+        line-height: 1.25;
+        transition: color 0.3s ease, font-size 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+        white-space: nowrap;
+        max-width: 160px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .cf-card.cf-active .cf-name {
+        color: #005c9b;
+    }
+
+    /* Position micro-label */
+    .cf-pos {
+        font-family: 'Inter', sans-serif;
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: #f5a623;
+        text-align: center;
+        white-space: nowrap;
+        max-width: 140px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        opacity: 0;
+        transform: translateY(4px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .cf-card.cf-active .cf-pos {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Chairman crown badge */
+    .cf-crown {
+        position: absolute;
+        top: -6px;
+        right: -4px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #f5a623, #ffca57);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 8px rgba(245, 166, 35, 0.4);
+        font-size: 12px;
+    }
+
+    /* Nav arrows */
+    .cf-arrow {
+        position: absolute;
+        top: 38%;
+        transform: translateY(-50%);
+        z-index: 30;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(0, 92, 155, 0.14);
+        box-shadow: 0 3px 12px rgba(0, 92, 155, 0.10);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #005c9b;
+        transition: all 0.2s ease;
+    }
+
+    .cf-arrow:hover {
+        background: #005c9b;
+        color: #fff;
+        box-shadow: 0 5px 18px rgba(0, 92, 155, 0.28);
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    #cf-prev {
+        left: 8px;
+    }
+
+    #cf-next {
+        right: 8px;
+    }
+
+    /* Dots */
+    #cf-dots {
+        display: flex;
+        gap: 7px;
+        justify-content: center;
+        margin-top: 14px;
+        flex-wrap: wrap;
+        padding: 0 40px;
+    }
+
+    .cf-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #c1c7d2;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+    }
+
+    .cf-dot.on {
+        background: #005c9b;
+        width: 22px;
+        border-radius: 4px;
+    }
+
+    /* Executive spotlight cards */
+    .exec-card {
+        background: linear-gradient(158deg, #f8f9ff 0%, #e4efff 100%);
+        border: 1px solid rgba(0, 92, 155, 0.12);
+        border-radius: 20px;
+        padding: 32px 28px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    .exec-card::before {
+        content: '';
+        position: absolute;
+        inset-x: 0;
+        top: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #005c9b, #f5a623);
+    }
+
+    /* Section divider */
+    .reps-section-label {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+    }
+
+    .reps-section-label::before,
+    .reps-section-label::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #c1c7d2);
+    }
+
+    .reps-section-label::after {
+        background: linear-gradient(90deg, #c1c7d2, transparent);
+    }
+
+    @media (max-width: 640px) {
+        #cf-root {
+            height: 310px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-16 flex flex-col gap-16">
+
+    <!-- Page header -->
+    <section class="text-center flex flex-col items-center gap-3 reveal -mb-8">
+        <span class="text-secondary font-label-lg text-xs sm:text-sm font-extrabold tracking-wider">Academic Year {{ academic_year }}</span>
+        <h1 class="font-display-lg text-3xl md:text-4xl font-bold text-primary">Our Representatives</h1>
+        <p class="font-body-md text-on-surface-variant max-w-xl">
+            Meet the student leaders of Marian College — from executive office bearers to class representatives.
+        </p>
+    </section>
+
+    <!-- ── Unified 3D Coverflow ─────────────────────────────────────────── -->
+    <section class="flex flex-col reveal" style="transition-delay:80ms;">
+        <!-- Coverflow viewport -->
+        <div id="cf-root" tabindex="0" role="group" aria-roledescription="carousel">
+            <div id="cf-stage"></div>
+            <button id="cf-prev" class="cf-arrow" aria-label="Previous">
+                <span class="material-symbols-outlined" style="font-size:20px;">chevron_left</span>
+            </button>
+            <button id="cf-next" class="cf-arrow" aria-label="Next">
+                <span class="material-symbols-outlined" style="font-size:20px;">chevron_right</span>
+            </button>
+        </div>
+
+        <!-- Dot indicators -->
+        <div id="cf-dots">
+            {% for rep in all_representatives %}
+            <div class="cf-dot {% if forloop.first %}on{% endif %}" data-i="{{ forloop.counter0 }}"></div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- ── Executive Spotlight ─────────────────────────────────────────── -->
+    {% if executives %}
+    <section class="flex flex-col gap-6 reveal" style="transition-delay:120ms;">
+        <div class="reps-section-label">
+            <span
+                class="text-xs font-bold uppercase tracking-widest text-on-surface-variant font-label-lg shrink-0">Executive
+                Leadership</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 max-w-2xl mx-auto w-full gap-6">
+            {% for rep in executives %}
+            <div class="exec-card hover-lift group">
+                <!-- Avatar -->
+                <div class="relative">
+                    <div class="w-28 h-28 rounded-full bg-gradient-to-tr from-primary to-secondary p-[3px] shadow-lg">
+                        <div
+                            class="w-full h-full rounded-full bg-white overflow-hidden flex items-center justify-center">
+                            {% if rep.photo_url %}
+                            <img class="w-full h-full object-cover" src="{{ rep.photo_url }}" alt="{{ rep.name }}" loading="eager" decoding="async">
+                            {% else %}
+                            <div
+                                class="w-full h-full bg-gradient-to-tr from-[#daeaff] to-[#f5f8ff] flex items-center justify-center">
+                                <span class="text-primary font-bold text-2xl">{{ rep.name|slice:":2"|upper }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if rep.position == 'Chairman' %}
+                    <span
+                        class="absolute -top-1 -right-1 w-7 h-7 rounded-full bg-secondary text-on-secondary flex items-center justify-center shadow-md border-2 border-white text-xs">
+                        <span class="material-symbols-outlined text-[14px]"
+                            style="font-variation-settings:'FILL' 1">military_tech</span>
+                    </span>
+                    {% endif %}
+                </div>
+                <!-- Role badge -->
+                <span
+                    class="bg-secondary/10 text-secondary text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-wider border border-secondary/20">
+                    {{ rep.position }}
+                </span>
+                <!-- Name -->
+                <h3
+                    class="font-display-lg text-xl font-bold text-on-background group-hover:text-primary transition-colors leading-snug">
+                    {{ rep.name }}
+                </h3>
+                <!-- Email button -->
+                <a href="mailto:{{ rep.name|lower|cut:' ' }}@mariancollege.org"
+                    class="flex items-center gap-2 text-primary border border-primary/25 bg-primary/5 text-xs font-semibold px-4 py-2 rounded-full hover:bg-primary hover:text-white transition-all duration-200">
+                    <span class="material-symbols-outlined text-[15px]">mail</span>
+                    Contact
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- ── Council grid (all non-executive reps) ───────────────────────── -->
+    {% if other_representatives %}
+    <section class="flex flex-col gap-6 reveal" style="transition-delay:160ms;">
+        <div class="reps-section-label">
+            <span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant font-label-lg shrink-0">
+                Council Members
+            </span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {% for rep in other_representatives %}
+            <div
+                class="flex flex-col items-center gap-2.5 p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 hover-lift transition-all duration-300 group text-center">
+                <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-primary/20 to-secondary/20 p-0.5 shadow-sm">
+                    <div class="w-full h-full rounded-full bg-white overflow-hidden flex items-center justify-center">
+                        {% if rep.photo_url %}
+                        <img class="w-full h-full object-cover" src="{{ rep.photo_url }}" alt="{{ rep.name }}" loading="lazy" decoding="async">
+                        {% else %}
+                        <div
+                            class="w-full h-full bg-gradient-to-tr from-[#daeaff] to-[#f5f8ff] flex items-center justify-center">
+                            <span class="text-primary font-bold text-sm">{{ rep.name|slice:":2"|upper }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div>
+                    <p
+                        class="font-bold text-on-surface text-sm leading-tight group-hover:text-primary transition-colors">
+                        {{ rep.name }}</p>
+                    <p class="text-[10px] font-semibold text-secondary uppercase tracking-wider mt-0.5">{{ rep.position }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+</main>
+{% endblock %}
+
+{% block extra_js %}
+{% if all_representatives %}
+<script>
+    (function () {
+        'use strict';
+
+        /* ── Slide data (executives first, then rest) ────────────────────────── */
+        var slides = [
+            {% for rep in all_representatives %}
+    {
+        name: "{{ rep.name|escapejs }}",
+            position: "{{ rep.position|escapejs }}",
+                initials: "{{ rep.name|slice:':2'|upper|escapejs }}",
+                    photo: {% if rep.photo_url %} "{{ rep.photo_url|escapejs }}"{% else %} null{% endif %},
+        isChairman: {% if rep.position == "Chairman" %} true{% else %} false{% endif %}
+    } {% if not forloop.last %}, {% endif %}
+    {% endfor %}
+];
+
+    var n = slides.length;
+    if (n === 0) return;
+
+    /* ── Layout ──────────────────────────────────────────────────────────── */
+    var AV_ACTIVE = 136;   // active avatar px (bigger)
+    var AV_SIDE = 96;    // side avatar px (bigger)
+    var CARD_W = 148;
+    var CARD_H = 220;
+    var SCALE_STEP = 0.13;
+    var MAX_VIS = 2;
+    var GAP = 200;   // px between card centres (wider for bigger avatars)
+    var TILT = 10;
+    var DEPTH = 80;
+    var DIM_SIDE = 0.22;
+    var AUTOPLAY_MS = 3000;
+
+    var active = 0;
+    var locked = false;
+    var timer = null;
+
+    var root = document.getElementById('cf-root');
+    var stage = document.getElementById('cf-stage');
+    var dots = document.querySelectorAll('.cf-dot');
+
+    if (!root || !stage) return;
+
+    /* ── Build cards ─────────────────────────────────────────────────────── */
+    var cards = slides.map(function (s, i) {
+        var card = document.createElement('div');
+        card.className = 'cf-card';
+        card.setAttribute('aria-label', s.name);
+
+        /* Avatar ring */
+        var ring = document.createElement('div');
+        ring.className = 'cf-ring';
+        ring.style.cssText = 'width:' + AV_SIDE + 'px;height:' + AV_SIDE + 'px;position:relative;';
+
+        var inner = document.createElement('div');
+        inner.className = 'cf-ring-inner';
+        inner.style.cssText = 'width:100%;height:100%;';
+
+        if (s.photo) {
+            var img = document.createElement('img');
+            img.src = s.photo;
+            img.alt = s.name;
+            img.draggable = false;
+            inner.appendChild(img);
+        } else {
+            var init = document.createElement('div');
+            init.className = 'cf-initials';
+            init.style.fontSize = '1.4rem';
+            init.textContent = s.initials;
+            inner.appendChild(init);
+        }
+        ring.appendChild(inner);
+
+        /* Chairman crown */
+        if (s.isChairman) {
+            var crown = document.createElement('div');
+            crown.className = 'cf-crown';
+            crown.innerHTML = '<span class="material-symbols-outlined" style="font-size:13px;font-variation-settings:\'FILL\' 1,\'wght\' 400,\'GRAD\' 0,\'opsz\' 24;">military_tech</span>';
+            crown.style.color = '#fff';
+            ring.appendChild(crown);
+        }
+
+        /* Name */
+        var name = document.createElement('div');
+        name.className = 'cf-name';
+        name.style.fontSize = '12px';
+        name.textContent = s.name;
+
+        /* Position micro-label */
+        var pos = document.createElement('div');
+        pos.className = 'cf-pos';
+        pos.textContent = s.position;
+
+        card.appendChild(ring);
+        card.appendChild(name);
+        card.appendChild(pos);
+
+        card.addEventListener('click', function () {
+            if (!locked && i !== active) go(i);
+        });
+
+        stage.appendChild(card);
+        return { el: card, ring: ring, inner: inner, name: name };
+    });
+
+    /* ── Render positions ────────────────────────────────────────────────── */
+    function render() {
+        cards.forEach(function (c, i) {
+            var rel = i - active;
+            /* Shortest wrap */
+            if (rel > n / 2) rel -= n;
+            if (rel < -n / 2) rel += n;
+
+            var ax = Math.abs(rel);
+            var vis = ax <= MAX_VIS;
+            var act = rel === 0;
+            var sc = Math.max(0.5, 1 - ax * SCALE_STEP);
+            var tx = rel * GAP;
+            var tz = -ax * DEPTH;
+            var ry = -rel * TILT;
+
+            c.el.style.opacity = vis ? String(1 - (ax > 0 ? ax * DIM_SIDE : 0)) : '0';
+            c.el.style.pointerEvents = vis ? 'auto' : 'none';
+            c.el.classList.toggle('cf-visible', vis);
+            c.el.classList.toggle('cf-active', act);
+
+            c.el.style.transform =
+                'translate(-50%,-50%)' +
+                'translateX(' + tx + 'px)' +
+                'translateZ(' + tz + 'px)' +
+                'rotateY(' + ry + 'deg)' +
+                'scale(' + sc + ')';
+
+            /* Avatar size morphs between active and side sizes */
+            var av = act ? AV_ACTIVE : AV_SIDE;
+            c.ring.style.width = av + 'px';
+            c.ring.style.height = av + 'px';
+            /* Name font size */
+            c.name.style.fontSize = act ? '14px' : '11px';
+        });
+
+        /* Dots */
+        dots.forEach(function (d, i) {
+            d.classList.toggle('on', i === active);
+        });
+    }
+
+    /* ── Navigation ──────────────────────────────────────────────────────── */
+    function go(idx) {
+        if (locked) return;
+        locked = true;
+        active = ((idx % n) + n) % n;
+        render();
+        setTimeout(function () { locked = false; }, 600);
+    }
+
+    function step(dir) { go(active + dir); }
+
+    document.getElementById('cf-prev').addEventListener('click', function () { step(-1); });
+    document.getElementById('cf-next').addEventListener('click', function () { step(1); });
+
+    dots.forEach(function (d) {
+        d.addEventListener('click', function () {
+            go(parseInt(d.getAttribute('data-i'), 10));
+        });
+    });
+
+    root.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+    });
+
+    /* ── Auto-scroll — never pauses ─────────────────────────────────────── */
+    function startAuto() {
+        clearInterval(timer);
+        timer = setInterval(function () { step(1); }, AUTOPLAY_MS);
+    }
+
+    /* ── Swipe support ───────────────────────────────────────────────────── */
+    var swipeX = null;
+    root.addEventListener('touchstart', function (e) {
+        swipeX = e.touches[0].clientX;
+    }, { passive: true });
+    root.addEventListener('touchend', function (e) {
+        if (swipeX === null) return;
+        var dx = e.changedTouches[0].clientX - swipeX;
+        if (Math.abs(dx) > 40) step(dx < 0 ? 1 : -1);
+        swipeX = null;
+    }, { passive: true });
+
+    /* ── Init ────────────────────────────────────────────────────────────── */
+    render();
+    startAuto();
+
+}) ();
+</script>
+{% endif %}
+{% endblock %}

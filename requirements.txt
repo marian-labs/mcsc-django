@@ -1,0 +1,12 @@
+Django>=4.2,<5.0
+psycopg2-binary
+dj-database-url
+python-decouple
+social-auth-app-django
+django-storages
+boto3
+pillow
+django-crispy-forms
+python-dotenv
+gunicorn>=21.2.0
+whitenoise[brotli]>=6.6.0

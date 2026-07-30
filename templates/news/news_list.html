@@ -1,0 +1,119 @@
+{% extends "core/base.html" %}
+
+{% block title %}Campus Dispatch | MCSC{% endblock %}
+
+{% block content %}
+<main class="flex-grow pt-8 pb-stack-lg px-margin-desktop max-md:px-margin-mobile w-full max-w-container-max mx-auto">
+    <!-- Page Header -->
+    <header class="mb-stack-lg text-center md:text-left flex flex-col justify-between gap-stack-md">
+        <div>
+            <h1 class="font-display-lg text-display-lg text-primary mb-unit hidden md:block">Campus News</h1>
+            <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-unit md:hidden">Campus News</h1>
+            <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+                Stay informed with official announcements, council meeting summaries, and campus activities from MCSC.
+            </p>
+        </div>
+    </header>
+
+    <!-- News Grid -->
+    <section id="news-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+        {% for post in news_posts %}
+        <article class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden hover-lift flex flex-col h-full relative">
+            {% if forloop.first %}
+            <div class="absolute top-4 left-4 z-10 bg-primary-container text-on-primary-container px-3 py-1 rounded-full font-label-sm text-label-sm font-bold flex items-center gap-1 shadow-sm">
+                Featured
+            </div>
+            {% endif %}
+            <div class="w-full aspect-[16/9] bg-surface-variant relative overflow-hidden flex items-center justify-center">
+                {% if post.attachments.first %}
+                    <img class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" src="{{ post.attachments.first.file.url }}" alt="{{ post.title }}">
+                {% else %}
+                    <div class="w-full h-full bg-gradient-to-tr from-primary/10 to-secondary/10 flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined text-4xl">newspaper</span>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="p-stack-md flex flex-col flex-grow">
+                <div class="flex items-center gap-2 text-primary font-label-sm text-label-sm mb-2">
+                    <span class="material-symbols-outlined text-[16px]">calendar_month</span> {{ post.published_at|date:"M d, Y" }}
+                </div>
+                <h3 class="font-headline-md text-headline-md text-on-surface mb-2">
+                    <a href="{% url 'news_detail' post.slug %}" class="hover:text-primary transition-colors">{{ post.title }}</a>
+                </h3>
+                <p class="font-body-md text-body-md text-on-surface-variant line-clamp-3 mb-stack-md flex-grow">{{ post.content }}</p>
+                
+                <a href="{% url 'news_detail' post.slug %}" class="w-full py-2.5 border border-primary text-primary rounded-full font-label-lg text-label-lg hover:bg-primary/5 transition-colors block text-center mt-auto">
+                    Read Article
+                </a>
+            </div>
+        </article>
+        {% empty %}
+            <p class="text-on-surface-variant col-span-full text-center py-8">No articles published in the dispatch yet.</p>
+        {% endfor %}
+    </section>
+
+    <!-- Load More Button Wrapper -->
+    {% if total_count > 9 %}
+    <div class="flex justify-center mt-12" id="load-more-container">
+        <button id="load-more-btn" data-offset="9" class="bg-secondary text-on-secondary hover:bg-secondary-container transition-all hover-lift font-bold px-8 py-3.5 rounded-full shadow-md flex items-center gap-2">
+            <span class="material-symbols-outlined text-[20px]">expand_more</span>
+            Show More
+        </button>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        const newsGrid = document.getElementById('news-grid');
+        const container = document.getElementById('load-more-container');
+        
+        if (loadMoreBtn && newsGrid) {
+            loadMoreBtn.addEventListener('click', () => {
+                const offset = parseInt(loadMoreBtn.getAttribute('data-offset'));
+                
+                // Add loading indicator state
+                loadMoreBtn.disabled = true;
+                loadMoreBtn.innerHTML = `
+                    <span class="material-symbols-outlined text-[20px] animate-spin">sync</span>
+                    Loading...
+                `;
+                
+                fetch(`/news/load-more/?offset=${offset}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Append new items
+                        newsGrid.insertAdjacentHTML('beforeend', data.html);
+                        
+                        // Update offset
+                        const newOffset = offset + 9;
+                        loadMoreBtn.setAttribute('data-offset', newOffset);
+                        
+                        // Reset button state
+                        loadMoreBtn.disabled = false;
+                        loadMoreBtn.innerHTML = `
+                            <span class="material-symbols-outlined text-[20px]">expand_more</span>
+                            Show More
+                        `;
+                        
+                        // Hide button if no more items are available
+                        if (!data.has_more) {
+                            container.remove();
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Failed to load more news:', err);
+                        loadMoreBtn.disabled = false;
+                        loadMoreBtn.innerHTML = `
+                            <span class="material-symbols-outlined text-[20px]">sync_problem</span>
+                            Failed. Try again
+                        `;
+                    });
+            });
+        }
+    });
+</script>
+{% endblock %}

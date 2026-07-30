@@ -1,0 +1,3 @@
+# Ignore HTML files so Prettier doesn't break multiline Django template tags {{ ... }} and {% ... %}
+*.html
+templates/**/*.html

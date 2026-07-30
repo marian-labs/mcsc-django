@@ -1,0 +1,88 @@
+{% extends "core/base.html" %}
+
+{% block title %}{{ post.title }} | Campus Dispatch{% endblock %}
+
+{% block content %}
+<main class="max-w-container-max mx-auto px-4 md:px-8 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+        
+        <!-- Post Content Column -->
+        <article class="lg:col-span-8 bg-surface-container-lowest rounded-xl p-6 md:p-8 shadow-sm border border-outline-variant/30">
+            <header class="mb-6 pb-6 border-b border-outline-variant/30">
+                <span class="inline-block bg-primary-container text-on-primary-container px-3 py-1 rounded-full font-label-sm text-label-sm mb-4">Announcement</span>
+                <h1 class="font-display-lg text-3xl md:text-4xl text-primary mb-4">{{ post.title }}</h1>
+                <div class="flex items-center gap-4 text-sm text-on-surface-variant">
+                    <span>By <strong>{{ post.author.username }}</strong></span>
+                    <span>•</span>
+                    <time>{{ post.published_at|date:"F d, Y, h:i A" }}</time>
+                </div>
+            </header>
+            
+            <!-- Featured Images / Cover -->
+            {% if post.attachments.all %}
+                <div class="mb-8 space-y-4">
+                    {% for attachment in post.attachments.all %}
+                        {% if attachment.file_type == 'image' %}
+                            <div class="rounded-xl overflow-hidden shadow-sm">
+                                <img src="{{ attachment.file.url }}" alt="Attachment" class="w-full h-auto object-cover max-h-[480px]">
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <!-- Article Body -->
+            <div class="prose max-w-none font-body-md text-on-surface leading-relaxed whitespace-pre-line">
+                {{ post.content }}
+            </div>
+            
+            <!-- Document Attachments -->
+            {% if post.attachments.all %}
+                <div class="mt-8 pt-6 border-t border-outline-variant/30">
+                    <h3 class="font-bold text-on-surface mb-3 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[20px]">attachment</span>
+                        Attachments
+                    </h3>
+                    <ul class="space-y-2">
+                        {% for attachment in post.attachments.all %}
+                            {% if attachment.file_type == 'document' %}
+                            <li class="flex items-center justify-between p-3 bg-surface rounded-lg hover:bg-surface-container transition-colors">
+                                <span class="text-sm font-medium truncate max-w-xs md:max-w-md">{{ attachment.file.name|urlencode }}</span>
+                                <a href="{{ attachment.file.url }}" download class="bg-primary text-on-primary px-4 py-1.5 rounded-full font-nav-button text-xs uppercase tracking-wider hover-lift">
+                                    Download
+                                </a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            
+            <div class="mt-8 pt-6 border-t border-outline-variant/30">
+                <a href="{% url 'news_list' %}" class="inline-flex items-center gap-1 text-primary hover:text-secondary font-medium">
+                    <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                    Back to Dispatch
+                </a>
+            </div>
+        </article>
+        
+        <!-- Sidebar: Recent News -->
+        <aside class="lg:col-span-4 space-y-stack-md">
+            <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 p-5">
+                <h2 class="font-headline-lg-mobile text-lg text-primary border-b border-outline-variant/30 pb-2 mb-4">Recent Updates</h2>
+                <div class="space-y-4">
+                    {% for item in recent_news %}
+                    <div class="group cursor-pointer" onclick="window.location='{% url 'news_detail' item.slug %}'">
+                        <h4 class="font-semibold text-sm text-on-surface group-hover:text-primary transition-colors line-clamp-2">{{ item.title }}</h4>
+                        <time class="text-xs text-outline block mt-1">{{ item.published_at|date:"M d, Y" }}</time>
+                    </div>
+                    {% empty %}
+                        <p class="text-xs text-on-surface-variant">No other updates posted.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </aside>
+        
+    </div>
+</main>
+{% endblock %}

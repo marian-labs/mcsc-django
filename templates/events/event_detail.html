@@ -1,0 +1,71 @@
+{% extends "core/base.html" %}
+
+{% block title %}{{ event.title }} | Events Calendar{% endblock %}
+
+{% block content %}
+<main class="max-w-3xl mx-auto px-4 md:px-8 py-8">
+    <article class="bg-surface-container-lowest rounded-xl p-6 md:p-8 shadow-sm border border-outline-variant/30">
+        
+        <header class="mb-6 pb-6 border-b border-outline-variant/30 text-center">
+            <span class="inline-block {% if event.is_upcoming %}bg-secondary-container text-on-secondary-container{% else %}bg-surface-variant text-primary{% endif %} px-3 py-1 rounded-full font-label-sm text-label-sm mb-4 uppercase tracking-wider font-bold">
+                {% if event.is_upcoming %}Upcoming Event{% else %}Past Event{% endif %}
+            </span>
+            <h1 class="font-display-lg text-3xl md:text-4xl text-primary mb-4">{{ event.title }}</h1>
+        </header>
+        
+        <!-- Poster Image -->
+        {% if event.poster_image %}
+            <div class="mb-8 rounded-xl overflow-hidden shadow-sm max-h-[480px] flex justify-center bg-black/5">
+                <img src="{{ event.poster_image.url }}" alt="{{ event.title }}" class="object-contain max-h-[480px]">
+            </div>
+        {% endif %}
+        
+        <!-- Info boxes -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div class="bg-surface rounded-xl p-4 flex items-center gap-4 border border-outline-variant/25">
+                <div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center text-primary shrink-0">
+                    <span class="material-symbols-outlined text-[24px]">calendar_month</span>
+                </div>
+                <div>
+                    <h4 class="text-xs text-outline uppercase tracking-wider font-bold">Date & Time</h4>
+                    <p class="font-semibold text-on-surface">{{ event.event_date|date:"F d, Y, h:i A" }}</p>
+                </div>
+            </div>
+            
+            <div class="bg-surface rounded-xl p-4 flex items-center gap-4 border border-outline-variant/25">
+                <div class="w-12 h-12 rounded-full bg-secondary-fixed flex items-center justify-center text-secondary shrink-0">
+                    <span class="material-symbols-outlined text-[24px]">location_on</span>
+                </div>
+                <div>
+                    <h4 class="text-xs text-outline uppercase tracking-wider font-bold">Venue</h4>
+                    <p class="font-semibold text-on-surface">{{ event.venue }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Event Body -->
+        <div class="prose max-w-none font-body-md text-on-surface leading-relaxed whitespace-pre-line mb-8">
+            {{ event.description }}
+        </div>
+        
+        <!-- Register Action -->
+        {% if event.is_upcoming and event.registration_link %}
+            <div class="bg-surface-container rounded-xl p-6 text-center border border-outline-variant/30">
+                <h3 class="font-bold text-on-surface mb-2">Reserve Your Seat</h3>
+                <p class="text-sm text-on-surface-variant mb-4">Registration is open for this event. Click below to register via the official form.</p>
+                <a href="{{ event.registration_link }}" target="_blank" class="inline-block bg-secondary text-on-secondary px-8 py-3 rounded-full font-nav-button uppercase tracking-wider hover-lift shadow-md font-bold">
+                    Register Now
+                </a>
+            </div>
+        {% endif %}
+        
+        <div class="mt-8 pt-6 border-t border-outline-variant/30">
+            <a href="{% url 'events_list' %}" class="inline-flex items-center gap-1 text-primary hover:text-secondary font-medium">
+                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                Back to Calendar
+            </a>
+        </div>
+        
+    </article>
+</main>
+{% endblock %}

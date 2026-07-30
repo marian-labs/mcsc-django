@@ -1,0 +1,104 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Login | MCSC{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block content %}
+<div class="relative min-h-[calc(100vh-112px)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <!-- MCSC Logo Related Abstract Background (Light Mode) -->
+    <div class="absolute inset-0 bg-gradient-to-br from-[#f8f9ff] via-[#eef4ff] to-[#f0f6ff] z-0">
+        <!-- Soft Curved Wave Accent 1 (Gold/Orange) -->
+        <div class="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full bg-[#f5a623]/8 opacity-80 blur-3xl"></div>
+        <!-- Soft Curved Wave Accent 2 (Blue) -->
+        <div class="absolute -bottom-40 -left-20 w-[700px] h-[700px] rounded-full bg-[#005c9b]/8 opacity-80 blur-3xl"></div>
+        
+        <!-- Large Abstract Curved Shapes from Image Layout (Light Styled) -->
+        <div class="absolute -top-20 -right-20 w-[450px] h-[450px] rounded-full bg-[#f5a623]/5 border border-[#f5a623]/10"></div>
+        <div class="absolute -top-10 -right-10 w-[350px] h-[350px] rounded-full bg-[#005c9b]/5 border border-[#005c9b]/10"></div>
+
+        <!-- Grid Overlay (matches the home page grid) -->
+        <div class="absolute inset-0 bg-pattern opacity-[0.25]"></div>
+    </div>
+
+    <!-- Login Card (Layout matching the uploaded image) -->
+    <div class="relative z-10 max-w-4xl w-full bg-surface/95 border border-outline-variant/30 shadow-2xl rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[500px] hover:shadow-primary/5 transition-shadow duration-500">
+        
+        <!-- Left Column (Official MCSC Crest & Council Branding) -->
+        <div class="relative md:col-span-5 bg-gradient-to-br from-primary/10 via-primary-fixed/20 to-secondary/10 flex flex-col items-center justify-center p-8 overflow-hidden min-h-[320px] md:min-h-full">
+            <!-- Curved Divider -->
+            <div class="absolute -right-24 top-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-surface rounded-full hidden md:block z-0"></div>
+            
+            <!-- Logo Container with Glow & Decorative Rings -->
+            <div class="relative z-10 flex flex-col items-center justify-center">
+                <div class="relative w-40 h-40 sm:w-48 sm:h-48 flex items-center justify-center group mb-4">
+                    <!-- Glow Aura -->
+                    <div class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-secondary/20 rounded-full blur-2xl transform scale-110 animate-pulse"></div>
+                    <!-- Spinning Dashed Ring -->
+                    <div class="absolute w-[110%] h-[110%] border border-dashed border-primary/30 rounded-full animate-[spin_90s_linear_infinite]"></div>
+                    <!-- Inner Ring -->
+                    <div class="absolute w-[96%] h-[96%] border border-primary/15 rounded-full"></div>
+                    <!-- White Emblem Card -->
+                    <div class="bg-white/95 backdrop-blur-md p-5 sm:p-6 rounded-full border border-white/80 shadow-xl shadow-primary/15 z-10 hover:scale-105 transition-transform duration-500">
+                        <img alt="MCSC Logo" class="w-28 h-28 sm:w-32 sm:h-32 object-contain" src="{% static 'images/mcsc_logo-Photoroom.webp' %}?v=1.0" />
+                    </div>
+                </div>
+                
+                <!-- Branding Titles -->
+                <div class="text-center relative z-10">
+                    <h2 class="font-display-lg text-lg sm:text-xl font-extrabold text-primary tracking-tight">Marian College</h2>
+                    <p class="font-label-lg text-xs uppercase tracking-widest text-secondary font-bold mt-0.5">Students Council</p>
+                    <div class="w-12 h-1 bg-gradient-to-r from-primary to-secondary rounded-full mx-auto mt-3 opacity-80"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Column (Google Sign-In & Test User Options) -->
+        <div class="md:col-span-7 flex flex-col justify-center p-8 md:p-14 text-center md:text-left relative z-10">
+            <!-- Header Text -->
+            <span class="text-xs font-bold text-secondary uppercase tracking-widest mb-1.5">Welcome Back</span>
+            <h1 class="font-display-lg text-primary text-3xl font-bold tracking-tight mb-4 uppercase">Login Page</h1>
+            
+            <!-- Description text -->
+            <p class="text-on-surface-variant font-body-md leading-relaxed mb-8">
+                Welcome to the official portal of the Marian College Students Council (MCSC). Access academic resources, submit grievances, and coordinate directly with student leaders.
+            </p>
+            
+            <!-- Google Login Button -->
+            <div class="space-y-4">
+                <a href="{% url 'social:begin' 'google-oauth2' %}{% if next %}?next={{ next }}{% endif %}" class="w-full flex items-center justify-center gap-3.5 bg-surface-container-lowest hover:bg-surface border border-outline-variant/60 hover:border-primary/50 text-on-surface hover:text-primary font-semibold py-3.5 px-6 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 pointer-events-auto">
+                    <!-- SVG Google Icon -->
+                    <svg class="w-5.5 h-5.5" viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+                        <g transform="matrix(1, 0, 0, 1, 0, 0)">
+                            <path d="M21.35,11.1H12v2.7h5.38c-0.24,1.28 -0.96,2.37 -2.04,3.1v2.57h3.3c1.93,-1.78 3.04,-4.4 3.04,-7.47c0,-0.3 -0.03,-0.6 -0.08,-0.9Z" fill="#4285F4" />
+                            <path d="M12,20.7c2.43,0 4.47,-0.8 5.96,-2.2l-3.3,-2.57c-0.9,0.6 -2.07,0.97 -3.36,0.97c-2.34,0 -4.33,-1.58 -5.04,-3.7H2.83v2.66c1.5,2.98 4.6,4.84 8.07,4.84Z" fill="#34A853" />
+                            <path d="M6.96,13.2a5.2,5.2,0,0,1,0,-2.4V8.14H2.83a8.96,8.96,0,0,0,0,7.72l4.13,-2.66Z" fill="#FBBC05" />
+                            <path d="M12,7.3c1.3,0 2.48,0.45 3.4,1.33l2.55,-2.55C16.46,4.78 14.42,4 12,4C8.53,4 5.43,5.86 3.93,8.84l4.13,2.66c0.7,-2.12 2.7,-3.7 5.04,-3.7Z" fill="#EA4335" />
+                        </g>
+                    </svg>
+                    <span class="font-body-md font-bold">Continue with Google</span>
+                </a>
+                <p class="text-xs text-outline text-center md:text-left mt-2">
+                    Authorized access only. Sign in using your official <strong class="text-primary font-semibold">@mariancollege.org</strong> student email.
+                </p>
+            </div>
+
+            <!-- Quick Testing Login option -->
+            {% if debug %}
+            <div class="mt-8 pt-6 border-t border-outline-variant/40 flex flex-col items-center md:items-start gap-3">
+                <span class="text-xs font-bold text-outline uppercase tracking-wider">Demo Access</span>
+                <a href="{% url 'demo_login' %}" class="w-full flex items-center justify-center gap-2 bg-secondary/10 hover:bg-secondary text-secondary hover:text-on-secondary border border-secondary/30 hover:border-secondary font-bold py-3.5 px-6 rounded-2xl shadow-sm hover:shadow transition-all duration-300 hover:-translate-y-0.5">
+                    <span class="material-symbols-outlined text-[20px]">assignment_ind</span>
+                    <span>Continue as Demo Student</span>
+                </a>
+                <p class="text-[11px] text-outline text-center md:text-left">
+                    One-tap access as a test student — no credentials required. Only available in development mode.
+                </p>
+            </div>
+            {% endif %}
+        </div>
+        
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,282 @@
+{% extends "core/base.html" %}
+
+{% block title %}Grievance Desk | MCSC{% endblock %}
+
+{% block content %}
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-6 sm:pt-10 pb-16 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto w-full relative">
+    
+    <!-- Page Header & Action Bar -->
+    <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-outline-variant/30 pb-6">
+        <div>
+            <h1 class="font-display-lg text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary flex items-center gap-3">
+                <span class="material-symbols-outlined text-secondary text-3xl sm:text-4xl">gavel</span>
+                Grievance Desk
+            </h1>
+            <p class="font-body-md text-sm sm:text-base text-on-surface-variant mt-1">
+                Raise your concerns directly to the Students Council for swift resolution and tracking.
+            </p>
+        </div>
+
+        <!-- "My Grievances" Action Button with Notification Dot -->
+        <div class="flex items-center gap-3 shrink-0">
+            <button id="open-drawer-btn" onclick="toggleGrievancesDrawer()"
+                class="relative inline-flex items-center gap-2.5 bg-surface-container-lowest border-2 border-primary/20 hover:border-primary text-primary font-bold px-5 py-2.5 rounded-full hover:bg-primary hover:text-white transition-all duration-300 shadow-md group">
+                
+                <span class="material-symbols-outlined text-secondary group-hover:text-white transition-colors">folder_open</span>
+                <span class="font-display text-sm font-bold">My Grievances</span>
+                
+                <!-- Count Pill -->
+                <span class="bg-primary/10 group-hover:bg-white/20 text-primary group-hover:text-white text-xs font-extrabold px-2 py-0.5 rounded-full transition-colors">
+                    {{ total_submitted }}
+                </span>
+
+                {% if has_updates %}
+                <!-- Glowing Notification Badge -->
+                <span class="absolute -top-1.5 -right-1.5 flex h-4 w-4">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-4 w-4 bg-rose-500 border-2 border-white"></span>
+                </span>
+                {% endif %}
+            </button>
+        </div>
+    </div>
+
+    {% if latest_notification %}
+    <!-- Notification Alert Ribbon -->
+    <div class="mb-8 bg-gradient-to-r from-amber-500/15 via-primary/10 to-amber-500/15 border border-amber-500/30 text-on-surface p-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+        <div class="flex items-center gap-3">
+            <span class="w-9 h-9 rounded-full bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm animate-pulse">
+                <span class="material-symbols-outlined text-[20px]">notifications_active</span>
+            </span>
+            <div>
+                <p class="font-bold text-xs sm:text-sm text-primary">
+                    Update on Ticket #GRV-{{ latest_notification.grievance.created_at|date:"Y" }}-{{ latest_notification.grievance.pk }}
+                </p>
+                <p class="text-xs text-on-surface-variant mt-0.5">
+                    {% if latest_notification.type == 'reply_posted' %}
+                        New reply received from Council Admin.
+                    {% else %}
+                        Status changed to: <strong>{{ latest_notification.grievance.get_status_display }}</strong>.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        <button onclick="toggleGrievancesDrawer()" class="text-xs font-bold text-primary hover:text-secondary underline underline-offset-4 shrink-0 sm:ml-auto">
+            View Ticket →
+        </button>
+    </div>
+    {% endif %}
+
+    <!-- Grievance Submission Form Section (Full-Width Responsive Desktop Layout) -->
+    <div class="w-full max-w-5xl mx-auto">
+        <div class="bg-surface-container-lowest rounded-3xl border border-outline-variant/40 shadow-xl p-6 sm:p-10 relative overflow-hidden">
+            
+            <!-- Top Gradient Bar -->
+            <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-primary via-secondary to-amber-500"></div>
+
+            <div class="mb-8 flex items-center justify-between border-b border-outline-variant/20 pb-4">
+                <div>
+                    <h2 class="font-display-lg text-xl sm:text-2xl font-bold text-primary flex items-center gap-2">
+                        <span class="material-symbols-outlined text-secondary">edit_document</span>
+                        Submit a New Grievance
+                    </h2>
+                    <p class="text-xs sm:text-sm text-on-surface-variant mt-1">
+                        Fill out the details below. All submissions are confidentially processed by the executive team.
+                    </p>
+                </div>
+            </div>
+            
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+                    <!-- Category Selection (Left) -->
+                    <div class="md:col-span-1">
+                        <label class="block font-bold text-xs sm:text-sm text-on-surface mb-1.5" for="id_category">Issue Category</label>
+                        {{ form.category }}
+                        {% if form.category.errors %}
+                            <p class="text-xs text-rose-500 mt-1">{{ form.category.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Subject / Title (Right) -->
+                    <div class="md:col-span-1">
+                        <label class="block font-bold text-xs sm:text-sm text-on-surface mb-1.5" for="id_title">Subject / Title</label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                            <p class="text-xs text-rose-500 mt-1">{{ form.title.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Detailed Description (Full Width) -->
+                    <div class="md:col-span-2">
+                        <label class="block font-bold text-xs sm:text-sm text-on-surface mb-1.5" for="id_description">Detailed Description</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <p class="text-xs text-rose-500 mt-1">{{ form.description.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Supporting Evidence Upload (Full Width) -->
+                    <div class="md:col-span-2">
+                        <label class="block font-bold text-xs sm:text-sm text-on-surface mb-1.5">Supporting Evidence (Optional)</label>
+                        <label for="file-upload" class="mt-1 flex justify-center rounded-2xl border-2 border-dashed border-outline-variant/60 px-6 py-6 bg-surface-container-low hover:bg-surface-container-high transition-colors cursor-pointer group">
+                            <div class="text-center">
+                                <span class="material-symbols-outlined text-outline group-hover:text-primary text-3xl mb-1.5 transition-colors">cloud_upload</span>
+                                <div class="flex text-sm leading-6 text-on-surface-variant font-body-md justify-center">
+                                    <span class="relative cursor-pointer rounded-md bg-transparent font-bold text-primary group-hover:text-secondary transition-colors">
+                                        <span id="file-upload-label">Upload attachment</span>
+                                        {{ form.attachment }}
+                                    </span>
+                                    <p class="pl-1" id="drag-drop-text">or drag and drop</p>
+                                </div>
+                                <p class="text-xs text-outline mt-1">PNG, JPG, PDF up to 5MB</p>
+                            </div>
+                        </label>
+                        {% if form.attachment.errors %}
+                            <p class="text-xs text-rose-500 mt-1">{{ form.attachment.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Submit Button (Full Width) -->
+                    <div class="md:col-span-2 pt-2">
+                        <button class="w-full bg-gradient-to-r from-secondary to-amber-500 text-on-secondary font-bold text-sm sm:text-base py-3.5 rounded-full hover:scale-[1.005] active:scale-95 transition-all shadow-lg shadow-amber-500/20 flex justify-center items-center gap-2" type="submit">
+                            <span>Submit Grievance</span>
+                            <span class="material-symbols-outlined text-[20px]">send</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <p class="text-center text-xs text-on-surface-variant/70 mt-3">
+                    Submitting as <strong class="text-primary">{{ user.email }}</strong>
+                </p>
+            </form>
+        </div>
+    </div>
+</main>
+
+<!-- Slide-Over Drawer for "My Grievances" -->
+<div id="grievances-drawer-overlay" onclick="toggleGrievancesDrawer()"
+    class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[70] opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+<div id="grievances-drawer"
+    class="fixed top-0 right-0 h-full w-full max-w-lg bg-surface-container-lowest z-[80] shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col select-none">
+    
+    <!-- Drawer Header -->
+    <div class="p-5 sm:p-6 border-b border-outline-variant/30 flex items-center justify-between bg-surface-container-low">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined">folder_open</span>
+            </div>
+            <div>
+                <h3 class="font-display-lg text-lg font-bold text-primary">My Submitted Grievances</h3>
+                <p class="text-xs text-on-surface-variant">Total {{ total_submitted }} ticket{% if total_submitted != 1 %}s{% endif %}</p>
+            </div>
+        </div>
+
+        <button onclick="toggleGrievancesDrawer()" class="w-9 h-9 rounded-full bg-surface-container hover:bg-outline-variant/30 text-on-surface-variant flex items-center justify-center transition-colors">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+    </div>
+
+    <!-- Drawer Content (List of Tickets) -->
+    <div class="flex-grow overflow-y-auto p-4 sm:p-6 space-y-3.5">
+        {% for grv in my_grievances %}
+        <div onclick="window.location='{% url 'grievance_detail' grv.pk %}'"
+            class="bg-white border border-outline-variant/40 rounded-2xl p-4 sm:p-5 hover:border-primary/50 hover:shadow-md transition-all cursor-pointer flex flex-col gap-3 relative group">
+            
+            <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-mono font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">
+                        #GRV-{{ grv.created_at|date:"Y" }}-{{ grv.pk }}
+                    </span>
+                    <span class="text-[10px] font-bold uppercase tracking-wider bg-surface-container text-on-surface-variant px-2 py-0.5 rounded-full">
+                        {{ grv.get_category_display }}
+                    </span>
+                </div>
+
+                <!-- Status Badge -->
+                <span class="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full
+                    {% if grv.status == 'open' %}bg-sky-100 text-sky-700
+                    {% elif grv.status == 'in-review' %}bg-amber-100 text-amber-700
+                    {% else %}bg-emerald-100 text-emerald-700{% endif %}">
+                    <span class="w-1.5 h-1.5 rounded-full
+                        {% if grv.status == 'open' %}bg-sky-500
+                        {% elif grv.status == 'in-review' %}bg-amber-500
+                        {% else %}bg-emerald-500{% endif %}"></span>
+                    {{ grv.get_status_display }}
+                </span>
+            </div>
+
+            <div>
+                <h4 class="font-display-lg text-sm sm:text-base font-bold text-on-surface group-hover:text-primary transition-colors leading-snug {% if grv.status == 'resolved' %}line-through opacity-75{% endif %}">
+                    {{ grv.title }}
+                </h4>
+                <p class="text-xs text-on-surface-variant/80 mt-1 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[13px]">calendar_today</span>
+                    Submitted {{ grv.created_at|date:"d M Y" }}
+                </p>
+            </div>
+
+            <div class="flex items-center justify-between pt-2 border-t border-outline-variant/20 mt-1">
+                <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                    View Conversation <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                </span>
+                {% if latest_notification and latest_notification.grievance == grv %}
+                <span class="text-[10px] font-bold uppercase tracking-wider bg-rose-500 text-white px-2 py-0.5 rounded-full animate-pulse">
+                    New Update
+                </span>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-12 px-4 bg-surface-container-low rounded-2xl border border-dashed border-outline-variant">
+            <span class="material-symbols-outlined text-4xl text-outline mb-2">folder_off</span>
+            <p class="font-bold text-sm text-on-surface">No Grievances Found</p>
+            <p class="text-xs text-on-surface-variant mt-1">You haven't submitted any grievance tickets yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function toggleGrievancesDrawer() {
+        const overlay = document.getElementById('grievances-drawer-overlay');
+        const drawer = document.getElementById('grievances-drawer');
+        
+        if (overlay.classList.contains('pointer-events-none')) {
+            overlay.classList.remove('pointer-events-none', 'opacity-0');
+            overlay.classList.add('opacity-100');
+            drawer.classList.remove('translate-x-full');
+            drawer.classList.add('translate-x-0');
+            document.body.style.overflow = 'hidden';
+        } else {
+            overlay.classList.remove('opacity-100');
+            overlay.classList.add('opacity-0', 'pointer-events-none');
+            drawer.classList.remove('translate-x-0');
+            drawer.classList.add('translate-x-full');
+            document.body.style.overflow = '';
+        }
+    }
+
+    const fileInput = document.getElementById('file-upload');
+    const label = document.getElementById('file-upload-label');
+    const dragDropText = document.getElementById('drag-drop-text');
+    
+    if (fileInput && label) {
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                label.textContent = `Selected: ${e.target.files[0].name}`;
+                if (dragDropText) dragDropText.style.display = 'none';
+            } else {
+                label.textContent = 'Upload attachment';
+                if (dragDropText) dragDropText.style.display = 'inline';
+            }
+        });
+    }
+</script>
+{% endblock %}

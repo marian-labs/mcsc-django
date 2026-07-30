@@ -1,0 +1,21 @@
+{% extends "admin/base.html" %}
+{% load static i18n %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('MCSC Admin') }}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}" style="display: inline-flex; align-items: center; gap: 8px;">
+        <span style="color: #005c9b; font-weight: 800;">MC</span><span style="color: #f5a623; font-weight: 800;">SC</span>
+        <span style="color: inherit; font-size: 16px; font-weight: 600; margin-left: 4px;">Administration</span>
+    </a>
+</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/admin_clock.css' %}">
+<script src="{% static 'js/admin_clock.js' %}" defer></script>
+{% endblock %}

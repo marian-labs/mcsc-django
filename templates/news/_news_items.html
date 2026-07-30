@@ -1,0 +1,27 @@
+{% load static %}
+{% for post in news_posts %}
+<article class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden hover-lift flex flex-col h-full relative animate-fade-in">
+    <div class="w-full aspect-[16/9] bg-surface-variant relative overflow-hidden flex items-center justify-center">
+        {% if post.attachments.first %}
+            <img class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" src="{{ post.attachments.first.file.url }}" alt="{{ post.title }}">
+        {% else %}
+            <div class="w-full h-full bg-gradient-to-tr from-primary/10 to-secondary/10 flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined text-4xl">newspaper</span>
+            </div>
+        {% endif %}
+    </div>
+    <div class="p-stack-md flex flex-col flex-grow">
+        <div class="flex items-center gap-2 text-primary font-label-sm text-label-sm mb-2">
+            <span class="material-symbols-outlined text-[16px]">calendar_month</span> {{ post.published_at|date:"M d, Y" }}
+        </div>
+        <h3 class="font-headline-md text-headline-md text-on-surface mb-2">
+            <a href="{% url 'news_detail' post.slug %}" class="hover:text-primary transition-colors">{{ post.title }}</a>
+        </h3>
+        <p class="font-body-md text-body-md text-on-surface-variant line-clamp-3 mb-stack-md flex-grow">{{ post.content }}</p>
+        
+        <a href="{% url 'news_detail' post.slug %}" class="w-full py-2.5 border border-primary text-primary rounded-full font-label-lg text-label-lg hover:bg-primary/5 transition-colors block text-center mt-auto">
+            Read Article
+        </a>
+    </div>
+</article>
+{% endfor %}

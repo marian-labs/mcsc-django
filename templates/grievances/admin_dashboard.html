@@ -1,0 +1,344 @@
+{% extends "core/base.html" %}
+
+{% block title %}Admin Grievance Dashboard | MCSC{% endblock %}
+
+{% block content %}
+<style>
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .no-scrollbar {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+</style>
+<main class="w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 flex flex-col gap-8 animate-fade-slide-down">
+    
+    <!-- Metrics Dashboard Banner (Light Styled Matching Our Site) -->
+    <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 md:p-8 flex flex-col gap-6 shadow-md relative overflow-hidden">
+        <!-- Abstract soft wave accents (MCSC theme) -->
+        <div class="absolute -right-20 -top-20 w-80 h-80 bg-[#f5a623]/5 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-[#005c9b]/5 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <div class="flex justify-between items-center relative z-10">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-2xl font-bold">admin_panel_settings</span>
+                </div>
+                <h2 class="font-display-lg text-xl md:text-2xl font-bold tracking-tight text-primary">Grievance Desk</h2>
+            </div>
+            <div class="flex items-center gap-2 bg-surface-container-low border border-outline-variant/20 rounded-2xl px-4 py-2 text-xs font-semibold text-on-surface-variant">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-ping"></span>
+                <span>Active Overview</span>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 relative z-10">
+            <!-- Total Grievances -->
+            <div class="bg-surface-container-low border border-outline-variant/25 rounded-2xl p-5 hover:bg-surface-container transition-all duration-300 flex items-center justify-between">
+                <div class="flex flex-col text-left">
+                    <span class="text-xs text-outline font-semibold uppercase tracking-wider mb-1">Total Grievances</span>
+                    <span class="text-3xl font-bold font-display-lg text-on-surface">{{ stats.total }}</span>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-xl">confirmation_number</span>
+                </div>
+            </div>
+            
+            <!-- Open Grievances -->
+            <div class="bg-surface-container-low border border-outline-variant/25 rounded-2xl p-5 hover:bg-surface-container transition-all duration-300 flex items-center justify-between">
+                <div class="flex flex-col text-left">
+                    <span class="text-xs text-outline font-semibold uppercase tracking-wider mb-1">Open</span>
+                    <span class="text-3xl font-bold font-display-lg text-[#ba1a1a]">{{ stats.open }}</span>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center text-[#ba1a1a]">
+                    <span class="material-symbols-outlined text-xl">pending</span>
+                </div>
+            </div>
+            
+            <!-- In Review -->
+            <div class="bg-surface-container-low border border-outline-variant/25 rounded-2xl p-5 hover:bg-surface-container transition-all duration-300 flex items-center justify-between">
+                <div class="flex flex-col text-left">
+                    <span class="text-xs text-outline font-semibold uppercase tracking-wider mb-1">In Review</span>
+                    <span class="text-3xl font-bold font-display-lg text-secondary">{{ stats.in_review }}</span>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-secondary-container/20 flex items-center justify-center text-secondary">
+                    <span class="material-symbols-outlined text-xl">visibility</span>
+                </div>
+            </div>
+            
+            <!-- Resolved -->
+            <div class="bg-surface-container-low border border-outline-variant/25 rounded-2xl p-5 hover:bg-surface-container transition-all duration-300 flex items-center justify-between">
+                <div class="flex flex-col text-left">
+                    <span class="text-xs text-outline font-semibold uppercase tracking-wider mb-1">Resolved</span>
+                    <span class="text-3xl font-bold font-display-lg text-green-700">{{ stats.resolved }}</span>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-green-700">
+                    <span class="material-symbols-outlined text-xl">check_circle</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Dashboard layout -->
+    <div class="flex flex-col gap-6 w-full">
+        
+        <!-- Filters & Action Bar (Horizontal Single Row) -->
+        <div class="bg-surface-container-lowest rounded-3xl p-4 border border-outline-variant/30 shadow-md flex flex-row items-center justify-between gap-4 relative z-10 w-full overflow-x-auto whitespace-nowrap no-scrollbar">
+            <!-- Search -->
+            <div class="relative w-80 shrink-0">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+                <input type="text" id="search-grievance" placeholder="Search grievances..."
+                    class="w-full bg-surface-container-low text-on-surface rounded-2xl border-none focus:ring-2 focus:ring-primary py-2.5 pl-10 pr-4 text-xs placeholder:text-outline/70 transition-all font-body-md">
+            </div>
+            
+            <!-- Quick Filters Grouped in a Single Row -->
+            <div class="flex flex-row items-center gap-4 shrink-0">
+                <!-- Status Filter Checkboxes -->
+                <div class="flex flex-row items-center gap-3.5 bg-surface-container-low rounded-2xl px-4 py-2 border border-outline-variant/20">
+                    <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Status:</span>
+                    <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-on-surface-variant hover:text-on-surface transition-colors">
+                        <input type="checkbox" checked data-status="open" class="status-checkbox w-3.5 h-3.5 rounded text-primary focus:ring-primary border-outline-variant bg-surface transition-all">
+                        <span>Open</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-on-surface-variant hover:text-on-surface transition-colors">
+                        <input type="checkbox" checked data-status="in-review" class="status-checkbox w-3.5 h-3.5 rounded text-secondary focus:ring-secondary border-outline-variant bg-surface transition-all">
+                        <span>In Review</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-on-surface-variant hover:text-on-surface transition-colors">
+                        <input type="checkbox" checked data-status="resolved" class="status-checkbox w-3.5 h-3.5 rounded text-green-600 focus:ring-green-600 border-outline-variant bg-surface transition-all">
+                        <span>Resolved</span>
+                    </label>
+                </div>
+                
+                <!-- Sort By Radio Buttons -->
+                <div class="flex flex-row items-center gap-3.5 bg-surface-container-low rounded-2xl px-4 py-2 border border-outline-variant/20">
+                    <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Sort:</span>
+                    <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-on-surface-variant hover:text-on-surface transition-colors">
+                        <input type="radio" name="sort-order" value="latest" checked class="sort-radio w-3.5 h-3.5 text-primary focus:ring-primary border-outline-variant bg-surface transition-all">
+                        <span>Recent</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-on-surface-variant hover:text-on-surface transition-colors">
+                        <input type="radio" name="sort-order" value="oldest" class="sort-radio w-3.5 h-3.5 text-primary focus:ring-primary border-outline-variant bg-surface transition-all">
+                        <span>Oldest</span>
+                    </label>
+                </div>
+                
+                <!-- Category Dropdown Filter -->
+                <div class="flex flex-row items-center gap-2 bg-surface-container-low rounded-2xl px-3 py-1.5 border border-outline-variant/20">
+                    <span class="text-[10px] font-bold text-outline uppercase tracking-wider pl-1">Category:</span>
+                    <select id="category-filter" class="bg-transparent text-xs font-bold text-on-surface-variant border-none focus:ring-0 py-0.5 pl-1 pr-8 cursor-pointer">
+                        <option value="all">All Categories</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Grievances Card Grid (Vertical Card Boxes side-by-side horizontally in rows) -->
+        <div id="grievance-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 w-full">
+            {% for grv in grievances %}
+            <div class="grievance-card-item" data-date="{{ grv.created_at|date:"c" }}">
+                
+                <!-- Individual Grievance Card (Vertical Box Layout) -->
+                <div class="grievance-card bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all duration-300 hover-lift flex flex-col justify-between gap-5 min-h-[380px] w-full"
+                    data-ticket="GRV-{{ grv.created_at|date:"Y" }}-{{ grv.pk }}"
+                    data-student="{{ grv.student.username }} {{ grv.student.email }}"
+                    data-title="{{ grv.title }}"
+                    data-status="{{ grv.status }}"
+                    data-category="{{ grv.get_category_display }}">
+                    
+                    <!-- Card Header (Student Username, Grievance ID & Status) -->
+                    <div class="flex justify-between items-start gap-2">
+                        <div class="flex flex-col text-left">
+                            <h4 class="text-sm font-bold text-on-surface leading-tight">{{ grv.student.username }}</h4>
+                            <span class="text-xs text-outline leading-tight mt-0.5">GRV-{{ grv.created_at|date:"Y" }}-{{ grv.pk }}</span>
+                        </div>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shrink-0
+                            {% if grv.status == 'open' %}bg-red-50 text-red-700 border border-red-200/50
+                            {% elif grv.status == 'in-review' %}bg-amber-50 text-amber-700 border border-amber-200/50
+                            {% else %}bg-green-50 text-green-700 border border-green-200/50{% endif %}">
+                            {{ grv.get_status_display }}
+                        </span>
+                    </div>
+                    
+                    <!-- Info Grid (Category & Date - Styled Box from Mockup) -->
+                    <div class="grid grid-cols-2 gap-4 bg-surface-container-low rounded-2xl p-4 text-left border border-outline-variant/20">
+                        <div>
+                            <span class="block text-[10px] font-bold text-outline uppercase tracking-wider mb-1">Category</span>
+                            <!-- Highlight Category -->
+                            <span class="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20 truncate block w-fit max-w-full">
+                                {{ grv.get_category_display }}
+                            </span>
+                        </div>
+                        <div>
+                            <span class="block text-[10px] font-bold text-outline uppercase tracking-wider mb-1">Submitted</span>
+                            <span class="text-xs font-bold text-on-surface-variant block mt-1">{{ grv.created_at|date:"M d, Y" }}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Title & Content Snippet (Title is fully visible!) -->
+                    <div class="flex flex-col gap-2.5 text-left flex-grow min-h-0">
+                        <div class="flex flex-col gap-0.5">
+                            <span class="text-[10px] font-bold text-secondary uppercase tracking-widest leading-none mb-1.5">Grievance Title</span>
+                            <!-- Highlight Title (Fully visible, no truncation!) -->
+                            <h3 class="text-sm font-extrabold text-primary hover:text-primary-container transition-colors leading-snug break-words">
+                                {{ grv.title }}
+                            </h3>
+                        </div>
+                        
+                        <!-- Description Note (matching Order Notes style) -->
+                        <div class="bg-surface-container-low/40 rounded-xl p-3.5 border border-outline-variant/15 mt-1 flex-grow">
+                            <span class="block text-[10px] font-bold text-outline uppercase tracking-wider mb-1 leading-none">Grievance Note</span>
+                            <p class="text-xs text-on-surface-variant leading-relaxed line-clamp-3">
+                                {{ grv.description }}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Card Action Button -->
+                    <div class="pt-2">
+                        <a href="{% url 'grievance_detail' grv.pk %}" class="w-full flex items-center justify-center gap-1.5 bg-primary text-on-primary hover:bg-primary-container py-3 rounded-2xl text-xs font-bold transition-all duration-300 hover-lift shadow-sm hover:shadow">
+                            <span>Manage Grievance</span>
+                            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Grid Empty State -->
+        <div id="grid-empty-state" class="hidden bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-12 text-center shadow-sm w-full">
+            <div class="flex flex-col items-center justify-center gap-3">
+                <span class="material-symbols-outlined text-4xl text-outline/50">search_off</span>
+                <span class="font-bold text-on-surface text-base">No matching grievances found</span>
+                <p class="text-xs text-outline">Try adjusting your filters or search query.</p>
+            </div>
+        </div>
+        
+    </div>
+    
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('search-grievance');
+        const statusCheckboxes = document.querySelectorAll('.status-checkbox');
+        const categoryFilter = document.getElementById('category-filter');
+        const sortRadios = document.querySelectorAll('.sort-radio');
+        const grid = document.getElementById('grievance-grid');
+        const cards = Array.from(grid.querySelectorAll('.grievance-card-item'));
+        const emptyState = document.getElementById('grid-empty-state');
+        
+        let searchQuery = '';
+        let checkedStatuses = new Set(['open', 'in-review', 'resolved']);
+        let currentCategory = 'all';
+        let currentSort = 'latest';
+        
+        function filterAndSort() {
+            // 1. Filtering
+            cards.forEach(card => {
+                const cardInner = card.querySelector('.grievance-card');
+                const ticketId = cardInner.dataset.ticket.toLowerCase();
+                const student = cardInner.dataset.student.toLowerCase();
+                const title = cardInner.dataset.title.toLowerCase();
+                const status = cardInner.dataset.status.toLowerCase();
+                const category = cardInner.dataset.category.toLowerCase();
+                
+                const matchesSearch = ticketId.includes(searchQuery) || student.includes(searchQuery) || title.includes(searchQuery);
+                const matchesStatus = checkedStatuses.has(status);
+                const matchesCategory = currentCategory === 'all' || category === currentCategory;
+                
+                if (matchesSearch && matchesStatus && matchesCategory) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+            
+            // 2. Sorting
+            const visibleCards = cards.filter(card => !card.classList.contains('hidden'));
+            
+            cards.sort((a, b) => {
+                const dateA = new Date(a.dataset.date);
+                const dateB = new Date(b.dataset.date);
+                return currentSort === 'latest' ? dateB - dateA : dateA - dateB;
+            });
+            
+            // Re-append in sorted order
+            cards.forEach(card => grid.appendChild(card));
+            
+            // 3. Toggle Empty State
+            if (visibleCards.length === 0) {
+                emptyState.classList.remove('hidden');
+                grid.classList.add('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                grid.classList.remove('hidden');
+            }
+        }
+        
+        // Search Input
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                searchQuery = e.target.value.toLowerCase().trim();
+                filterAndSort();
+            });
+        }
+        
+        // Status Checkboxes
+        statusCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const status = checkbox.dataset.status;
+                if (checkbox.checked) {
+                    checkedStatuses.add(status);
+                } else {
+                    checkedStatuses.delete(status);
+                }
+                filterAndSort();
+            });
+        });
+        
+        // Category Filter
+        if (categoryFilter) {
+            categoryFilter.addEventListener('change', (e) => {
+                currentCategory = e.target.value.toLowerCase();
+                filterAndSort();
+            });
+            
+            // Dynamically populate Category dropdown
+            const categories = new Set();
+            cards.forEach(card => {
+                const cardInner = card.querySelector('.grievance-card');
+                const cat = cardInner.dataset.category;
+                if (cat) categories.add(cat);
+            });
+            
+            categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat;
+                option.textContent = cat;
+                categoryFilter.appendChild(option);
+            });
+        }
+        
+        // Sort Radios
+        sortRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                if (radio.checked) {
+                    currentSort = radio.value;
+                    filterAndSort();
+                }
+            });
+        });
+        
+        // Initial run
+        filterAndSort();
+    });
+</script>
+{% endblock %}
