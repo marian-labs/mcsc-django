@@ -10,7 +10,7 @@
     #cf-root {
         position: relative;
         width: 100%;
-        height: 370px;
+        height: 320px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -26,9 +26,9 @@
 
     #cf-stage {
         position: relative;
-        width: 148px;
+        width: 180px;
         /* active card width — JS updates */
-        height: 196px;
+        height: 280px;
         transform-style: preserve-3d;
     }
 
@@ -238,7 +238,78 @@
         text-align: center;
         position: relative;
         overflow: hidden;
-        transition: box-shadow 0.3s ease, transform 0.3s ease;
+        transition:
+            box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+            transform  0.45s cubic-bezier(0.22, 1, 0.36, 1),
+            background 0.45s ease,
+            border-color 0.45s ease;
+    }
+
+    .exec-card:hover {
+        transform: translateY(-10px) scale(1.03);
+        background: linear-gradient(158deg, #f6f9ff 0%, #e8f1ff 100%);
+        border-color: rgba(0, 92, 155, 0.20);
+        box-shadow:
+            0 24px 60px rgba(0, 92, 155, 0.18),
+            0  8px 24px rgba(0, 92, 155, 0.10),
+            0  0   0 1.5px rgba(0, 92, 155, 0.14);
+    }
+
+    /* Shimmer bar at top — glows brighter on hover */
+    .exec-card::after {
+        content: '';
+        position: absolute;
+        inset-x: 0;
+        top: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #f5a623, #005c9b, #f5a623);
+        background-size: 200% 100%;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        animation: shimmer-bar 2.2s linear infinite;
+    }
+
+    .exec-card:hover::after {
+        opacity: 1;
+    }
+
+    @keyframes shimmer-bar {
+        0%   { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+
+    /* Name grows on hover */
+    .exec-card h3 {
+        transition: font-size 0.4s cubic-bezier(0.22, 1, 0.36, 1), color 0.3s ease;
+    }
+
+    .exec-card:hover h3 {
+        font-size: 1.4rem;
+    }
+
+    /* Avatar scales up on hover */
+    .exec-card .relative {
+        transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .exec-card:hover .relative {
+        transform: scale(1.1);
+    }
+
+    /* Avatar ring intensifies on hover */
+    .exec-card:hover .cf-ring,
+    .exec-card:hover [class*="rounded-full"][class*="from-primary"] {
+        box-shadow: 0 0 0 4px rgba(245, 166, 35, 0.25), 0 8px 24px rgba(0,92,155,0.22);
+    }
+
+    /* Council member card hover scale */
+    .council-card {
+        transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+    }
+
+    .council-card:hover {
+        transform: scale(1.04);
+        box-shadow: 0 6px 20px rgba(0, 92, 155, 0.12);
     }
 
     .exec-card::before {
@@ -272,7 +343,7 @@
 
     @media (max-width: 640px) {
         #cf-root {
-            height: 310px;
+            height: 300px;
         }
     }
 </style>
@@ -378,7 +449,7 @@
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {% for rep in other_representatives %}
             <div
-                class="flex flex-col items-center gap-2.5 p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 hover-lift transition-all duration-300 group text-center">
+                class="council-card hover-lift flex flex-col items-center gap-2.5 p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 transition-all duration-300 group text-center">
                 <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-primary/20 to-secondary/20 p-0.5 shadow-sm">
                     <div class="w-full h-full rounded-full bg-white overflow-hidden flex items-center justify-center">
                         {% if rep.photo_url %}
@@ -429,13 +500,13 @@
     if (n === 0) return;
 
     /* ── Layout ──────────────────────────────────────────────────────────── */
-    var AV_ACTIVE = 136;   // active avatar px (bigger)
-    var AV_SIDE = 96;    // side avatar px (bigger)
-    var CARD_W = 148;
-    var CARD_H = 220;
+    var AV_ACTIVE = 180;   // active avatar px (bigger)
+    var AV_SIDE = 130;    // side avatar px (bigger)
+    var CARD_W = 180;
+    var CARD_H = 280;
     var SCALE_STEP = 0.13;
     var MAX_VIS = 2;
-    var GAP = 200;   // px between card centres (wider for bigger avatars)
+    var GAP = 240;   // px between card centres (wider for bigger avatars)
     var TILT = 10;
     var DEPTH = 80;
     var DIM_SIDE = 0.22;
