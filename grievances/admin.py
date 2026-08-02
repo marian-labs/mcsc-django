@@ -11,6 +11,8 @@ class GrievanceAdmin(admin.ModelAdmin):
     list_filter = ('status', 'category', 'created_at')
     search_fields = ('title', 'description', 'student__username', 'student__email')
     inlines = [GrievanceReplyInline]
+    actions = ['delete_selected']
+
 
 @admin.register(GrievanceReply)
 class GrievanceReplyAdmin(admin.ModelAdmin):

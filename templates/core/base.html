@@ -1443,13 +1443,13 @@
             position: absolute;
             left: 50%;
             top: 50%;
-            width: 8px;
-            height: 8px;
-            background: #111827;
-            border-radius: 2px;
+            width: 6px;
+            height: 6px;
+            background: #000000;
+            border-radius: 1px;
             transform: translate(-50%, -50%);
             will-change: transform, background-color;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.4), 0 1px 4px rgba(0,0,0,0.6);
         }
 
         .target-cursor-corner {
@@ -1458,10 +1458,11 @@
             top: 50%;
             width: 8px;
             height: 8px;
-            border: 2px solid #111827;
-            opacity: 0.7;
+            border: 2px solid #000000;
+            opacity: 1;
             will-change: transform, border-color, opacity;
             box-sizing: border-box;
+            filter: drop-shadow(0 0 1px rgba(0,0,0,0.5));
         }
 
         .corner-tl {
@@ -1541,11 +1542,11 @@
             const spinDuration = 2.4;
             const hoverDuration = 0.22;
             const parallaxOn = true;
-            const cursorColor = '#111827';        // Dark near-black
-            const cursorColorOnTarget = '#111827'; // Same dark on hover
+            const cursorColor = '#000000';        // Pure black
+            const cursorColorOnTarget = '#000000'; // Same on hover
 
             const borderWidth = 2;
-            const cornerSize = 12;
+            const cornerSize = 8;
 
 
             let spinTl = null;

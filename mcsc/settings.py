@@ -9,7 +9,7 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-local-dev-key')
+SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=True, cast=bool)
 
 if DEBUG:
@@ -219,4 +219,8 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Protected Admin Accounts that cannot be deleted (strictly loaded from .env)
+_protected_admins_str = config('PROTECTED_ADMIN_USERNAMES', default='')
+PROTECTED_ADMIN_USERNAMES = {u.strip() for u in _protected_admins_str.split(',') if u.strip()}
 

@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+from django.core.exceptions import PermissionDenied
+
 
 class User(AbstractUser):
     ROLE_CHOICES = (
@@ -7,9 +10,16 @@ class User(AbstractUser):
         ('admin', 'Admin'),
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='student', db_index=True)
-    
+
+    def delete(self, *args, **kwargs):
+        protected = getattr(settings, 'PROTECTED_ADMIN_USERNAMES', set())
+        if self.username in protected:
+            raise PermissionDenied(f"Protected admin user '{self.username}' cannot be deleted.")
+        super().delete(*args, **kwargs)
+
     def __str__(self):
         return f"{self.email} ({self.username})"
+
 
 class PushSubscription(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='push_subscriptions')
