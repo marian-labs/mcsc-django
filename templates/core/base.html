@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html class="scroll-smooth {% if request.resolver_match.url_name != 'home' %}load-complete{% endif %}" lang="en">
+<html class="scroll-smooth {% if request.resolver_match and request.resolver_match.url_name != 'home' %}load-complete{% endif %}" lang="en">
 
 <head>
     <meta charset="utf-8">
@@ -14,7 +14,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
 
     <!-- Initial loading state check -->
-    {% if request.resolver_match.url_name == 'home' %}
+    {% if request.resolver_match and request.resolver_match.url_name == 'home' %}
     <script>
         if (sessionStorage.getItem('mcsc_intro_played') === 'true' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             document.documentElement.classList.add('load-complete');
@@ -663,7 +663,7 @@
 
 <body class="bg-background text-on-surface font-body-md antialiased min-h-screen flex flex-col pt-20 sm:pt-24">
 
-    {% if request.resolver_match.url_name == 'home' %}
+    {% if request.resolver_match and request.resolver_match.url_name == 'home' %}
     <!-- Loading/Intro Screen (Plays once per page load, ~5.0s) -->
     <div id="loading-screen" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center">
         <!-- Dot-grid overlay -->
@@ -759,11 +759,11 @@
                 class="hidden lg:flex pointer-events-auto bg-surface/95 backdrop-blur-md border border-outline-variant/30 shadow-md rounded-full px-8 py-3 items-center gap-6 w-auto">
                 <!-- Navigation Links -->
                 <div class="flex items-center gap-6">
-                    <a class="font-label-lg text-label-lg {% if request.resolver_match.url_name == 'home' %}text-secondary border-b-2 border-secondary pb-0.5{% else %}text-on-surface-variant hover:text-primary{% endif %} transition-all duration-300"
+                    <a class="font-label-lg text-label-lg {% if request.resolver_match and request.resolver_match.url_name == 'home' %}text-secondary border-b-2 border-secondary pb-0.5{% else %}text-on-surface-variant hover:text-primary{% endif %} transition-all duration-300"
                         href="{% url 'home' %}">Home</a>
-                    <a class="font-label-lg text-label-lg {% if request.resolver_match.url_name == 'about' %}text-secondary border-b-2 border-secondary pb-0.5{% else %}text-on-surface-variant hover:text-primary{% endif %} transition-all duration-300"
+                    <a class="font-label-lg text-label-lg {% if request.resolver_match and request.resolver_match.url_name == 'about' %}text-secondary border-b-2 border-secondary pb-0.5{% else %}text-on-surface-variant hover:text-primary{% endif %} transition-all duration-300"
                         href="{% url 'about' %}">About</a>
-                    <a class="font-label-lg text-label-lg {% if request.resolver_match.url_name == 'representatives_list' %}text-secondary border-b-2 border-secondary pb-0.5{% else %}text-on-surface-variant hover:text-primary{% endif %} transition-all duration-300"
+                    <a class="font-label-lg text-label-lg {% if request.resolver_match and request.resolver_match.url_name == 'representatives_list' %}text-secondary border-b-2 border-secondary pb-0.5{% else %}text-on-surface-variant hover:text-primary{% endif %} transition-all duration-300"
                         href="{% url 'representatives_list' %}">Representatives</a>
                     <a class="font-label-lg text-label-lg {% if 'news' in request.path %}text-secondary border-b-2 border-secondary pb-0.5{% else %}text-on-surface-variant hover:text-primary{% endif %} transition-all duration-300"
                         href="{% url 'news_list' %}">News</a>

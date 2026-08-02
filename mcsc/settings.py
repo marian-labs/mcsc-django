@@ -21,8 +21,8 @@ if sys.version_info >= (3, 14):
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config('SECRET_KEY')
-DEBUG = config('DEBUG', default=True, cast=bool)
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-mcsc-production-key-fallback-2026-secure')
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 if DEBUG:
     ALLOWED_HOSTS = ['*']
