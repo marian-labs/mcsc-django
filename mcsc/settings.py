@@ -3,9 +3,20 @@ Django settings for mcsc project.
 """
 
 import os
+import sys
+import copy
 from pathlib import Path
 from decouple import config
 import dj_database_url
+import django.template.context
+
+# Python 3.14 compatibility patch for Django 4.2 BaseContext.__copy__
+if sys.version_info >= (3, 14):
+    def _safe_context_copy(self):
+        new_obj = self.__class__.__new__(self.__class__)
+        new_obj.dicts = self.dicts.copy()
+        return new_obj
+    django.template.context.BaseContext.__copy__ = _safe_context_copy
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
