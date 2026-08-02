@@ -1,42 +1,30 @@
 {% extends "core/base.html" %}
 {% load static %}
 
-{% block title %}Grievance GRV-{{ grievance.created_at|date:"Y" }}-{{ grievance.pk }} | MCSC{% endblock %}
+{% block title %}GRV-{{ grievance.created_at|date:"Y" }}-{{ grievance.pk }} | MCSC{% endblock %}
 
 {% block content %}
-<!-- Custom Page CSS for Premium Grid and Glow Effects -->
 <style>
-    /* Elegant Grid Pattern matching the MCSC Homepage */
     .bg-grid-blueprint {
         background-size: 24px 24px;
-        background-image: 
-            linear-gradient(to right, rgba(0, 92, 155, 0.035) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(0, 92, 155, 0.035) 1px, transparent 1px);
+        background-image:
+            linear-gradient(to right, rgba(0, 92, 155, 0.03) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(0, 92, 155, 0.03) 1px, transparent 1px);
     }
-    
-    /* Soft Radial Accent Glow */
-    .radial-glow {
-        background: radial-gradient(circle at 80% 20%, rgba(245, 166, 35, 0.06) 0%, rgba(0, 92, 155, 0.02) 50%, transparent 100%);
-    }
-
-    /* Keyframe animation for glowing pulse */
     @keyframes status-pulse {
-        0%, 100% { transform: scale(1); opacity: 0.9; }
-        50% { transform: scale(1.1); opacity: 1; }
+        0%, 100% { opacity: 0.7; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.15); }
     }
-    .pulse-glow {
-        animation: status-pulse 2s infinite ease-in-out;
-    }
+    .pulse-glow { animation: status-pulse 2.5s ease-in-out infinite; }
+
+    /* Chat bubble style for replies */
+    .reply-bubble { transition: box-shadow 0.2s ease; }
+    .reply-bubble:hover { box-shadow: 0 4px 20px rgba(0,92,155,0.08); }
 </style>
+
 <script>
-    /**
-     * Extracts a clean display name by stripping college reg numbers.
-     * e.g. "Muhammed Sinan M 24UBC145" → "Muhammed Sinan M"
-     * Pattern: removes trailing tokens that look like reg nos (digits+letters)
-     */
     function cleanDisplayName(raw) {
         if (!raw) return raw;
-        // Remove trailing registration number patterns like 24UBC145, 23BCO12, etc.
         return raw.replace(/\s+\d{2}[A-Z]{2,4}\d+\s*$/, '').trim();
     }
     document.addEventListener('DOMContentLoaded', function () {
@@ -46,306 +34,236 @@
     });
 </script>
 
-<!-- Main Container with Grid Background -->
 <div class="w-full min-h-screen bg-surface bg-grid-blueprint pb-20">
-    <main class="w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12 relative radial-glow">
-        
-        <div class="space-y-8">
-            
-            <!-- Breadcrumb Navigation & Ticket ID -->
-            <nav class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-outline-variant/20 pb-4">
-                <a href="{% url 'grievance_portal' %}" class="inline-flex items-center gap-2 text-primary hover:text-secondary font-bold transition-all duration-200 group">
-                    <span class="material-symbols-outlined text-[20px] transition-transform duration-200 group-hover:-translate-x-1">arrow_back</span>
-                    <span class="font-label-lg text-xs uppercase tracking-wider">Back to Portal</span>
-                </a>
-                
-                <div class="flex items-center gap-3">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-primary/5 text-primary text-xs font-mono font-bold border border-primary/10">
-                        <span class="material-symbols-outlined text-[14px]">tag</span>
-                        GRV-{{ grievance.created_at|date:"Y" }}-{{ grievance.pk }}
-                    </span>
-                </div>
-            </nav>
+    <main class="w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 md:py-12">
 
-            <!-- Dynamic Graphical Ticket Progress Timeline -->
-            <section class="bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 md:p-8 shadow-sm">
-                <h3 class="text-xs font-bold uppercase tracking-widest text-outline text-center mb-6">Processing Status</h3>
-                
-                <div class="flex items-center justify-between max-w-2xl mx-auto relative px-4">
-                    <!-- Progress Line -->
-                    <div class="absolute left-10 right-10 top-[20px] h-[3px] bg-surface-container-highest rounded-full z-0">
-                        <div class="h-full bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-700 ease-in-out" 
-                             style="width: {% if grievance.status == 'open' %}0%{% elif grievance.status == 'in-review' %}50%{% else %}100%{% endif %};"></div>
-                    </div>
-                    
-                    <!-- Step 1: Submitted -->
-                    <div class="relative z-10 flex flex-col items-center gap-2">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shadow-md transition-all duration-300
-                            bg-primary text-white border-4 border-white">
-                            <span class="material-symbols-outlined text-[18px]">send</span>
-                        </div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-primary">Submitted</span>
-                    </div>
-                    
-                    <!-- Step 2: Under Review -->
-                    <div class="relative z-10 flex flex-col items-center gap-2">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shadow-md transition-all duration-300
-                            {% if grievance.status == 'in-review' or grievance.status == 'resolved' %}bg-secondary text-white border-4 border-white{% else %}bg-surface-container text-outline border-4 border-surface-container-low{% endif %}">
-                            <span class="material-symbols-outlined text-[18px]">pageview</span>
-                        </div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider {% if grievance.status == 'in-review' or grievance.status == 'resolved' %}text-secondary{% else %}text-outline{% endif %}">Under Review</span>
-                    </div>
-                    
-                    <!-- Step 3: Resolved -->
-                    <div class="relative z-10 flex flex-col items-center gap-2">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shadow-md transition-all duration-300
-                            {% if grievance.status == 'resolved' %}bg-green-600 text-white border-4 border-white{% else %}bg-surface-container text-outline border-4 border-surface-container-low{% endif %}">
-                            <span class="material-symbols-outlined text-[18px]">verified</span>
-                        </div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider {% if grievance.status == 'resolved' %}text-green-600{% else %}text-outline{% endif %}">Resolved</span>
-                    </div>
-                </div>
-            </section>
+        <!-- Breadcrumb + Ticket ID + Status (all in one clean bar) -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-8">
+            <a href="{% url 'grievance_portal' %}"
+               class="inline-flex items-center gap-1.5 text-on-surface-variant hover:text-primary font-semibold text-sm transition-colors duration-200 group">
+                <span class="material-symbols-outlined text-[18px] transition-transform duration-200 group-hover:-translate-x-0.5">arrow_back</span>
+                Back to Portal
+            </a>
 
-            <!-- 2-Column Responsive Workspace Layout Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-                
-                <!-- LEFT COLUMN: Main Ticket Card & Interactive Conversation Timeline (Col Span 2) -->
-                <!-- On desktop: conversation feed shown FIRST so students see updates immediately -->
-                <div class="lg:col-span-2 space-y-8 lg:order-2">
-                    
-                    <!-- Main Ticket Details Card -->
-                    <article class="bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 md:p-8 shadow-sm relative overflow-hidden">
-                        <!-- Top Gradient Accent line -->
-                        <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-primary to-secondary"></div>
-                        
-                        <header class="pb-6 border-b border-outline-variant/20 flex flex-col gap-3">
-                            <!-- Category Badge -->
-                            <div>
-                                <span class="bg-secondary/15 text-secondary font-label-lg text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                                    {{ grievance.get_category_display }}
-                                </span>
-                            </div>
-                            
-                            <!-- Title -->
-                            <h1 class="font-display-lg text-2xl md:text-3xl font-bold text-on-surface leading-tight mt-1">
+            <div class="flex items-center gap-2 flex-wrap">
+                <!-- Ticket ID -->
+                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-primary/6 text-primary text-xs font-mono font-bold border border-primary/12">
+                    <span class="material-symbols-outlined text-[13px]">tag</span>
+                    GRV-{{ grievance.created_at|date:"Y" }}-{{ grievance.pk }}
+                </span>
+
+                <!-- Status pill (inline, no separate section) -->
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold
+                    {% if grievance.status == 'open' %}bg-sky-50 text-sky-700 border border-sky-200
+                    {% elif grievance.status == 'in-review' %}bg-amber-50 text-amber-700 border border-amber-200
+                    {% else %}bg-emerald-50 text-emerald-700 border border-emerald-200{% endif %}">
+                    <span class="w-2 h-2 rounded-full pulse-glow
+                        {% if grievance.status == 'open' %}bg-sky-500
+                        {% elif grievance.status == 'in-review' %}bg-amber-500
+                        {% else %}bg-emerald-500{% endif %}"></span>
+                    {{ grievance.get_status_display }}
+                </span>
+            </div>
+        </div>
+
+        <!-- Main 2-column grid: Conversation (wide) + Sidebar (narrow) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+
+            <!-- ── MAIN COLUMN (2/3 width on desktop) ─────────────────────── -->
+            <div class="lg:col-span-2 space-y-5 lg:order-2">
+
+                <!-- Ticket Details Card (compact) -->
+                <div class="bg-white border border-outline-variant/30 rounded-2xl overflow-hidden shadow-sm">
+                    <!-- Thin accent top bar -->
+                    <div class="h-1 bg-gradient-to-r from-primary to-secondary"></div>
+
+                    <div class="p-5 md:p-7">
+                        <!-- Category + Title -->
+                        <div class="mb-4">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-secondary bg-secondary/10 px-2.5 py-1 rounded-full">
+                                {{ grievance.get_category_display }}
+                            </span>
+                            <h1 class="mt-3 text-xl md:text-2xl font-bold text-on-surface leading-tight">
                                 {{ grievance.title }}
                             </h1>
-                            
-                            <!-- Sub-header Details -->
-                            <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-on-surface-variant font-medium mt-1">
-                                <span class="flex items-center gap-1.5">
-                                    <span class="material-symbols-outlined text-[16px] text-outline">account_circle</span>
-                                    Submitted by <strong data-raw-name="{{ grievance.student.get_full_name|default:grievance.student.username }}">{{ grievance.student.get_full_name|default:grievance.student.username }}</strong>
+                            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-outline mt-2">
+                                <span class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[13px]">person</span>
+                                    <span data-raw-name="{{ grievance.student.get_full_name|default:grievance.student.username }}">{{ grievance.student.get_full_name|default:grievance.student.username }}</span>
                                 </span>
-                                <span class="hidden sm:inline text-outline-variant/50">•</span>
-                                <span class="flex items-center gap-1.5">
-                                    <span class="material-symbols-outlined text-[16px] text-outline">schedule</span>
-                                    {{ grievance.created_at|date:"F d, Y, h:i A" }}
+                                <span class="text-outline-variant">·</span>
+                                <span class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[13px]">schedule</span>
+                                    {{ grievance.created_at|date:"d M Y, h:i A" }}
                                 </span>
                             </div>
-                        </header>
-                        
-                        <!-- Description Paragraph -->
-                        <div class="py-6 font-body-md text-on-surface text-[15px] leading-relaxed whitespace-pre-line">
+                        </div>
+
+                        <!-- Description -->
+                        <div class="text-sm text-on-surface-variant leading-relaxed whitespace-pre-line border-t border-outline-variant/15 pt-4">
                             {{ grievance.description }}
                         </div>
-                        
-                        <!-- Attachment Download Block -->
+
+                        <!-- Attachment -->
                         {% if grievance.attachment %}
-                        <div class="pt-6 border-t border-outline-variant/20">
-                            <h4 class="text-xs font-bold text-outline uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                                <span class="material-symbols-outlined text-[18px]">attachment</span>
-                                Attached Documents
-                            </h4>
-                            
-                            <div class="flex items-center justify-between p-4 bg-surface-container-low rounded-2xl border border-outline-variant/30 hover:bg-surface-container transition-all duration-200">
+                        <div class="mt-4 pt-4 border-t border-outline-variant/15">
+                            <div class="flex items-center justify-between gap-3 p-3.5 bg-surface-container-low rounded-xl border border-outline-variant/20">
                                 <div class="flex items-center gap-3 min-w-0">
-                                    <span class="material-symbols-outlined text-primary text-3xl bg-primary/10 p-2.5 rounded-xl">description</span>
-                                    <div class="min-w-0">
-                                        <p class="text-sm font-bold text-on-surface truncate">{{ grievance.attachment.name }}</p>
-                                        <p class="text-[10px] text-outline uppercase tracking-wider font-semibold">Postgres Media Attachment</p>
-                                    </div>
+                                    <span class="material-symbols-outlined text-primary text-xl bg-primary/10 p-2 rounded-lg">attach_file</span>
+                                    <p class="text-sm font-semibold text-on-surface truncate">{{ grievance.attachment.name }}</p>
                                 </div>
-                                <a href="{{ grievance.attachment.url }}" download class="bg-primary hover:bg-primary-container text-on-primary px-5 py-2 rounded-full font-label-lg text-xs uppercase tracking-wider hover-lift transition-all duration-200 flex items-center gap-1.5">
-                                    <span class="material-symbols-outlined text-[16px]">download</span>
+                                <a href="{{ grievance.attachment.url }}" download
+                                   class="shrink-0 bg-primary text-white text-xs font-bold px-4 py-1.5 rounded-full hover:bg-primary/90 transition-colors flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[14px]">download</span>
                                     Download
                                 </a>
                             </div>
                         </div>
                         {% endif %}
-                    </article>
-                    
-                    <!-- Timeline / Conversation History -->
-                    <section class="space-y-6">
-                        <div class="flex items-center gap-2 border-b border-outline-variant/25 pb-4">
-                            <span class="material-symbols-outlined text-primary text-2xl">chat</span>
-                            <h2 class="font-display-lg text-xl font-bold text-on-surface">Conversation Feed</h2>
-                        </div>
-                        
-                        <!-- Timeline feed structure -->
-                        <div class="relative pl-8 md:pl-10 space-y-6">
-                            
-                            <!-- Timeline Connector Line -->
-                            <div class="absolute left-[15px] md:left-[19px] top-4 bottom-4 w-[2px] border-l border-dashed border-outline-variant"></div>
-                            
-                            <!-- Student Submission Node (Original) -->
-                            <div class="relative">
-                                <!-- Dot Indicator -->
-                                <div class="absolute -left-[33px] md:-left-[35px] top-2 w-[18px] h-[18px] rounded-full bg-primary border-4 border-surface shadow-sm z-10"></div>
-                                
-                                <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 shadow-sm">
-                                    <div class="flex justify-between items-center mb-3 border-b border-outline-variant/10 pb-2">
-                                        <div class="flex items-center gap-2">
-                                            <div class="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[10px]">
-                                                {{ grievance.student.get_full_name|default:grievance.student.username|slice:":2"|upper }}
-                                            </div>
-                                            <span class="font-bold text-sm text-on-surface" data-raw-name="{{ grievance.student.get_full_name|default:grievance.student.username }}">{{ grievance.student.get_full_name|default:grievance.student.username }}</span>
-                                            <span class="bg-primary/15 text-primary text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full">Student</span>
-                                        </div>
-                                        <time class="text-[11px] text-outline font-medium">{{ grievance.created_at|date:"M d, Y, h:i A" }}</time>
-                                    </div>
-                                    <p class="text-sm text-on-surface-variant leading-relaxed">
-                                        Grievance record created and ticket opened.
-                                    </p>
-                                </div>
-                            </div>
-                            
-                            <!-- Admin Replies -->
-                            {% for reply in replies %}
-                            <div class="relative">
-                                <!-- Dot Indicator (Admin Accent color) -->
-                                <div class="absolute -left-[33px] md:-left-[35px] top-2 w-[18px] h-[18px] rounded-full bg-secondary border-4 border-surface shadow-sm z-10"></div>
-                                
-                                <div class="bg-surface-container-lowest border-l-4 border-l-secondary border border-outline-variant/30 rounded-2xl p-5 shadow-sm">
-                                    <div class="flex justify-between items-center mb-3 border-b border-outline-variant/10 pb-2">
-                                        <div class="flex items-center gap-2">
-                                            <div class="w-6 h-6 rounded-full bg-secondary/15 text-secondary flex items-center justify-center font-bold text-[10px]">
-                                                {{ reply.admin.username|slice:":2"|upper }}
-                                            </div>
-                                            <span class="font-bold text-sm text-primary">{{ reply.admin.username }}</span>
-                                            <span class="bg-secondary/15 text-secondary text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full">Council Admin</span>
-                                        </div>
-                                        <time class="text-[11px] text-outline font-medium">{{ reply.created_at|date:"M d, Y, h:i A" }}</time>
-                                    </div>
-                                    <p class="text-sm text-on-surface leading-relaxed whitespace-pre-line">
-                                        {{ reply.reply_text }}
-                                    </p>
-                                </div>
-                            </div>
-                            {% empty %}
-                            <div class="text-center py-10 bg-surface-container-lowest border border-dashed border-outline-variant rounded-2xl">
-                                <span class="material-symbols-outlined text-outline/60 text-4xl mb-2">mark_chat_unread</span>
-                                <p class="text-sm text-on-surface-variant font-bold">No replies yet</p>
-                                <p class="text-xs text-outline mt-0.5">The council is reviewing your grievance and will reply shortly.</p>
-                            </div>
-                            {% endfor %}
-                            
-                        </div>
-                    </section>
-                    
+                    </div>
                 </div>
-                
-                <!-- RIGHT COLUMN: Sidebar Metadata & Admin Composer (Col Span 1) -->
-                <!-- On desktop: sidebar is shown on LEFT (order-1) so conversation gets priority on right -->
-                <div class="space-y-6 lg:order-1">
-                    
-                    <!-- Ticket status sidebar card -->
-                    <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 shadow-sm space-y-4">
-                        <h3 class="font-display-lg text-lg font-bold text-on-surface border-b border-outline-variant/20 pb-3 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-primary">info</span>
-                            Grievance Info
-                        </h3>
-                        
-                        <div class="space-y-4">
-                            <!-- Status -->
-                            <div>
-                                <span class="text-[10px] text-outline block mb-1 uppercase font-bold tracking-wider">Status</span>
-                                <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full font-label-sm text-xs uppercase font-bold tracking-wider
-                                    {% if grievance.status == 'open' %}bg-primary/10 text-primary border border-primary/20
-                                    {% elif grievance.status == 'in-review' %}bg-secondary/15 text-[#935f00] border border-secondary/20
-                                    {% else %}bg-green-50 text-green-700 border border-green-200{% endif %}">
-                                    <!-- Animated pulse indicator -->
-                                    <span class="w-2.5 h-2.5 rounded-full pulse-glow
-                                        {% if grievance.status == 'open' %}bg-primary
-                                        {% elif grievance.status == 'in-review' %}bg-secondary
-                                        {% else %}bg-green-600{% endif %}"></span>
-                                    {{ grievance.get_status_display }}
-                                </span>
+
+                <!-- ── Conversation Feed ─────────────────────────────────── -->
+                <div class="bg-white border border-outline-variant/30 rounded-2xl shadow-sm overflow-hidden">
+                    <div class="px-5 md:px-7 py-4 border-b border-outline-variant/15 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-[20px]">forum</span>
+                        <h2 class="font-bold text-base text-on-surface">Conversation</h2>
+                        {% if replies %}
+                        <span class="ml-auto text-xs text-outline bg-surface-container px-2 py-0.5 rounded-full font-semibold">
+                            {{ replies|length }} repl{% if replies|length == 1 %}y{% else %}ies{% endif %}
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="p-5 md:p-7 space-y-4">
+                        {% for reply in replies %}
+                        <div class="reply-bubble flex gap-3.5">
+                            <!-- Avatar -->
+                            <div class="shrink-0 w-8 h-8 rounded-full bg-secondary/15 text-secondary flex items-center justify-center font-bold text-[11px] mt-0.5">
+                                {{ reply.admin.get_full_name|default:reply.admin.username|slice:":2"|upper }}
                             </div>
-                            
-                            <!-- Date submitted -->
-                            <div>
-                                <span class="text-[10px] text-outline block mb-1 uppercase font-bold tracking-wider">Date Filed</span>
-                                <p class="font-medium text-sm text-on-surface">{{ grievance.created_at|date:"F d, Y" }}</p>
-                                <p class="text-xs text-outline font-medium mt-0.5">{{ grievance.created_at|date:"h:i A" }}</p>
-                            </div>
-                            
-                            <!-- Student Details -->
-                            <div class="pt-4 border-t border-outline-variant/20">
-                                <span class="text-[10px] text-outline block mb-2 uppercase font-bold tracking-wider">Submitted By</span>
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-secondary p-0.5 shadow-sm">
-                                        <div class="w-full h-full rounded-full bg-white flex items-center justify-center font-bold text-primary text-xs">
-                                            {{ grievance.student.get_full_name|default:grievance.student.username|slice:":2"|upper }}
-                                        </div>
-                                    </div>
-                                    <div class="min-w-0 flex-1">
-                                        <p class="font-bold text-sm text-on-surface truncate leading-snug" data-raw-name="{{ grievance.student.get_full_name|default:grievance.student.username }}">{{ grievance.student.get_full_name|default:grievance.student.username }}</p>
-                                        <p class="text-xs text-outline truncate">{{ grievance.student.email }}</p>
-                                    </div>
+
+                            <!-- Bubble -->
+                            <div class="flex-1 min-w-0">
+                                <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                                    <span class="font-bold text-sm text-on-surface"
+                                          data-raw-name="{{ reply.admin.get_full_name|default:reply.admin.username }}">{{ reply.admin.get_full_name|default:reply.admin.username }}</span>
+                                    <span class="text-[9px] font-bold uppercase tracking-wider text-secondary bg-secondary/10 px-2 py-0.5 rounded-full">Council</span>
+                                    <time class="text-[11px] text-outline ml-auto">{{ reply.created_at|date:"d M Y, h:i A" }}</time>
                                 </div>
+                                <div class="bg-surface-container-low rounded-xl rounded-tl-sm px-4 py-3 border border-outline-variant/15">
+                                    <p class="text-sm text-on-surface leading-relaxed whitespace-pre-line">{{ reply.reply_text }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% empty %}
+                        <div class="text-center py-12">
+                            <span class="material-symbols-outlined text-outline/40 text-5xl block mb-3">hourglass_top</span>
+                            <p class="text-sm font-semibold text-on-surface-variant">Awaiting council response</p>
+                            <p class="text-xs text-outline mt-1">You'll be notified by email when the council replies.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div><!-- end main column -->
+
+            <!-- ── SIDEBAR (1/3 width on desktop) ─────────────────────────── -->
+            <div class="space-y-5 lg:order-1">
+
+                <!-- Info Card -->
+                <div class="bg-white border border-outline-variant/30 rounded-2xl shadow-sm p-5 space-y-5">
+                    <h3 class="font-bold text-sm text-on-surface">Ticket Info</h3>
+
+                    <!-- Status -->
+                    <div>
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-outline mb-1.5">Status</p>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border
+                            {% if grievance.status == 'open' %}bg-sky-50 text-sky-700 border-sky-200
+                            {% elif grievance.status == 'in-review' %}bg-amber-50 text-amber-700 border-amber-200
+                            {% else %}bg-emerald-50 text-emerald-700 border-emerald-200{% endif %}">
+                            <span class="w-2 h-2 rounded-full pulse-glow
+                                {% if grievance.status == 'open' %}bg-sky-500
+                                {% elif grievance.status == 'in-review' %}bg-amber-500
+                                {% else %}bg-emerald-500{% endif %}"></span>
+                            {{ grievance.get_status_display }}
+                        </span>
+                    </div>
+
+                    <!-- Category -->
+                    <div>
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-outline mb-1">Category</p>
+                        <p class="text-sm font-semibold text-on-surface">{{ grievance.get_category_display }}</p>
+                    </div>
+
+                    <!-- Date -->
+                    <div>
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-outline mb-1">Filed On</p>
+                        <p class="text-sm text-on-surface font-medium">{{ grievance.created_at|date:"d M Y" }}</p>
+                        <p class="text-xs text-outline">{{ grievance.created_at|date:"h:i A" }}</p>
+                    </div>
+
+                    <!-- Student -->
+                    <div class="pt-4 border-t border-outline-variant/15">
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-outline mb-2">Submitted By</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center font-bold text-white text-xs shrink-0">
+                                {{ grievance.student.get_full_name|default:grievance.student.username|slice:":2"|upper }}
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-sm font-bold text-on-surface truncate"
+                                   data-raw-name="{{ grievance.student.get_full_name|default:grievance.student.username }}">{{ grievance.student.get_full_name|default:grievance.student.username }}</p>
+                                <p class="text-[11px] text-outline truncate">{{ grievance.student.email }}</p>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Admin Reply & Resolve Composer -->
-                    {% if user.is_staff or user.role == 'admin' %}
-                    <div class="bg-surface-container-lowest border-2 border-primary/25 rounded-3xl p-6 shadow-md relative overflow-hidden">
-                        <!-- Floating border highlight -->
-                        <div class="absolute inset-x-0 top-0 h-1 bg-primary"></div>
-                        
-                        <h3 class="font-display-lg text-lg font-bold text-primary pb-3 border-b border-outline-variant/20 mb-4 flex items-center gap-2">
-                            <span class="material-symbols-outlined">support_agent</span>
-                            Administrative Action
+                </div>
+
+                <!-- Admin Compose Panel -->
+                {% if user.is_staff or user.role == 'admin' %}
+                <div class="bg-white border border-primary/20 rounded-2xl shadow-sm overflow-hidden">
+                    <div class="h-1 bg-primary"></div>
+                    <div class="p-5">
+                        <h3 class="font-bold text-sm text-primary mb-4 flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[18px]">support_agent</span>
+                            Post Response
                         </h3>
-                        
-                        <form method="POST" class="space-y-4">
+
+                        <form method="POST" class="space-y-3">
                             {% csrf_token %}
-                            
-                            <!-- Status Dropdown -->
+
                             <div>
-                                <label class="block text-xs font-bold text-outline uppercase tracking-wider mb-2" for="status">Update Status</label>
-                                <select name="status" id="status" class="w-full bg-surface-container-low text-on-surface rounded-xl border border-outline-variant/30 focus:border-primary focus:ring-1 focus:ring-primary py-2.5 px-4 font-semibold text-sm transition-colors duration-200">
+                                <label class="block text-[10px] font-bold text-outline uppercase tracking-wider mb-1.5" for="status">Update Status</label>
+                                <select name="status" id="status"
+                                        class="w-full bg-surface-container-low text-on-surface rounded-xl border border-outline-variant/25 focus:border-primary focus:ring-1 focus:ring-primary py-2 px-3 font-semibold text-sm">
                                     {% for code, label in status_choices %}
                                         <option value="{{ code }}" {% if grievance.status == code %}selected{% endif %}>{{ label }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
-                            
-                            <!-- Response Textarea -->
+
                             <div>
-                                <label class="block text-xs font-bold text-outline uppercase tracking-wider mb-2" for="reply_text">Response Message</label>
-                                <textarea name="reply_text" id="reply_text" rows="5" required class="w-full bg-surface-container-low text-on-surface rounded-xl border border-outline-variant/30 focus:border-primary focus:ring-1 focus:ring-primary py-2.5 px-4 text-sm placeholder:text-outline/70 transition-colors duration-200" placeholder="Type resolution details here... The student will be notified."></textarea>
+                                <label class="block text-[10px] font-bold text-outline uppercase tracking-wider mb-1.5" for="reply_text">Message</label>
+                                <textarea name="reply_text" id="reply_text" rows="5" required
+                                          class="w-full bg-surface-container-low text-on-surface rounded-xl border border-outline-variant/25 focus:border-primary focus:ring-1 focus:ring-primary py-2 px-3 text-sm placeholder:text-outline/60 resize-none"
+                                          placeholder="Type your response…"></textarea>
                             </div>
-                            
-                            <!-- Submit Button -->
-                            <div class="pt-2">
-                                <button class="w-full bg-secondary hover:bg-secondary/90 hover:shadow-md text-on-secondary font-bold text-xs uppercase tracking-wider py-4 rounded-full transition-all duration-200 hover-lift flex items-center justify-center gap-2 shadow-sm" type="submit">
-                                    <span class="material-symbols-outlined text-[18px]">send</span>
-                                    Submit Response
-                                </button>
-                            </div>
+
+                            <button type="submit"
+                                    class="w-full bg-primary hover:bg-primary/90 text-white font-bold text-xs uppercase tracking-wider py-3 rounded-xl transition-colors flex items-center justify-center gap-1.5">
+                                <span class="material-symbols-outlined text-[16px]">send</span>
+                                Send Reply
+                            </button>
                         </form>
                     </div>
-                    {% endif %}
-                    
                 </div>
-                
-            </div>
-            
-        </div>
-        
+                {% endif %}
+
+            </div><!-- end sidebar -->
+
+        </div><!-- end grid -->
+
     </main>
 </div>
 {% endblock %}
