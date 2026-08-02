@@ -144,10 +144,12 @@
         * {
             font-family: 'Plus Jakarta Sans', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
+
         img {
             max-width: 100%;
             height: auto;
         }
+
         .hover-lift {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
@@ -459,59 +461,113 @@
         /* ── Loading screen background layers ─────────────────────── */
         /* Slowly morphing mesh gradient on the screen itself */
         @keyframes meshShift {
-            0%   { background-position: 0% 50%; }
-            50%  { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
+
         #loading-screen {
             background: linear-gradient(135deg,
-                #eef4ff 0%, #f8f9ff 30%, #fff8ee 60%, #f0f7ff 100%);
+                    #eef4ff 0%, #f8f9ff 30%, #fff8ee 60%, #f0f7ff 100%);
             background-size: 300% 300%;
             animation: meshShift 12s ease infinite;
         }
 
         /* Floating aurora blobs */
         @keyframes floatA {
-            0%,100% { transform: translate(0,0) scale(1); }
-            33%      { transform: translate(40px,-30px) scale(1.15); }
-            66%      { transform: translate(-30px,20px) scale(0.9); }
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(40px, -30px) scale(1.15);
+            }
+
+            66% {
+                transform: translate(-30px, 20px) scale(0.9);
+            }
         }
+
         @keyframes floatB {
-            0%,100% { transform: translate(0,0) scale(1); }
-            33%      { transform: translate(-50px,25px) scale(1.2); }
-            66%      { transform: translate(35px,-40px) scale(0.85); }
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(-50px, 25px) scale(1.2);
+            }
+
+            66% {
+                transform: translate(35px, -40px) scale(0.85);
+            }
         }
+
         @keyframes floatC {
-            0%,100% { transform: translate(0,0) scale(1); }
-            50%      { transform: translate(25px,35px) scale(1.1); }
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(25px, 35px) scale(1.1);
+            }
         }
-        .ls-blob-a { animation: floatA 9s ease-in-out infinite; }
-        .ls-blob-b { animation: floatB 12s ease-in-out infinite; }
-        .ls-blob-c { animation: floatC 7s ease-in-out infinite; }
+
+        .ls-blob-a {
+            animation: floatA 9s ease-in-out infinite;
+        }
+
+        .ls-blob-b {
+            animation: floatB 12s ease-in-out infinite;
+        }
+
+        .ls-blob-c {
+            animation: floatC 7s ease-in-out infinite;
+        }
 
         /* Unified Diagonal Line Pattern */
         .ls-line-pattern {
             position: absolute;
             inset: 0;
-            background-image: repeating-linear-gradient(
-                -45deg,
-                rgba(0, 92, 155, 0.07) 0px,
-                rgba(0, 92, 155, 0.07) 1.5px,
-                transparent 1.5px,
-                transparent 44px
-            );
+            background-image: repeating-linear-gradient(-45deg,
+                    rgba(0, 92, 155, 0.07) 0px,
+                    rgba(0, 92, 155, 0.07) 1.5px,
+                    transparent 1.5px,
+                    transparent 44px);
             pointer-events: none;
         }
 
         /* Dot-grid shimmer */
         @keyframes gridFade {
-            0%,100% { opacity: 0.4; }
-            50%      { opacity: 0.7; }
+
+            0%,
+            100% {
+                opacity: 0.4;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
         }
+
         .ls-grid {
-            position: absolute; inset: 0;
+            position: absolute;
+            inset: 0;
             background-image:
-                radial-gradient(circle, rgba(0,92,155,0.12) 1px, transparent 1px);
+                radial-gradient(circle, rgba(0, 92, 155, 0.12) 1px, transparent 1px);
             background-size: 36px 36px;
             animation: gridFade 6s ease-in-out infinite;
             pointer-events: none;
@@ -692,7 +748,8 @@
                 href="{% url 'home' %}">
                 <img alt="MCSC Logo" class="w-16 h-16 md:w-20 md:h-20 object-contain"
                     src="{% static 'images/mcsc_logo-Photoroom.webp' %}?v=1.0" />
-                <span class="font-display-lg text-[22px] md:text-[26px] font-bold uppercase tracking-widest select-none leading-none">
+                <span
+                    class="font-display-lg text-[22px] md:text-[26px] font-bold uppercase tracking-widest select-none leading-none">
                     <span class="text-primary">MC</span><span class="text-secondary">SC</span>
                 </span>
             </a>
@@ -779,11 +836,12 @@
         class="fixed inset-0 z-[100] bg-on-surface/40 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300 flex justify-end">
         <div id="mobile-menu-container"
             class="w-full max-w-xs sm:max-w-sm bg-gradient-to-b from-[#f8f9ff] via-[#eef4ff] to-[#f8f9ff] text-on-surface h-full border-l border-outline-variant/30 shadow-2xl p-6 flex flex-col justify-between transform translate-x-full transition-transform duration-300 ease-out overflow-y-auto relative">
-            
+
             <!-- Ambient Background Glow Accent -->
             <div class="absolute top-0 right-0 w-48 h-48 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute bottom-0 left-0 w-48 h-48 bg-secondary/10 rounded-full blur-3xl pointer-events-none"></div>
-            
+            <div class="absolute bottom-0 left-0 w-48 h-48 bg-secondary/10 rounded-full blur-3xl pointer-events-none">
+            </div>
+
             <!-- Drawer Header (Logo & Logo Text matching main navbar + Close button) -->
             <div class="flex items-center justify-between border-b border-outline-variant/20 pb-4">
                 <a class="flex items-center gap-3" href="{% url 'home' %}">
@@ -861,7 +919,7 @@
             const overlay = document.getElementById('mobile-menu-overlay');
             const container = document.getElementById('mobile-menu-container');
             const icon = document.getElementById('mobile-menu-icon');
-            
+
             if (overlay.classList.contains('pointer-events-none')) {
                 overlay.classList.remove('pointer-events-none', 'opacity-0');
                 overlay.classList.add('opacity-100');
@@ -882,7 +940,8 @@
     {% endblock %}
 
     {% if messages %}
-    <div id="toast-container" class="fixed top-20 sm:top-28 left-1/2 -translate-x-1/2 sm:left-auto sm:right-6 sm:translate-x-0 z-[60] flex flex-col gap-3 w-[calc(100%-2rem)] sm:w-full max-w-sm pointer-events-none transition-all">
+    <div id="toast-container"
+        class="fixed top-20 sm:top-28 left-1/2 -translate-x-1/2 sm:left-auto sm:right-6 sm:translate-x-0 z-[60] flex flex-col gap-3 w-[calc(100%-2rem)] sm:w-full max-w-sm pointer-events-none transition-all">
         {% for message in messages %}
         <div class="django-message-alert pointer-events-auto flex items-center sm:items-start text-center sm:text-left gap-3 p-4 rounded-2xl shadow-xl border backdrop-blur-md transition-all duration-300 transform translate-x-0 opacity-100 relative overflow-hidden
             {% if message.tags == 'success' %}
@@ -956,7 +1015,7 @@
     <footer
         class="bg-surface-container-lowest dark:bg-surface-container-high w-full py-8 md:py-stack-lg border-t border-outline-variant/50 dark:border-outline/30 mt-auto select-none">
         <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
-            
+
             <!-- Mobile Footer Layout (Single Minimal Block, < md) -->
             <div class="md:hidden flex flex-col gap-3 text-left">
                 <!-- Brand Logo & Title Left Aligned -->
@@ -970,7 +1029,8 @@
 
                 <!-- Paragraph Text -->
                 <p class="font-body-md text-on-surface-variant text-xs leading-relaxed">
-                    Empowering students, fostering community, and providing authoritative representation at Marian College.
+                    Empowering students, fostering community, and providing authoritative representation at Marian
+                    College.
                 </p>
 
                 <!-- Connect Icons & Copyright Credit -->
@@ -1031,7 +1091,8 @@
                             <span class="material-symbols-outlined text-[20px]">mail</span>
                         </a>
                         <a class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:bg-secondary/15 hover:text-secondary transition-colors"
-                            href="https://www.instagram.com/mcscofficial/" target="_blank" title="Follow MCSC on Instagram">
+                            href="https://www.instagram.com/mcscofficial/" target="_blank"
+                            title="Follow MCSC on Instagram">
                             <svg class="w-[18px] h-[18px] fill-current" viewBox="0 0 24 24">
                                 <path
                                     d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
@@ -1070,137 +1131,137 @@
     {% if request.resolver_match.url_name == 'home' %}
     <!-- Loading Screen Script -->
     <script>
-            (function () {
-                const loadingScreen = document.getElementById('loading-screen');
-                if (!loadingScreen) return;
+        (function () {
+            const loadingScreen = document.getElementById('loading-screen');
+            if (!loadingScreen) return;
 
-                // Immediately check for prefers-reduced-motion or if intro already played to avoid scroll lock
-                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || sessionStorage.getItem('mcsc_intro_played') === 'true') {
-                    loadingScreen.remove();
-                    document.documentElement.classList.remove('loading-active');
-                    document.documentElement.classList.add('load-complete');
-                    const heroLogoRM = document.getElementById('hero-logo-box');
-                    if (heroLogoRM) heroLogoRM.style.opacity = '1';
-                    return;
+            // Immediately check for prefers-reduced-motion or if intro already played to avoid scroll lock
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || sessionStorage.getItem('mcsc_intro_played') === 'true') {
+                loadingScreen.remove();
+                document.documentElement.classList.remove('loading-active');
+                document.documentElement.classList.add('load-complete');
+                const heroLogoRM = document.getElementById('hero-logo-box');
+                if (heroLogoRM) heroLogoRM.style.opacity = '1';
+                return;
+            }
+
+            document.documentElement.classList.add('loading-active');
+
+
+
+            const logoBox = loadingScreen.querySelector('.loading-logo-box');
+            setTimeout(() => { if (logoBox) logoBox.classList.add('animate-pop'); }, 100);
+
+            const progress = document.getElementById('loading-progress');
+            setTimeout(() => { if (progress) progress.style.width = '100%'; }, 150);
+
+            // MCSC Title Scramble Reveal Animation
+            const titleText = "MCSC";
+            const titleEl = document.getElementById('loading-title');
+            const taglineText = "GET READY FOR THE CHANGE...";
+            const taglineEl = document.getElementById('loading-tagline');
+
+            if (titleEl) {
+                titleEl.innerHTML = '';
+                const GLITCH_POOL = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                const targetLength = titleText.length;
+                const charSpans = [];
+
+                // Setup initial random letters
+                for (let i = 0; i < targetLength; i++) {
+                    const span = document.createElement('span');
+                    span.className = 'inline-block select-none';
+                    span.textContent = GLITCH_POOL[Math.floor(Math.random() * GLITCH_POOL.length)];
+                    titleEl.appendChild(span);
+                    charSpans.push(span);
                 }
 
-                document.documentElement.classList.add('loading-active');
+                setTimeout(() => {
+                    const startTime = performance.now();
+                    const durationMs = 900; // Scramble duration slowed down slightly for premium aesthetic
 
+                    function updateScramble(now) {
+                        const elapsed = now - startTime;
+                        const progress = Math.min(1, elapsed / durationMs);
 
+                        for (let i = 0; i < targetLength; i++) {
+                            // Progressively lock characters from left to right
+                            const lockThreshold = i / targetLength;
+                            if (progress >= lockThreshold) {
+                                const timeToLock = progress - lockThreshold;
+                                const charProgress = timeToLock / (1 / targetLength);
 
-                const logoBox = loadingScreen.querySelector('.loading-logo-box');
-                setTimeout(() => { if (logoBox) logoBox.classList.add('animate-pop'); }, 100);
-
-                const progress = document.getElementById('loading-progress');
-                setTimeout(() => { if (progress) progress.style.width = '100%'; }, 150);
-
-                // MCSC Title Scramble Reveal Animation
-                const titleText = "MCSC";
-                const titleEl = document.getElementById('loading-title');
-                const taglineText = "GET READY FOR THE CHANGE...";
-                const taglineEl = document.getElementById('loading-tagline');
-
-                if (titleEl) {
-                    titleEl.innerHTML = '';
-                    const GLITCH_POOL = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                    const targetLength = titleText.length;
-                    const charSpans = [];
-
-                    // Setup initial random letters
-                    for (let i = 0; i < targetLength; i++) {
-                        const span = document.createElement('span');
-                        span.className = 'inline-block select-none';
-                        span.textContent = GLITCH_POOL[Math.floor(Math.random() * GLITCH_POOL.length)];
-                        titleEl.appendChild(span);
-                        charSpans.push(span);
-                    }
-
-                    setTimeout(() => {
-                        const startTime = performance.now();
-                        const durationMs = 900; // Scramble duration slowed down slightly for premium aesthetic
-
-                        function updateScramble(now) {
-                            const elapsed = now - startTime;
-                            const progress = Math.min(1, elapsed / durationMs);
-
-                            for (let i = 0; i < targetLength; i++) {
-                                // Progressively lock characters from left to right
-                                const lockThreshold = i / targetLength;
-                                if (progress >= lockThreshold) {
-                                    const timeToLock = progress - lockThreshold;
-                                    const charProgress = timeToLock / (1 / targetLength);
-
-                                    if (charProgress >= 0.75) {
-                                        charSpans[i].textContent = titleText[i];
-                                    } else {
-                                        charSpans[i].textContent = GLITCH_POOL[Math.floor(Math.random() * GLITCH_POOL.length)];
-                                    }
+                                if (charProgress >= 0.75) {
+                                    charSpans[i].textContent = titleText[i];
                                 } else {
                                     charSpans[i].textContent = GLITCH_POOL[Math.floor(Math.random() * GLITCH_POOL.length)];
                                 }
-                            }
-
-                            if (progress < 1) {
-                                requestAnimationFrame(updateScramble);
                             } else {
-                                for (let i = 0; i < targetLength; i++) {
-                                    charSpans[i].textContent = titleText[i];
-                                }
-                                // Start Typewriter tagline reveal once scramble is completed
-                                startTypewriter();
+                                charSpans[i].textContent = GLITCH_POOL[Math.floor(Math.random() * GLITCH_POOL.length)];
                             }
                         }
-                        requestAnimationFrame(updateScramble);
-                    }, 200);
-                } else {
-                    startTypewriter();
-                }
 
-                function startTypewriter() {
-                    if (!taglineEl) return;
-                    taglineEl.innerHTML = '';
-
-                    const textContainer = document.createElement('span');
-                    const cursorSpan = document.createElement('span');
-                    cursorSpan.className = 'typewriter-cursor';
-                    cursorSpan.textContent = '_';
-
-                    taglineEl.appendChild(textContainer);
-                    taglineEl.appendChild(cursorSpan);
-
-                    let charIdx = 0;
-                    const typeSpeed = 100; // Exact and slow (100ms per char)
-                    const initialDelay = 200; // Elegant pause after scramble settles
-
-                    setTimeout(() => {
-                        function typeNextChar() {
-                            if (charIdx < taglineText.length) {
-                                textContainer.textContent += taglineText.charAt(charIdx);
-                                charIdx++;
-                                setTimeout(typeNextChar, typeSpeed);
+                        if (progress < 1) {
+                            requestAnimationFrame(updateScramble);
+                        } else {
+                            for (let i = 0; i < targetLength; i++) {
+                                charSpans[i].textContent = titleText[i];
                             }
+                            // Start Typewriter tagline reveal once scramble is completed
+                            startTypewriter();
                         }
-                        typeNextChar();
-                    }, initialDelay);
-                }
+                    }
+                    requestAnimationFrame(updateScramble);
+                }, 200);
+            } else {
+                startTypewriter();
+            }
 
-                // Fade out the entire loading screen and trigger home page entrance transitions after 5.0 seconds
+            function startTypewriter() {
+                if (!taglineEl) return;
+                taglineEl.innerHTML = '';
+
+                const textContainer = document.createElement('span');
+                const cursorSpan = document.createElement('span');
+                cursorSpan.className = 'typewriter-cursor';
+                cursorSpan.textContent = '_';
+
+                taglineEl.appendChild(textContainer);
+                taglineEl.appendChild(cursorSpan);
+
+                let charIdx = 0;
+                const typeSpeed = 100; // Exact and slow (100ms per char)
+                const initialDelay = 200; // Elegant pause after scramble settles
+
                 setTimeout(() => {
-                    loadingScreen.classList.add('opacity-0');
+                    function typeNextChar() {
+                        if (charIdx < taglineText.length) {
+                            textContainer.textContent += taglineText.charAt(charIdx);
+                            charIdx++;
+                            setTimeout(typeNextChar, typeSpeed);
+                        }
+                    }
+                    typeNextChar();
+                }, initialDelay);
+            }
 
-                    // Unlock scroll and trigger homepage entrance transitions immediately
-                    document.documentElement.classList.remove('loading-active');
-                    document.documentElement.classList.add('load-complete');
+            // Fade out the entire loading screen and trigger home page entrance transitions after 5.0 seconds
+            setTimeout(() => {
+                loadingScreen.classList.add('opacity-0');
 
-                    // Save intro played flag to session storage
-                    sessionStorage.setItem('mcsc_intro_played', 'true');
+                // Unlock scroll and trigger homepage entrance transitions immediately
+                document.documentElement.classList.remove('loading-active');
+                document.documentElement.classList.add('load-complete');
 
-                    // Remove the loading screen overlay from DOM once fade transition is complete
-                    setTimeout(() => {
-                        loadingScreen.remove();
-                    }, 1500); // 1.5s fade duration matches style transitions
-                }, 5000);
-            })();
+                // Save intro played flag to session storage
+                sessionStorage.setItem('mcsc_intro_played', 'true');
+
+                // Remove the loading screen overlay from DOM once fade transition is complete
+                setTimeout(() => {
+                    loadingScreen.remove();
+                }, 1500); // 1.5s fade duration matches style transitions
+            }, 5000);
+        })();
     </script>
     {% endif %}
 
@@ -1348,6 +1409,7 @@
     <style>
         /* TargetCursor Styles */
         @media (pointer: fine) {
+
             body.target-cursor-active,
             body.target-cursor-active a,
             body.target-cursor-active button,
@@ -1430,7 +1492,8 @@
             border-bottom-left-radius: 3px;
         }
 
-        @media (pointer: coarse), (prefers-reduced-motion: reduce) {
+        @media (pointer: coarse),
+        (prefers-reduced-motion: reduce) {
             .target-cursor-wrapper {
                 display: none !important;
             }

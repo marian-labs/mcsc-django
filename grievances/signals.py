@@ -1,9 +1,9 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.core.mail import send_mail
 from django.conf import settings
 from django.urls import reverse
 from .models import Grievance, GrievanceReply, Notification
+from core.email import send_grievance_submitted, send_reply_notification, send_status_update
 from pywebpush import webpush, WebPushException
 import json
 
@@ -36,40 +36,28 @@ def send_web_push(user, title, body, url):
         except Exception as e:
             print("Web push dispatch failed:", e)
 
+@receiver(post_save, sender=Grievance)
+def handle_grievance_created(sender, instance, created, **kwargs):
+    """Send a confirmation email when a student submits a new grievance."""
+    if created:
+        send_grievance_submitted(instance)
+
 @receiver(post_save, sender=GrievanceReply)
 def handle_reply_posted(sender, instance, created, **kwargs):
     if created:
         grievance = instance.grievance
         student = grievance.student
-        
+
         # 1. Create in-app Notification
         Notification.objects.create(
             user=student,
             grievance=grievance,
             type='reply_posted'
         )
-        
-        # 2. Send email notification
-        subject = f"[MCSC Grievance] New reply to: {grievance.title}"
-        message = (
-            f"Dear {student.first_name or student.username},\n\n"
-            f"An MCSC administrator has replied to your grievance: \"{grievance.title}\".\n\n"
-            f"Reply:\n{instance.reply_text}\n\n"
-            f"You can view the full grievance and history on the MCSC Portal.\n\n"
-            f"Best regards,\n"
-            f"Marian College Students Council (MCSC)"
-        )
-        try:
-            send_mail(
-                subject=subject,
-                message=message,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[student.email],
-                fail_silently=True
-            )
-        except Exception:
-            pass  # Silently ignore email failures during local dev if SMTP not configured
-            
+
+        # 2. Send HTML email via Resend
+        send_reply_notification(instance)
+
         # 3. Send Web Push Notification to the corresponding student only
         url = reverse('grievance_portal') + f"?highlight={grievance.id}"
         send_web_push(
@@ -83,34 +71,17 @@ def handle_reply_posted(sender, instance, created, **kwargs):
 def handle_grievance_status_changed(sender, instance, created, **kwargs):
     if not created:
         student = instance.student
-        
+
         # 1. Create in-app Notification
         Notification.objects.create(
             user=student,
             grievance=instance,
             type='status_changed'
         )
-        
-        # 2. Send email notification
-        subject = f"[MCSC Grievance] Status update: {instance.title}"
-        message = (
-            f"Dear {student.first_name or student.username},\n\n"
-            f"The status of your grievance \"{instance.title}\" has been updated to: {instance.get_status_display()}.\n\n"
-            f"You can view the details on the MCSC Portal.\n\n"
-            f"Best regards,\n"
-            f"Marian College Students Council (MCSC)"
-        )
-        try:
-            send_mail(
-                subject=subject,
-                message=message,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[student.email],
-                fail_silently=True
-            )
-        except Exception:
-            pass
-            
+
+        # 2. Send HTML email via Resend
+        send_status_update(instance)
+
         # 3. Send Web Push Notification to the corresponding student only
         url = reverse('grievance_portal') + f"?highlight={instance.id}"
         send_web_push(

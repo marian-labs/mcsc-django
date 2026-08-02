@@ -107,7 +107,6 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS = ['mariancollege.org']
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
     'social_core.pipeline.social_auth.social_uid',
-    'social_core.pipeline.social_auth.social_validation',
     'social_core.pipeline.social_auth.social_user',
     'social_core.pipeline.user.get_username',
     # Custom pipeline step for domain verification
@@ -180,6 +179,10 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=False, cast=bool)
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='MCSC Students Council <no-reply@mariancollege.org>')
+
+# Resend Transactional Email
+RESEND_API_KEY = config('RESEND_API_KEY', default='')
+RESEND_FROM_EMAIL = config('RESEND_FROM_EMAIL', default='MCSC Students Council <onboarding@resend.dev>')
 
 # Authentication Redirects
 LOGIN_URL = 'login'
