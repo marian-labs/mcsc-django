@@ -794,7 +794,7 @@
             <!-- Trailing Portal & Grievance Quick Actions (Desktop XL) -->
             <div class="hidden xl:flex items-center gap-4 ml-auto pointer-events-auto">
                 <!-- PYQ Portal Box -->
-                <a href="https://pyqportal.app" target="_blank"
+                <a href="{{ PYQ_PORTAL_URL }}" target="_blank"
                     class="group flex items-center gap-3.5 bg-surface/95 border border-outline-variant/30 hover:border-primary/50 shadow-md rounded-2xl px-5 py-2.5 transition-all duration-300 hover:scale-102 hover-lift">
                     <div
                         class="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
@@ -889,7 +889,7 @@
                     Submit Grievance
                 </a>
 
-                <a href="https://pyqportal.app" target="_blank"
+                <a href="{{ PYQ_PORTAL_URL }}" target="_blank"
                     class="flex items-center gap-3.5 bg-primary/10 text-primary border border-primary/25 px-5 py-3.5 rounded-2xl font-bold hover:bg-primary/20 transition-all justify-center">
                     <span class="material-symbols-outlined text-xl">folder_open</span>
                     PYQ Portal
@@ -1317,93 +1317,6 @@
         }
     </script>
 
-    {% if user.is_authenticated %}
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if ('serviceWorker' in navigator && 'PushManager' in window) {
-                navigator.serviceWorker.register('{% url "sw.js" %}')
-                    .then((reg) => {
-                        reg.pushManager.getSubscription()
-                            .then((subscription) => {
-                                if (!subscription) {
-                                    Notification.requestPermission().then(permission => {
-                                        if (permission === 'granted') {
-                                            const vapidPublicKey = '{{ VAPID_PUBLIC_KEY }}';
-                                            if (vapidPublicKey) {
-                                                const applicationServerKey = urlB64ToUint8Array(vapidPublicKey);
-                                                reg.pushManager.subscribe({
-                                                    userVisibleOnly: true,
-                                                    applicationServerKey: applicationServerKey
-                                                })
-                                                    .then((newSub) => {
-                                                        sendSubscriptionToBackend(newSub);
-                                                    })
-                                                    .catch((err) => {
-                                                        console.error('Push subscription failed:', err);
-                                                    });
-                                            }
-                                        }
-                                    });
-                                } else {
-                                    sendSubscriptionToBackend(subscription);
-                                }
-                            });
-                    })
-                    .catch((err) => {
-                        console.error('Service Worker registration failed:', err);
-                    });
-            }
-        });
-
-        function urlB64ToUint8Array(base64String) {
-            const padding = '='.repeat((4 - base64String.length % 4) % 4);
-            const base64 = (base64String + padding)
-                .replace(/\-/g, '+')
-                .replace(/_/g, '/');
-            const rawData = window.atob(base64);
-            const outputArray = new Uint8Array(rawData.length);
-            for (let i = 0; i < rawData.length; ++i) {
-                outputArray[i] = rawData.charCodeAt(i);
-            }
-            return outputArray;
-        }
-
-        function sendSubscriptionToBackend(subscription) {
-            const jsonSub = subscription.toJSON();
-
-            const data = {
-                endpoint: subscription.endpoint,
-                keys: {
-                    p256dh: jsonSub.keys ? jsonSub.keys.p256dh : null,
-                    auth: jsonSub.keys ? jsonSub.keys.auth : null
-                }
-            };
-
-            if (!data.keys.p256dh || !data.keys.auth) {
-                console.warn('Subscription keys are missing:', data);
-                return;
-            }
-
-            fetch('{% url "push_subscribe" %}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: JSON.stringify(data)
-            })
-                .then(res => res.json())
-                .then(resData => {
-                    if (resData.status !== 'success') {
-                        console.error('Failed to sync push subscription:', resData.message);
-                    }
-                })
-                .catch(err => {
-                    console.error('Error syncing push subscription:', err);
-                });
-        }
-    </script>
-    {% endif %}
 
     <!-- ── TargetCursor System (React Bits Port for Django) ───────────────────── -->
     <style>

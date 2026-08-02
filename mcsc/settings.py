@@ -84,7 +84,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
-                'core.context_processors.vapid_settings',
+                'core.context_processors.portal_settings',
             ],
         },
     },
@@ -206,9 +206,6 @@ LOGOUT_REDIRECT_URL = 'home'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# VAPID Push Notification Settings
-VAPID_PUBLIC_KEY = config('VAPID_PUBLIC_KEY', default='')
-VAPID_PRIVATE_KEY = config('VAPID_PRIVATE_KEY', default='')
 
 # In-Memory Caching & Fast Cached-DB Sessions for instant login/logout
 CACHES = {
@@ -238,4 +235,7 @@ if not DEBUG:
 # Protected Admin Accounts that cannot be deleted (strictly loaded from .env)
 _protected_admins_str = config('PROTECTED_ADMIN_USERNAMES', default='')
 PROTECTED_ADMIN_USERNAMES = {u.strip() for u in _protected_admins_str.split(',') if u.strip()}
+
+# External Portal Links (strictly loaded from .env)
+PYQ_PORTAL_URL = config('PYQ_PORTAL_URL')
 
