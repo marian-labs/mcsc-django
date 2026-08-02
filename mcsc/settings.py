@@ -14,6 +14,7 @@ import django.template.context
 if sys.version_info >= (3, 14):
     def _safe_context_copy(self):
         new_obj = self.__class__.__new__(self.__class__)
+        new_obj.__dict__.update(self.__dict__)
         new_obj.dicts = self.dicts.copy()
         return new_obj
     django.template.context.BaseContext.__copy__ = _safe_context_copy
