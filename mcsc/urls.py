@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-
 from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
 
@@ -19,7 +18,6 @@ urlpatterns = [
     path('oauth/', include('social_django.urls', namespace='social')),
 ]
 
-# Serve media files in development mode if not using Supabase Storage
-if settings.DEBUG and not settings.SUPABASE_URL:
+# Serve media files for uploaded images & attachments when local file storage is used
+if not getattr(settings, 'USE_SUPABASE_STORAGE', False):
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
