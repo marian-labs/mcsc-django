@@ -28,6 +28,23 @@
         animation: status-pulse 2s infinite ease-in-out;
     }
 </style>
+<script>
+    /**
+     * Extracts a clean display name by stripping college reg numbers.
+     * e.g. "Muhammed Sinan M 24UBC145" → "Muhammed Sinan M"
+     * Pattern: removes trailing tokens that look like reg nos (digits+letters)
+     */
+    function cleanDisplayName(raw) {
+        if (!raw) return raw;
+        // Remove trailing registration number patterns like 24UBC145, 23BCO12, etc.
+        return raw.replace(/\s+\d{2}[A-Z]{2,4}\d+\s*$/, '').trim();
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('[data-raw-name]').forEach(function (el) {
+            el.textContent = cleanDisplayName(el.getAttribute('data-raw-name'));
+        });
+    });
+</script>
 
 <!-- Main Container with Grid Background -->
 <div class="w-full min-h-screen bg-surface bg-grid-blueprint pb-20">
@@ -94,7 +111,8 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                 
                 <!-- LEFT COLUMN: Main Ticket Card & Interactive Conversation Timeline (Col Span 2) -->
-                <div class="lg:col-span-2 space-y-8">
+                <!-- On desktop: conversation feed shown FIRST so students see updates immediately -->
+                <div class="lg:col-span-2 space-y-8 lg:order-2">
                     
                     <!-- Main Ticket Details Card -->
                     <article class="bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 md:p-8 shadow-sm relative overflow-hidden">
@@ -118,7 +136,7 @@
                             <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-on-surface-variant font-medium mt-1">
                                 <span class="flex items-center gap-1.5">
                                     <span class="material-symbols-outlined text-[16px] text-outline">account_circle</span>
-                                    Submitted by <strong>{{ grievance.student.username }}</strong>
+                                    Submitted by <strong data-raw-name="{{ grievance.student.get_full_name|default:grievance.student.username }}">{{ grievance.student.get_full_name|default:grievance.student.username }}</strong>
                                 </span>
                                 <span class="hidden sm:inline text-outline-variant/50">•</span>
                                 <span class="flex items-center gap-1.5">
@@ -180,9 +198,9 @@
                                     <div class="flex justify-between items-center mb-3 border-b border-outline-variant/10 pb-2">
                                         <div class="flex items-center gap-2">
                                             <div class="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[10px]">
-                                                {{ grievance.student.username|slice:":2"|upper }}
+                                                {{ grievance.student.get_full_name|default:grievance.student.username|slice:":2"|upper }}
                                             </div>
-                                            <span class="font-bold text-sm text-on-surface">{{ grievance.student.username }}</span>
+                                            <span class="font-bold text-sm text-on-surface" data-raw-name="{{ grievance.student.get_full_name|default:grievance.student.username }}">{{ grievance.student.get_full_name|default:grievance.student.username }}</span>
                                             <span class="bg-primary/15 text-primary text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full">Student</span>
                                         </div>
                                         <time class="text-[11px] text-outline font-medium">{{ grievance.created_at|date:"M d, Y, h:i A" }}</time>
@@ -229,7 +247,8 @@
                 </div>
                 
                 <!-- RIGHT COLUMN: Sidebar Metadata & Admin Composer (Col Span 1) -->
-                <div class="space-y-6">
+                <!-- On desktop: sidebar is shown on LEFT (order-1) so conversation gets priority on right -->
+                <div class="space-y-6 lg:order-1">
                     
                     <!-- Ticket status sidebar card -->
                     <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 shadow-sm space-y-4">
@@ -268,11 +287,11 @@
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-secondary p-0.5 shadow-sm">
                                         <div class="w-full h-full rounded-full bg-white flex items-center justify-center font-bold text-primary text-xs">
-                                            {{ grievance.student.username|slice:":2"|upper }}
+                                            {{ grievance.student.get_full_name|default:grievance.student.username|slice:":2"|upper }}
                                         </div>
                                     </div>
                                     <div class="min-w-0 flex-1">
-                                        <p class="font-bold text-sm text-on-surface truncate leading-snug">{{ grievance.student.username }}</p>
+                                        <p class="font-bold text-sm text-on-surface truncate leading-snug" data-raw-name="{{ grievance.student.get_full_name|default:grievance.student.username }}">{{ grievance.student.get_full_name|default:grievance.student.username }}</p>
                                         <p class="text-xs text-outline truncate">{{ grievance.student.email }}</p>
                                     </div>
                                 </div>

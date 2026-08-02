@@ -3,9 +3,10 @@ from django.dispatch import receiver
 from django.conf import settings
 from django.urls import reverse
 from .models import Grievance, GrievanceReply, Notification
-from core.email import send_grievance_submitted, send_reply_notification, send_status_update
+from core.email import send_reply_notification, send_status_update
 from pywebpush import webpush, WebPushException
 import json
+
 
 def send_web_push(user, title, body, url):
     from accounts.models import PushSubscription
@@ -35,12 +36,6 @@ def send_web_push(user, title, body, url):
                 sub.delete()
         except Exception as e:
             print("Web push dispatch failed:", e)
-
-@receiver(post_save, sender=Grievance)
-def handle_grievance_created(sender, instance, created, **kwargs):
-    """Send a confirmation email when a student submits a new grievance."""
-    if created:
-        send_grievance_submitted(instance)
 
 @receiver(post_save, sender=GrievanceReply)
 def handle_reply_posted(sender, instance, created, **kwargs):
