@@ -63,9 +63,10 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'core.middleware.ActiveUserCheckMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware',
+    'core.middleware.MCSCSocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'mcsc.urls'
@@ -127,6 +128,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.associate_user',
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
+    'accounts.pipeline.set_clean_user_name',
 )
 
 LOGIN_URL = 'login'

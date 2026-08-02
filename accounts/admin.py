@@ -1,3 +1,4 @@
+import re
 from django.contrib import admin, messages
 from django.contrib.auth.admin import UserAdmin
 from django.conf import settings
@@ -14,9 +15,16 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + (
         ('MCSC Role', {'fields': ('role',)}),
     )
-    list_display = ('username', 'email', 'role', 'is_staff', 'is_active')
+    list_display = ('username', 'full_name', 'email', 'role', 'is_staff', 'is_active')
     list_filter = ('role', 'is_staff', 'is_active')
+    search_fields = ('username', 'email', 'first_name', 'last_name')
     actions = ['block_users', 'unblock_users', 'delete_selected']
+
+    @admin.display(description="Full Name")
+    def full_name(self, obj):
+        raw = obj.first_name or obj.get_full_name() or obj.username
+        clean = re.sub(r'\s+\d{2}[A-Z]{2,4}\d+\s*$', '', raw).strip()
+        return clean or obj.username
 
     @admin.action(description="🚫 Block / Deactivate selected users")
     def block_users(self, request, queryset):

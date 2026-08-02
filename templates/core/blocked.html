@@ -1,0 +1,51 @@
+{% extends "core/base.html" %}
+
+{% block title %}Account Suspended | MCSC{% endblock %}
+
+{% block content %}
+<main class="flex-grow flex items-center justify-center min-h-[70vh] px-margin-mobile md:px-margin-desktop py-12">
+    <div class="w-full max-w-lg bg-surface-container-lowest border-2 border-error/30 rounded-3xl p-8 sm:p-10 shadow-2xl relative overflow-hidden text-center">
+        <!-- Top Error Accent Line -->
+        <div class="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-error via-rose-500 to-amber-500"></div>
+
+        <!-- Warning Icon -->
+        <div class="w-20 h-20 rounded-full bg-error/10 text-error flex items-center justify-center mx-auto mb-6 shadow-inner animate-pulse">
+            <span class="material-symbols-outlined text-4xl">block</span>
+        </div>
+
+        <!-- Title -->
+        <h1 class="font-display-lg text-2xl sm:text-3xl font-extrabold text-on-surface mb-3">
+            Account Suspended
+        </h1>
+
+        <!-- Reason / Message -->
+        <div class="bg-error/5 border border-error/20 rounded-2xl p-4 mb-6 text-left">
+            <p class="text-xs font-bold uppercase tracking-wider text-error mb-1 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">info</span>
+                Access Restricted
+            </p>
+            <p class="text-sm text-on-surface-variant leading-relaxed">
+                {{ reason|default:"Your account has been temporarily deactivated by the Students Council Administrator." }}
+            </p>
+        </div>
+
+        <p class="text-xs text-outline leading-relaxed mb-8">
+            If you believe this is an error or need your account reinstated, please reach out to the <strong>Marian College Students Council</strong> executive team.
+        </p>
+
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a href="{% url 'home' %}"
+               class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-primary text-white font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-full hover:bg-primary/90 transition-all shadow-md">
+                <span class="material-symbols-outlined text-[18px]">home</span>
+                Return to Home
+            </a>
+            <a href="{% url 'logout' %}"
+               class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-surface-container text-on-surface-variant font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-full hover:bg-outline-variant/30 transition-all">
+                <span class="material-symbols-outlined text-[18px]">logout</span>
+                Sign Out
+            </a>
+        </div>
+    </div>
+</main>
+{% endblock %}
