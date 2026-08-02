@@ -18,6 +18,8 @@ urlpatterns = [
     path('oauth/', include('social_django.urls', namespace='social')),
 ]
 
-# Serve media files for uploaded images & attachments when local file storage is used
-if not getattr(settings, 'USE_SUPABASE_STORAGE', False):
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Serve media files for uploaded images & attachments
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+if (settings.BASE_DIR / 'static').exists():
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.BASE_DIR / 'static')
