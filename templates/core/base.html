@@ -1538,9 +1538,7 @@
                 const isNavStandardLink = elUnder && elUnder.closest('nav a, #mobile-menu-container a') && !elUnder.closest('[href*="grievance"], [href*="pyq"], [href*="dashboard"], .allow-cursor-lock');
                 const isSquareDotArea = isLoadingActive || isNavStandardLink || (elUnder && (elUnder.closest('#cf-root') || elUnder.closest('#rep-modal-backdrop') || elUnder.closest('#dev-modal-backdrop') || elUnder.closest('[data-square-dot="true"]')));
                 if (isSquareDotArea) {
-                    gsap.killTweensOf(cursor, 'rotation');
                     spinTl?.pause();
-                    gsap.set(cursor, { rotation: 0 });
                     corners.forEach(c => gsap.to(c, { opacity: 0, duration: 0.15, overwrite: 'auto' }));
                     const dotColor = isNavStandardLink ? '#f5a623' : '#005c9b';
                     if (dot) gsap.to(dot, { borderRadius: '2px', scale: 1.25, backgroundColor: dotColor, duration: 0.15, overwrite: 'auto' });
@@ -1789,8 +1787,8 @@
             onclick="event.stopPropagation()">
 
             <!-- Close Button -->
-            <button onclick="closeDevModal()"
-                class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-high text-on-surface-variant hover:bg-primary hover:text-white transition-colors duration-200 flex items-center justify-center shadow-xs">
+            <button onclick="closeDevModal()" type="button" aria-label="Close"
+                class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-high text-on-surface-variant hover:bg-rose-500 hover:text-white hover:scale-110 active:scale-95 transition-all duration-200 flex items-center justify-center shadow-sm cursor-pointer z-20">
                 <span class="material-symbols-outlined text-[20px]">close</span>
             </button>
 
@@ -1858,6 +1856,7 @@
             const card = document.getElementById('dev-modal-card');
             if (!backdrop || !card) return;
             document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
             backdrop.classList.remove('opacity-0', 'pointer-events-none');
             backdrop.classList.add('opacity-100', 'pointer-events-auto');
             card.classList.remove('scale-95');
@@ -1869,6 +1868,7 @@
             const card = document.getElementById('dev-modal-card');
             if (!backdrop || !card) return;
             document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
             backdrop.classList.remove('opacity-100', 'pointer-events-auto');
             backdrop.classList.add('opacity-0', 'pointer-events-none');
             card.classList.remove('scale-100');
