@@ -29,6 +29,9 @@ STATIC_REP_IMAGES = {
     'allan george aj': 'allan_george_aj.webp',
     'brillia b bose': 'brillia_b_bose.webp',
     'anita tomy': 'anita_tomy.webp',
+    'alan m nibin': 'alan_m_nibin.webp',
+    'alan m. nibin': 'alan_m_nibin.webp',
+    'alan nibin': 'alan_m_nibin.webp',
 }
 
 class Representative(models.Model):
