@@ -1017,6 +1017,7 @@
         <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
 
             <!-- Mobile Footer Layout (Single Minimal Block, < md) -->
+            <!-- Mobile Footer Layout (< md) -->
             <div class="md:hidden flex flex-col gap-3 text-left">
                 <!-- Brand Logo & Title Left Aligned -->
                 <a class="flex items-center gap-3" href="{% url 'home' %}">
@@ -1050,77 +1051,83 @@
                         </a>
                     </div>
 
-                    <!-- Copyright Credit -->
-                    <span class="text-on-surface-variant/70 text-[10px]">
-                        © 2026 MCSC. All rights reserved.
-                    </span>
+                    <!-- Copyright Credit & Developer Name -->
+                    <div class="flex flex-col text-right text-[10px] text-on-surface-variant/70 leading-tight">
+                        <span>© 2026 MCSC. All rights reserved.</span>
+                        <span>Dev by <button onclick="openDevModal();" class="font-bold text-primary hover:underline hover:text-secondary cursor-pointer">Muhammed Sinan M</button></span>
+                    </div>
                 </div>
             </div>
 
             <!-- Desktop Footer Layout (>= md) -->
-            <div class="hidden md:grid md:grid-cols-4 gap-gutter">
-                <div class="flex flex-col gap-4">
-                    <a class="font-display-lg text-xl font-bold text-[#001d35] dark:text-primary-fixed-dim flex items-center gap-3"
-                        href="{% url 'home' %}">
-                        <img alt="MCSC Logo Footer" class="w-14 h-14 object-contain"
-                            src="{% static 'images/mcsc_logo-Photoroom.webp' %}" />
-                        <span
-                            class="font-display-lg text-[22px] font-bold uppercase tracking-widest select-none leading-none">
-                            <span class="text-primary">MC</span><span class="text-secondary">SC</span>
-                        </span>
-                    </a>
-                    <p class="font-body-md text-body-md text-on-surface-variant text-sm">Empowering students, fostering
-                        community, and providing authoritative representation at Marian College.</p>
-                </div>
-                <div class="flex flex-col gap-3">
-                    <h4 class="font-label-lg text-label-lg text-on-surface font-semibold mb-2">Links</h4>
-                    <a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim opacity-80 hover:opacity-100 transition-opacity hover:underline decoration-secondary decoration-2 underline-offset-4 w-fit"
-                        href="{% url 'about' %}">About</a>
-                    <a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim opacity-80 hover:opacity-100 transition-opacity hover:underline decoration-secondary decoration-2 underline-offset-4 w-fit"
-                        href="{% url 'representatives_list' %}">Representatives</a>
-                    <a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim opacity-80 hover:opacity-100 transition-opacity hover:underline decoration-secondary decoration-2 underline-offset-4 w-fit"
-                        href="{% url 'news_list' %}">News</a>
-                    <a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim opacity-80 hover:opacity-100 transition-opacity hover:underline decoration-secondary decoration-2 underline-offset-4 w-fit"
-                        href="{% url 'events_list' %}">Events</a>
-                </div>
-                <div class="flex flex-col gap-3">
-                    <h4 class="font-label-lg text-label-lg text-on-surface font-semibold mb-2">Connect</h4>
-                    <div class="flex gap-4">
-                        <a class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:bg-primary/10 hover:text-primary transition-colors"
-                            href="mailto:mcsc@mariancollege.org" title="Email Us">
-                            <span class="material-symbols-outlined text-[20px]">mail</span>
-                        </a>
-                        <a class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:bg-secondary/15 hover:text-secondary transition-colors"
-                            href="https://www.instagram.com/mcscofficial/" target="_blank"
-                            title="Follow MCSC on Instagram">
-                            <svg class="w-[18px] h-[18px] fill-current" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-                            </svg>
-                        </a>
-                    </div>
-                    <p class="font-body-md text-body-md text-on-surface-variant text-sm mt-4">
-                        © 2026 Marian College Students Council. All rights reserved.
-                    </p>
-                </div>
-                <div class="flex flex-col gap-3">
-                    <h4 class="font-label-lg text-label-lg text-on-surface font-semibold mb-2">Developer</h4>
-                    <div onclick="openDevModal();"
-                        class="flex items-center gap-3 w-fit group pointer-events-auto cursor-pointer">
-                        <div
-                            class="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-secondary p-[1.5px] shadow-sm transition-transform duration-500 group-hover:scale-110">
-                            <div
-                                class="w-full h-full rounded-full bg-white dark:bg-surface-container-high flex items-center justify-center overflow-hidden">
-                                <img src="{% static 'images/sinan.webp' %}" alt="Muhammed Sinan.M" class="w-full h-full object-cover object-[50%_18%]">
-                            </div>
-                        </div>
-                        <div class="flex flex-col text-left">
+            <div class="hidden md:flex md:flex-col gap-5">
+                <!-- Top 3 Balanced Columns Grid -->
+                <div class="grid grid-cols-3 gap-8">
+                    <!-- Column 1: Brand Info -->
+                    <div class="flex flex-col gap-4">
+                        <a class="font-display-lg text-xl font-bold text-[#001d35] dark:text-primary-fixed-dim flex items-center gap-3"
+                            href="{% url 'home' %}">
+                            <img alt="MCSC Logo Footer" class="w-14 h-14 object-contain"
+                                src="{% static 'images/mcsc_logo-Photoroom.webp' %}" />
                             <span
-                                class="text-sm font-bold text-on-surface-variant dark:text-surface-variant group-hover:text-primary transition-colors group-hover:underline decoration-secondary decoration-2 underline-offset-4">
-                                Muhammed Sinan.M
+                                class="font-display-lg text-[22px] font-bold uppercase tracking-widest select-none leading-none">
+                                <span class="text-primary">MC</span><span class="text-secondary">SC</span>
                             </span>
+                        </a>
+                        <p class="font-body-md text-body-md text-on-surface-variant text-sm leading-relaxed max-w-sm">
+                            Empowering students, fostering community, and providing authoritative representation at Marian College.
+                        </p>
+                    </div>
+
+                    <!-- Column 2: Quick Links (Centered) -->
+                    <div class="flex flex-col gap-3 items-center text-center">
+                        <h4 class="font-label-lg text-base text-on-surface font-semibold mb-2">Quick Links</h4>
+                        <div class="flex flex-col gap-2.5 items-center">
+                            <a class="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors hover:underline decoration-secondary decoration-2 underline-offset-4 w-fit"
+                                href="{% url 'about' %}">About</a>
+                            <a class="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors hover:underline decoration-secondary decoration-2 underline-offset-4 w-fit"
+                                href="{% url 'representatives_list' %}">Representatives</a>
+                            <a class="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors hover:underline decoration-secondary decoration-2 underline-offset-4 w-fit"
+                                href="{% url 'news_list' %}">News</a>
+                            <a class="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors hover:underline decoration-secondary decoration-2 underline-offset-4 w-fit"
+                                href="{% url 'events_list' %}">Events</a>
                         </div>
                     </div>
+
+                    <!-- Column 3: Connect & Campus -->
+                    <div class="flex flex-col gap-3">
+                        <h4 class="font-label-lg text-label-lg text-on-surface font-semibold mb-2">Connect</h4>
+                        <div class="flex flex-col gap-2.5">
+                            <a class="flex items-center gap-2.5 text-sm text-on-surface-variant hover:text-primary transition-colors group w-fit"
+                                href="mailto:mcsc@mariancollege.org">
+                                <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors shadow-xs">
+                                    <span class="material-symbols-outlined text-[16px]">mail</span>
+                                </div>
+                                <span class="group-hover:underline">mcsc@mariancollege.org</span>
+                            </a>
+                            <a class="flex items-center gap-2.5 text-sm text-on-surface-variant hover:text-secondary transition-colors group w-fit"
+                                href="https://www.instagram.com/mcscofficial/" target="_blank">
+                                <div class="w-8 h-8 rounded-full bg-secondary/15 text-secondary flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-colors shadow-xs">
+                                    <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                                    </svg>
+                                </div>
+                                <span class="group-hover:underline">@mcscofficial</span>
+                            </a>
+                        </div>
+
+                        <!-- Campus Location Badge -->
+                        <div class="mt-2 text-xs text-on-surface-variant/80 flex items-center gap-1.5 bg-surface-container-low px-3 py-2 rounded-xl border border-outline-variant/20 w-fit">
+                            <span class="material-symbols-outlined text-primary text-base">location_on</span>
+                            <span>Marian College Kuttikkanam (Autonomous)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Single-Line Copyright & Developer Credit Bar -->
+                <div class="pt-4 border-t border-outline-variant/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-on-surface-variant/80">
+                    <span>© 2026 Marian College Students Council. All rights reserved.</span>
+                    <span>Website developed by <button onclick="openDevModal();" class="font-bold text-primary hover:underline hover:text-secondary transition-colors cursor-pointer">Muhammed Sinan M</button></span>
                 </div>
             </div>
 
