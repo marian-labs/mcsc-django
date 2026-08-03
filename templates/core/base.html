@@ -1547,6 +1547,9 @@
                 } else if (!activeTarget) {
                     corners.forEach(c => gsap.to(c, { opacity: 1, duration: 0.15, overwrite: 'auto' }));
                     if (dot) gsap.to(dot, { borderRadius: '50%', scale: 1, backgroundColor: cursorColor, duration: 0.15, overwrite: 'auto' });
+                    if (spinTl && spinTl.paused()) {
+                        spinTl.play();
+                    }
                 }
             }
 
