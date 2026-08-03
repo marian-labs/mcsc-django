@@ -463,27 +463,27 @@
                 Council Members
             </span>
         </div>
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
             {% for rep in other_representatives %}
             <div
-                class="council-card hover-lift flex flex-col items-center gap-3 p-5 sm:p-6 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 transition-all duration-300 group text-center cursor-pointer" onclick="openRepModal('{{ rep.name|escapejs }}', '{{ rep.position|escapejs }}', '{% if rep.photo_url %}{{ rep.photo_url|escapejs }}{% endif %}')">
-                <div class="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-gradient-to-tr from-primary/25 to-secondary/25 p-[2.5px] shadow-sm group-hover:shadow-md transition-all duration-300">
+                class="council-card hover-lift flex flex-col items-center justify-between h-full gap-3 p-3.5 sm:p-6 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 transition-all duration-300 group text-center cursor-pointer" onclick="openRepModal('{{ rep.name|escapejs }}', '{{ rep.position|escapejs }}', '{% if rep.photo_url %}{{ rep.photo_url|escapejs }}{% endif %}')">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 aspect-square rounded-full bg-gradient-to-tr from-primary/25 to-secondary/25 p-[2.5px] shadow-sm group-hover:shadow-md transition-all duration-300">
                     <div class="w-full h-full rounded-full bg-white overflow-hidden flex items-center justify-center">
                         {% if rep.photo_url %}
-                        <img class="w-full h-full object-cover" src="{{ rep.photo_url }}" alt="{{ rep.name }}" loading="eager" decoding="async">
+                        <img class="w-full h-full object-cover rounded-full" src="{{ rep.photo_url }}" alt="{{ rep.name }}" loading="eager" decoding="async">
                         {% else %}
                         <div
-                            class="w-full h-full bg-gradient-to-tr from-[#daeaff] to-[#f5f8ff] flex items-center justify-center">
-                            <span class="text-primary font-bold text-base sm:text-lg">{{ rep.name|slice:":2"|upper }}</span>
+                            class="w-full h-full bg-gradient-to-tr from-[#daeaff] to-[#f5f8ff] flex items-center justify-center rounded-full">
+                            <span class="text-primary font-bold text-sm sm:text-lg">{{ rep.name|slice:":2"|upper }}</span>
                         </div>
                         {% endif %}
                     </div>
                 </div>
-                <div>
+                <div class="flex flex-col items-center justify-center flex-1 w-full">
                     <p
-                        class="font-bold text-on-surface text-sm sm:text-base leading-snug group-hover:text-primary transition-colors">
+                        class="font-bold text-on-surface text-xs sm:text-base leading-snug group-hover:text-primary transition-colors line-clamp-2">
                         {{ rep.name }}</p>
-                    <p class="text-[11px] sm:text-xs font-extrabold text-secondary uppercase tracking-wider mt-1">{{ rep.position }}</p>
+                    <p class="text-[10px] sm:text-xs font-extrabold text-secondary uppercase tracking-wider mt-1 line-clamp-1">{{ rep.position }}</p>
                 </div>
             </div>
             {% endfor %}
