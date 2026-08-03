@@ -2,11 +2,9 @@ from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.http import JsonResponse
 from django.template.loader import render_to_string
-from django.views.decorators.cache import cache_page
 from .models import NewsPost
 from events.models import Event
 
-@cache_page(60 * 15)
 def news_list(request):
     now = timezone.now()
     news_posts = NewsPost.objects.filter(is_published=True).order_by('-published_at')[:9]
@@ -23,7 +21,6 @@ def news_list(request):
     }
     return render(request, 'news/news_list.html', context)
 
-@cache_page(60 * 15)
 def load_more_news(request):
     offset = int(request.GET.get('offset', 9))
     limit = 9
@@ -39,7 +36,6 @@ def load_more_news(request):
         'has_more': has_more
     })
 
-@cache_page(60 * 15)
 def news_detail(request, slug):
     post = get_object_or_404(NewsPost, slug=slug, is_published=True)
     recent_news = NewsPost.objects.filter(is_published=True).exclude(id=post.id).order_by('-published_at')[:4]

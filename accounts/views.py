@@ -40,6 +40,8 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
+    from django.core.cache import cache
+    cache.clear()
     messages.info(request, "You have been logged out.")
     return redirect('home')
 

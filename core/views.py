@@ -1,11 +1,9 @@
 from django.shortcuts import render
-from django.views.decorators.cache import cache_page
 from django.utils import timezone
 from news.models import NewsPost
 from events.models import Event
 from .models import CouncilInfo
 
-@cache_page(60 * 5)  # Cache home page for 5 minutes
 def home(request):
     # Fetch news posts for ticker & bento widget
     ticker_posts = list(NewsPost.objects.filter(is_published=True).order_by('-published_at')[:6])
@@ -41,7 +39,6 @@ def home(request):
     }
     return render(request, 'core/home.html', context)
 
-@cache_page(60 * 10)  # Cache about page for 10 minutes
 def about(request):
     # Fetch current council info
     council_info = CouncilInfo.objects.order_by('-academic_year').first()

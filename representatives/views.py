@@ -1,8 +1,6 @@
 from django.shortcuts import render
-from django.views.decorators.cache import cache_page
 from .models import Representative
 
-@cache_page(60 * 15)
 def representatives_list(request):
     latest_rep = Representative.objects.order_by('-academic_year').first()
     year_val = latest_rep.academic_year if (latest_rep and latest_rep.academic_year) else '2026-27'
