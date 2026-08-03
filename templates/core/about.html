@@ -160,8 +160,9 @@
             <h2 class="font-display-lg text-xl sm:text-2xl md:text-3xl font-bold text-on-surface mb-1">Developer</h2>
         </div>
         <div class="flex justify-center">
-            <div
-                class="group bg-surface-container-lowest border border-outline-variant/30 hover:border-primary/40 rounded-3xl p-6 sm:p-8 max-w-2xl w-full shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-400 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+            <div id="developer-card"
+                class="group bg-surface-container-lowest border border-outline-variant/30 hover:border-primary/40 rounded-3xl p-6 sm:p-8 max-w-2xl w-full shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-400 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left cursor-pointer"
+                onclick="openDevModal()">
 
             <!-- Avatar / Photo Box (Increased Image Size) -->
             <div class="flex flex-col sm:flex-row items-center gap-5 sm:gap-6 flex-1 min-w-0">
@@ -203,7 +204,7 @@
             <div class="flex items-center justify-center gap-3 shrink-0 sm:self-center">
                 <!-- LinkedIn -->
                 <a href="https://www.linkedin.com/in/muhammed-sinan-m/" target="_blank" rel="noopener noreferrer"
-                    title="LinkedIn Profile"
+                    title="LinkedIn Profile" onclick="event.stopPropagation()"
                     class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-surface-container-low text-on-surface-variant border border-outline-variant/30 hover:bg-[#0A66C2] hover:text-white hover:border-[#0A66C2] hover:scale-110 hover:-translate-y-0.5 transition-all duration-500 ease-out shadow-sm flex items-center justify-center">
                     <svg class="w-5 h-5 fill-current transition-colors duration-500 ease-out" viewBox="0 0 24 24">
                         <path
@@ -212,7 +213,7 @@
                 </a>
                 <!-- Instagram -->
                 <a href="https://www.instagram.com/sinan____m/" target="_blank" rel="noopener noreferrer"
-                    title="Instagram Profile"
+                    title="Instagram Profile" onclick="event.stopPropagation()"
                     class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-surface-container-low text-on-surface-variant border border-outline-variant/30 hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] hover:text-white hover:border-transparent hover:scale-110 hover:-translate-y-0.5 transition-all duration-500 ease-out shadow-sm flex items-center justify-center">
                     <svg class="w-5 h-5 fill-current transition-colors duration-500 ease-out" viewBox="0 0 24 24">
                         <path
@@ -225,5 +226,109 @@
     </div>
     </section>
 
+    <!-- Developer Quick Popup Modal -->
+    <div id="dev-modal-backdrop"
+        class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-200 flex items-center justify-center p-4"
+        onclick="if(event.target === this) closeDevModal();">
+        <div id="dev-modal-card"
+            class="relative w-full max-w-sm bg-surface rounded-3xl border border-outline-variant/30 shadow-2xl p-6 sm:p-7 transform scale-95 transition-transform duration-200 flex flex-col items-center text-center gap-4 overflow-hidden"
+            onclick="event.stopPropagation()">
+
+            <!-- Close Button -->
+            <button onclick="closeDevModal()"
+                class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-high text-on-surface-variant hover:bg-primary hover:text-white transition-colors duration-200 flex items-center justify-center shadow-xs">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+
+            <!-- Decorative background glow -->
+            <div class="absolute -top-16 -left-16 w-36 h-36 rounded-full bg-primary/10 blur-2xl pointer-events-none"></div>
+            <div class="absolute -bottom-16 -right-16 w-36 h-36 rounded-full bg-secondary/15 blur-2xl pointer-events-none"></div>
+
+            <!-- Avatar (Centered image without DEV badge) -->
+            <div class="relative mt-2">
+                <div class="w-28 h-28 rounded-full bg-gradient-to-tr from-primary to-secondary p-[3px] shadow-lg">
+                    <div class="w-full h-full rounded-full bg-white overflow-hidden flex items-center justify-center">
+                        <img src="{% static 'images/sinan.webp' %}" alt="Muhammed Sinan M" class="w-full h-full object-cover object-[50%_18%]">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Developer Badge -->
+            <span class="bg-primary/10 text-primary text-[11px] font-bold px-3.5 py-1 rounded-full uppercase tracking-wider border border-primary/20">
+                Designer & Developer
+            </span>
+
+            <!-- Name & Batch -->
+            <div class="space-y-1">
+                <h3 class="font-display-lg text-2xl font-bold text-on-surface leading-tight">Muhammed Sinan M</h3>
+                <p class="text-xs font-semibold text-secondary">BCA A (2024-28)</p>
+                <p class="text-[11px] text-on-surface-variant font-medium mt-0.5">Marian College Kuttikkanam (Autonomous)</p>
+            </div>
+
+            <!-- Description -->
+            <p class="text-xs text-on-surface-variant leading-relaxed bg-surface-container-lowest p-3 rounded-2xl border border-outline-variant/20">
+                Designed & engineered the official Marian College Students Council (MCSC) web portal.
+            </p>
+
+            <!-- Contact & Social Links (Email, LinkedIn, Instagram) -->
+            <div class="grid grid-cols-3 gap-2 pt-2 border-t border-outline-variant/20 w-full">
+                <!-- Email -->
+                <a href="mailto:muhammed.24ubc145@mariancollege.org" title="Send Email"
+                    class="py-2.5 px-2 rounded-xl bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-white font-label-lg text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 shadow-xs">
+                    <span class="material-symbols-outlined text-[18px]">mail</span>
+                    <span>Email</span>
+                </a>
+                <!-- LinkedIn -->
+                <a href="https://www.linkedin.com/in/muhammed-sinan-m/" target="_blank" rel="noopener noreferrer" title="LinkedIn Profile"
+                    class="py-2.5 px-2 rounded-xl bg-[#0A66C2]/10 text-[#0A66C2] border border-[#0A66C2]/20 hover:bg-[#0A66C2] hover:text-white font-label-lg text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 shadow-xs">
+                    <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24">
+                        <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.25V10.9H6.46M7.86 6.6a1.49 1.49 0 0 0-1.49 1.49 1.49 1.49 0 0 0 1.49 1.49 1.49 1.49 0 0 0 1.49-1.49A1.49 1.49 0 0 0 7.86 6.6Z" />
+                    </svg>
+                    <span>LinkedIn</span>
+                </a>
+                <!-- Instagram -->
+                <a href="https://www.instagram.com/sinan____m/" target="_blank" rel="noopener noreferrer" title="Instagram Profile"
+                    class="py-2.5 px-2 rounded-xl bg-[#dc2743]/10 text-[#dc2743] border border-[#dc2743]/20 hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] hover:text-white font-label-lg text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 shadow-xs">
+                    <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                    </svg>
+                    <span>Instagram</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
 </main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    window.openDevModal = function() {
+        const backdrop = document.getElementById('dev-modal-backdrop');
+        const card = document.getElementById('dev-modal-card');
+        if (!backdrop || !card) return;
+        document.body.style.overflow = 'hidden';
+        backdrop.classList.remove('opacity-0', 'pointer-events-none');
+        backdrop.classList.add('opacity-100', 'pointer-events-auto');
+        card.classList.remove('scale-95');
+        card.classList.add('scale-100');
+    };
+
+    window.closeDevModal = function() {
+        const backdrop = document.getElementById('dev-modal-backdrop');
+        const card = document.getElementById('dev-modal-card');
+        if (!backdrop || !card) return;
+        document.body.style.overflow = '';
+        backdrop.classList.remove('opacity-100', 'pointer-events-auto');
+        backdrop.classList.add('opacity-0', 'pointer-events-none');
+        card.classList.remove('scale-100');
+        card.classList.add('scale-95');
+    };
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            window.closeDevModal();
+        }
+    });
+</script>
 {% endblock %}

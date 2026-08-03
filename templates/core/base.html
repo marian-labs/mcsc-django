@@ -1532,9 +1532,10 @@
                     ease: 'power3.out'
                 });
 
-                // Disable rotating cursor and render clean square dot for 3D image gallery (#cf-root) and popup modals (#rep-modal-backdrop)
+                // Disable rotating cursor and render clean square dot for loading screen, 3D gallery (#cf-root) and popup modals (#rep-modal-backdrop, #dev-modal-backdrop)
                 const elUnder = document.elementFromPoint(x, y);
-                const isSquareDotArea = elUnder && (elUnder.closest('#cf-root') || elUnder.closest('#rep-modal-backdrop') || elUnder.closest('[data-square-dot="true"]'));
+                const isLoadingActive = document.documentElement.classList.contains('loading-active') || !document.documentElement.classList.contains('load-complete');
+                const isSquareDotArea = isLoadingActive || (elUnder && (elUnder.closest('#cf-root') || elUnder.closest('#rep-modal-backdrop') || elUnder.closest('#dev-modal-backdrop') || elUnder.closest('[data-square-dot="true"]')));
                 if (isSquareDotArea) {
                     gsap.killTweensOf(cursor, 'rotation');
                     spinTl?.pause();
@@ -1715,7 +1716,8 @@
 
                     resumeTimeout = setTimeout(() => {
                         const elUnder = document.elementFromPoint(lastMousePos.x, lastMousePos.y);
-                        if (elUnder && (elUnder.closest('#cf-root') || elUnder.closest('#rep-modal-backdrop') || elUnder.closest('[data-square-dot="true"]'))) {
+                        const isLoadingActive = document.documentElement.classList.contains('loading-active') || !document.documentElement.classList.contains('load-complete');
+                        if (isLoadingActive || (elUnder && (elUnder.closest('#cf-root') || elUnder.closest('#rep-modal-backdrop') || elUnder.closest('#dev-modal-backdrop') || elUnder.closest('[data-square-dot="true"]')))) {
                             gsap.killTweensOf(cursor, 'rotation');
                             gsap.set(cursor, { rotation: 0 });
                             return;
