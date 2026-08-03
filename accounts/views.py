@@ -38,21 +38,6 @@ def login_view(request):
     }
     return render(request, 'accounts/login.html', context)
 
-def demo_login(request):
-    """One-click demo login as the test student — only available in DEBUG mode."""
-    if not settings.DEBUG:
-        from django.http import Http404
-        raise Http404
-    from .models import User
-    try:
-        user = User.objects.get(username='arjun_dev')
-        user.backend = 'django.contrib.auth.backends.ModelBackend'
-        login(request, user)
-        messages.success(request, f"Logged in as demo student: {user.username}")
-    except User.DoesNotExist:
-        messages.error(request, "Demo student not found. Run seed_data.py first.")
-    return redirect('grievance_portal')
-
 def logout_view(request):
     logout(request)
     messages.info(request, "You have been logged out.")

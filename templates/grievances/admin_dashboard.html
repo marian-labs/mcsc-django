@@ -144,15 +144,15 @@
                 <!-- Individual Grievance Card (Vertical Box Layout) -->
                 <div class="grievance-card bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all duration-300 hover-lift flex flex-col justify-between gap-5 min-h-[380px] w-full"
                     data-ticket="GRV-{{ grv.created_at|date:"Y" }}-{{ grv.pk }}"
-                    data-student="{{ grv.student.username }} {{ grv.student.email }}"
+                    data-student="{{ grv.student.first_name|default:grv.student.get_full_name|default:grv.student.username }} {{ grv.student.username }} {{ grv.student.email }}"
                     data-title="{{ grv.title }}"
                     data-status="{{ grv.status }}"
                     data-category="{{ grv.get_category_display }}">
                     
-                    <!-- Card Header (Student Username, Grievance ID & Status) -->
+                    <!-- Card Header (Student Full Name, Grievance ID & Status) -->
                     <div class="flex justify-between items-start gap-2">
                         <div class="flex flex-col text-left">
-                            <h4 class="text-sm font-bold text-on-surface leading-tight">{{ grv.student.username }}</h4>
+                            <h4 class="text-sm font-bold text-on-surface leading-tight" data-raw-name="{{ grv.student.first_name|default:grv.student.get_full_name|default:grv.student.username }}">{{ grv.student.first_name|default:grv.student.get_full_name|default:grv.student.username }}</h4>
                             <span class="text-xs text-outline leading-tight mt-0.5">GRV-{{ grv.created_at|date:"Y" }}-{{ grv.pk }}</span>
                         </div>
                         <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shrink-0
@@ -226,7 +226,16 @@
 
 {% block extra_js %}
 <script>
+    function cleanDisplayName(raw) {
+        if (!raw) return raw;
+        return raw.replace(/\s+\d{2}[A-Z]{2,4}\d+\s*$/, '').trim();
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('[data-raw-name]').forEach(function (el) {
+            el.textContent = cleanDisplayName(el.getAttribute('data-raw-name'));
+        });
+
         const searchInput = document.getElementById('search-grievance');
         const statusCheckboxes = document.querySelectorAll('.status-checkbox');
         const categoryFilter = document.getElementById('category-filter');

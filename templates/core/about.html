@@ -6,25 +6,33 @@
 {% block content %}
 <main class="pt-6 sm:pt-10 pb-10">
     <!-- Hero Overview Section -->
-    <section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-6 sm:py-10 flex flex-col md:flex-row items-center gap-6 md:gap-10">
+    <section
+        class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-6 sm:py-10 flex flex-col md:flex-row items-center gap-6 md:gap-10">
         <div class="flex-1 space-y-4">
             <div>
-                <h1 class="font-display-lg text-2xl sm:text-3xl md:text-4xl font-bold text-on-surface mb-2">About the Council</h1>
-                <div class="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full font-label-sm text-xs font-bold uppercase tracking-wider mb-3">
+                <h1 class="font-display-lg text-2xl sm:text-3xl md:text-4xl font-bold text-on-surface mb-2">About the
+                    Council</h1>
+                <div
+                    class="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full font-label-sm text-xs font-bold uppercase tracking-wider mb-3">
                     MCSC {% if council_info %}{{ council_info.academic_year }}{% else %}2026-27{% endif %}
                 </div>
             </div>
             <p class="font-body-md text-sm sm:text-base md:text-lg text-on-surface-variant leading-relaxed">
                 {% if council_info %}
-                    {{ council_info.overview_text }}
+                {{ council_info.overview_text }}
                 {% else %}
-                    The Marian College Students Council serves as the primary representative body for the student community, acting as a vital bridge between students, faculty, and administration. For this academic year, our focus is steadfast on empowering every voice, fostering academic excellence, and driving positive, sustainable change across the campus ecosystem. We stand for integrity, unity, and progress.
+                The Marian College Students Council serves as the primary representative body for the student community,
+                acting as a vital bridge between students, faculty, and administration. For this academic year, our
+                focus is steadfast on empowering every voice, fostering academic excellence, and driving positive,
+                sustainable change across the campus ecosystem. We stand for integrity, unity, and progress.
                 {% endif %}
             </p>
         </div>
         <div class="flex-1 w-full">
-            <div class="relative w-full h-64 sm:h-80 md:h-[380px] rounded-2xl overflow-hidden shadow-sm shadow-primary/10 border border-outline-variant/30">
-                <img class="object-cover w-full h-full" src="{% static 'images/mcsc_logo-Photoroom.webp' %}" alt="MCSC Banner Image"/>
+            <div
+                class="relative w-full h-64 sm:h-80 md:h-[380px] rounded-2xl overflow-hidden shadow-sm shadow-primary/10 border border-outline-variant/30">
+                <img class="object-cover w-full h-full" src="{% static 'images/mcsc_logo-Photoroom.webp' %}"
+                    alt="MCSC Banner Image" />
             </div>
         </div>
     </section>
@@ -34,32 +42,45 @@
         <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8">
                 <!-- Vision Card -->
-                <div class="bg-surface-container-lowest p-5 sm:p-7 rounded-2xl border border-outline-variant/20 shadow-sm shadow-primary/5 hover:-translate-y-1 hover:shadow-md transition-all duration-300">
-                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                        <span class="material-symbols-outlined text-primary text-xl sm:text-2xl icon-fill">visibility</span>
+                <div
+                    class="bg-surface-container-lowest p-5 sm:p-7 rounded-2xl border border-outline-variant/20 shadow-sm shadow-primary/5 hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+                    <div
+                        class="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                        <span
+                            class="material-symbols-outlined text-primary text-xl sm:text-2xl icon-fill">visibility</span>
                     </div>
                     <h2 class="font-display-lg text-lg sm:text-2xl font-bold text-on-surface mb-2">Our Vision</h2>
-                    <p class="font-display-lg text-base sm:text-lg md:text-2xl lg:text-3xl font-bold text-primary leading-snug">
+                    <p
+                        class="font-display-lg text-base sm:text-lg md:text-2xl lg:text-3xl font-bold text-primary leading-snug">
                         "To create an inclusive, vibrant and empowering campus community."
                     </p>
                 </div>
                 <!-- Mission Card -->
-                <div class="bg-surface-container-lowest p-5 sm:p-7 rounded-2xl border border-outline-variant/20 shadow-sm shadow-primary/5 hover:-translate-y-1 hover:shadow-md transition-all duration-300">
-                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-4">
-                        <span class="material-symbols-outlined text-secondary text-xl sm:text-2xl icon-fill">rocket_launch</span>
+                <div
+                    class="bg-surface-container-lowest p-5 sm:p-7 rounded-2xl border border-outline-variant/20 shadow-sm shadow-primary/5 hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+                    <div
+                        class="w-10 h-10 sm:w-12 sm:h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-4">
+                        <span
+                            class="material-symbols-outlined text-secondary text-xl sm:text-2xl icon-fill">rocket_launch</span>
                     </div>
                     <h2 class="font-display-lg text-lg sm:text-2xl font-bold text-on-surface mb-2">Our Mission</h2>
-                    <p class="font-body-md text-xs sm:text-sm md:text-base text-on-surface-variant mb-4 leading-relaxed">
-                        To act as the steadfast voice of the student body, advocating for student welfare while actively building platforms for personal and professional growth. We are committed to:
+                    <p
+                        class="font-body-md text-xs sm:text-sm md:text-base text-on-surface-variant mb-4 leading-relaxed">
+                        To act as the steadfast voice of the student body, advocating for student welfare while actively
+                        building platforms for personal and professional growth. We are committed to:
                     </p>
                     <ul class="space-y-2.5">
                         <li class="flex items-start gap-2">
-                            <span class="material-symbols-outlined text-secondary text-base mt-0.5 shrink-0">check_circle</span>
-                            <span class="font-body-md text-xs sm:text-sm text-on-surface">Ensuring a safe, equitable, and nurturing environment for all students.</span>
+                            <span
+                                class="material-symbols-outlined text-secondary text-base mt-0.5 shrink-0">check_circle</span>
+                            <span class="font-body-md text-xs sm:text-sm text-on-surface">Ensuring a safe, equitable,
+                                and nurturing environment for all students.</span>
                         </li>
                         <li class="flex items-start gap-2">
-                            <span class="material-symbols-outlined text-secondary text-base mt-0.5 shrink-0">check_circle</span>
-                            <span class="font-body-md text-xs sm:text-sm text-on-surface">Promoting the holistic potential of every individual through active engagement and support.</span>
+                            <span
+                                class="material-symbols-outlined text-secondary text-base mt-0.5 shrink-0">check_circle</span>
+                            <span class="font-body-md text-xs sm:text-sm text-on-surface">Promoting the holistic
+                                potential of every individual through active engagement and support.</span>
                         </li>
                     </ul>
                 </div>
@@ -70,69 +91,138 @@
     <!-- Objectives Grid -->
     <section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 sm:py-12">
         <div class="text-center mb-6 sm:mb-10">
-            <h2 class="font-display-lg text-xl sm:text-2xl md:text-3xl font-bold text-on-surface mb-1.5">Core Objectives</h2>
-            <p class="font-body-md text-xs sm:text-sm md:text-base text-on-surface-variant">The pillars driving our initiatives for the academic year.</p>
+            <h2 class="font-display-lg text-xl sm:text-2xl md:text-3xl font-bold text-on-surface mb-1.5">Core Objectives
+            </h2>
+            <p class="font-body-md text-xs sm:text-sm md:text-base text-on-surface-variant">The pillars driving our
+                initiatives for the academic year.</p>
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3.5 sm:gap-5">
-            <div class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/30 flex flex-col items-center text-center group hover:border-primary/50 transition-colors">
-                <span class="material-symbols-outlined text-primary text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">workspace_premium</span>
+            <div
+                class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/30 flex flex-col items-center text-center group hover:border-primary/50 transition-colors">
+                <span
+                    class="material-symbols-outlined text-primary text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">workspace_premium</span>
                 <h3 class="font-label-lg text-xs sm:text-sm font-semibold text-on-surface">Leadership Development</h3>
             </div>
-            <div class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/30 flex flex-col items-center text-center group hover:border-primary/50 transition-colors">
-                <span class="material-symbols-outlined text-primary text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">groups</span>
+            <div
+                class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/30 flex flex-col items-center text-center group hover:border-primary/50 transition-colors">
+                <span
+                    class="material-symbols-outlined text-primary text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">groups</span>
                 <h3 class="font-label-lg text-xs sm:text-sm font-semibold text-on-surface">Community Building</h3>
             </div>
-            <div class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/30 flex flex-col items-center text-center group hover:border-primary/50 transition-colors">
-                <span class="material-symbols-outlined text-primary text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">spa</span>
+            <div
+                class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/30 flex flex-col items-center text-center group hover:border-primary/50 transition-colors">
+                <span
+                    class="material-symbols-outlined text-primary text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">spa</span>
                 <h3 class="font-label-lg text-xs sm:text-sm font-semibold text-on-surface">Student Wellness</h3>
             </div>
-            <div class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/30 flex flex-col items-center text-center group hover:border-primary/50 transition-colors">
-                <span class="material-symbols-outlined text-primary text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">school</span>
+            <div
+                class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/30 flex flex-col items-center text-center group hover:border-primary/50 transition-colors">
+                <span
+                    class="material-symbols-outlined text-primary text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">school</span>
                 <h3 class="font-label-lg text-xs sm:text-sm font-semibold text-on-surface">Academic Excellence</h3>
             </div>
-            <div class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/30 flex flex-col items-center text-center group hover:border-primary/50 transition-colors">
-                <span class="material-symbols-outlined text-primary text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">diversity_3</span>
+            <div
+                class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/30 flex flex-col items-center text-center group hover:border-primary/50 transition-colors">
+                <span
+                    class="material-symbols-outlined text-primary text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">diversity_3</span>
                 <h3 class="font-label-lg text-xs sm:text-sm font-semibold text-on-surface">Campus Inclusivity</h3>
             </div>
-            <div class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/30 flex flex-col items-center text-center group hover:border-primary/50 transition-colors">
-                <span class="material-symbols-outlined text-primary text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">lightbulb</span>
+            <div
+                class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/30 flex flex-col items-center text-center group hover:border-primary/50 transition-colors">
+                <span
+                    class="material-symbols-outlined text-primary text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">lightbulb</span>
                 <h3 class="font-label-lg text-xs sm:text-sm font-semibold text-on-surface">Innovation &amp; Ideas</h3>
             </div>
-            <div class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/30 flex flex-col items-center text-center group hover:border-primary/50 transition-colors">
-                <span class="material-symbols-outlined text-primary text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">eco</span>
+            <div
+                class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/30 flex flex-col items-center text-center group hover:border-primary/50 transition-colors">
+                <span
+                    class="material-symbols-outlined text-primary text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">eco</span>
                 <h3 class="font-label-lg text-xs sm:text-sm font-semibold text-on-surface">Sustainability</h3>
             </div>
-            <div class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/30 flex flex-col items-center text-center group hover:border-primary/50 transition-colors">
-                <span class="material-symbols-outlined text-primary text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">festival</span>
+            <div
+                class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/30 flex flex-col items-center text-center group hover:border-primary/50 transition-colors">
+                <span
+                    class="material-symbols-outlined text-primary text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">festival</span>
                 <h3 class="font-label-lg text-xs sm:text-sm font-semibold text-on-surface">Cultural Vibrancy</h3>
             </div>
-            <div class="bg-surface-container-lowest p-4 col-span-2 sm:col-span-1 rounded-xl border border-outline-variant/30 flex flex-col items-center text-center group hover:border-primary/50 transition-colors">
-                <span class="material-symbols-outlined text-primary text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">gavel</span>
+            <div
+                class="bg-surface-container-lowest p-4 col-span-2 sm:col-span-1 rounded-xl border border-outline-variant/30 flex flex-col items-center text-center group hover:border-primary/50 transition-colors">
+                <span
+                    class="material-symbols-outlined text-primary text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">gavel</span>
                 <h3 class="font-label-lg text-xs sm:text-sm font-semibold text-on-surface">Grievance Resolution</h3>
             </div>
         </div>
     </section>
 
     <!-- Developer Credit Section -->
-    <section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pb-8 pt-4 flex justify-center">
-        <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-4 sm:p-5 flex items-center gap-4 max-w-md w-full shadow-sm hover:border-primary/40 transition-all">
-            <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-primary to-secondary p-[1.5px] shrink-0 shadow-sm">
-                <div class="w-full h-full rounded-full bg-white flex items-center justify-center">
-                    <span class="font-display text-xs font-bold text-primary select-none">MS</span>
+    <section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-2 pb-6">
+        <div class="text-center mb-4 sm:mb-5">
+            <h2 class="font-display-lg text-xl sm:text-2xl md:text-3xl font-bold text-on-surface mb-1">Developer</h2>
+        </div>
+        <div class="flex justify-center">
+            <div
+                class="group bg-surface-container-lowest border border-outline-variant/30 hover:border-primary/40 rounded-3xl p-6 sm:p-8 max-w-2xl w-full shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-400 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+
+            <!-- Avatar / Photo Box (Increased Image Size) -->
+            <div class="flex flex-col sm:flex-row items-center gap-5 sm:gap-6 flex-1 min-w-0">
+                <div
+                    class="w-32 h-40 sm:w-36 sm:h-44 rounded-2xl sm:rounded-3xl bg-surface-container-low border border-outline-variant/20 overflow-hidden shrink-0 relative shadow-sm">
+                    <!-- Default Fallback Badge -->
+                    <div
+                        class="w-full h-full flex flex-col items-center justify-center bg-primary/10 text-primary select-none group-hover:scale-105 transition-transform duration-500 ease-out">
+                        <span class="font-display-lg text-3xl sm:text-4xl font-black tracking-wider">MS</span>
+                    </div>
+                    <!-- Photo image -->
+                    <img src="{% static 'images/sinan.webp' %}" data-fallback-src="{% static 'images/m_sinan.jpg.webp' %}"
+                        alt="Muhammed Sinan M"
+                        class="absolute inset-0 w-full h-full object-cover object-top hidden group-hover:scale-105 transition-transform duration-500 ease-out"
+                        onload="this.classList.remove('hidden');"
+                        onerror="if(this.dataset.fallbackSrc && this.src!==this.dataset.fallbackSrc){ this.src=this.dataset.fallbackSrc; this.dataset.fallbackSrc=''; }else{ this.style.display='none'; }">
+                </div>
+
+                <!-- Text Details & Bio -->
+                <div class="flex flex-col gap-1.5 flex-1 min-w-0">
+                    <span
+                        class="text-[10px] font-extrabold uppercase tracking-widest text-secondary bg-secondary/10 px-3 py-0.5 rounded-full border border-secondary/20 w-fit mx-auto sm:mx-0">
+                        Design & Developer
+                    </span>
+                    <h3
+                        class="font-display-lg text-xl sm:text-2xl font-bold text-on-surface group-hover:text-primary transition-colors duration-500 leading-tight">
+                        Muhammed Sinan M
+                    </h3>
+                    <p class="text-xs font-semibold text-primary tracking-wide">
+                        Systems Architect & Developer · MCSC Portal
+                    </p>
+                    <p class="text-xs text-on-surface-variant leading-relaxed mt-0.5 max-w-md">
+                        Designed and engineered with precision to empower student representation, grievance resolution, and digital campus experience for Marian College.
+                    </p>
                 </div>
             </div>
-            <div class="flex flex-col">
-                <span class="text-[10px] font-bold text-secondary uppercase tracking-wider">Designed & Developed by</span>
-                <a href="https://www.linkedin.com/in/muhammed-sinan-m/" target="_blank"
-                    class="font-display-lg text-base font-bold text-on-surface hover:text-primary transition-colors hover:underline decoration-secondary decoration-2 underline-offset-4">
-                    Muhammed Sinan M
+
+            <!-- Social Media Action Icons -->
+            <div class="flex items-center justify-center gap-3 shrink-0 sm:self-center">
+                <!-- LinkedIn -->
+                <a href="https://www.linkedin.com/in/muhammed-sinan-m/" target="_blank" rel="noopener noreferrer"
+                    title="LinkedIn Profile"
+                    class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-surface-container-low text-on-surface-variant border border-outline-variant/30 hover:bg-[#0A66C2] hover:text-white hover:border-[#0A66C2] hover:scale-110 hover:-translate-y-0.5 transition-all duration-500 ease-out shadow-sm flex items-center justify-center">
+                    <svg class="w-5 h-5 fill-current transition-colors duration-500 ease-out" viewBox="0 0 24 24">
+                        <path
+                            d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.25V10.9H6.46M7.86 6.6a1.49 1.49 0 0 0-1.49 1.49 1.49 1.49 0 0 0 1.49 1.49 1.49 1.49 0 0 0 1.49-1.49A1.49 1.49 0 0 0 7.86 6.6Z" />
+                    </svg>
+                </a>
+                <!-- Instagram -->
+                <a href="https://www.instagram.com/sinan____m/" target="_blank" rel="noopener noreferrer"
+                    title="Instagram Profile"
+                    class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-surface-container-low text-on-surface-variant border border-outline-variant/30 hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] hover:text-white hover:border-transparent hover:scale-110 hover:-translate-y-0.5 transition-all duration-500 ease-out shadow-sm flex items-center justify-center">
+                    <svg class="w-5 h-5 fill-current transition-colors duration-500 ease-out" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                    </svg>
                 </a>
             </div>
-            <a href="https://www.linkedin.com/in/muhammed-sinan-m/" target="_blank"
-                class="ml-auto text-primary hover:text-secondary flex items-center justify-center w-8 h-8 rounded-full bg-primary/5 hover:bg-secondary/10 transition-colors shrink-0">
-                <span class="material-symbols-outlined text-lg">open_in_new</span>
-            </a>
+
         </div>
+    </div>
     </section>
 
 </main>

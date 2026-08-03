@@ -124,6 +124,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.user.get_username',
     # Custom pipeline step for domain verification
     'accounts.pipeline.verify_marian_college_domain',
+    'social_core.pipeline.social_auth.associate_by_email',
     'social_core.pipeline.user.create_user',
     'social_core.pipeline.social_auth.associate_user',
     'social_core.pipeline.social_auth.load_extra_data',

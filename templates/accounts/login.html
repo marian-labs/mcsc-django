@@ -84,19 +84,7 @@
                 </p>
             </div>
 
-            <!-- Quick Testing Login option -->
-            {% if debug %}
-            <div class="mt-8 pt-6 border-t border-outline-variant/40 flex flex-col items-center md:items-start gap-3">
-                <span class="text-xs font-bold text-outline uppercase tracking-wider">Demo Access</span>
-                <a href="{% url 'demo_login' %}" class="w-full flex items-center justify-center gap-2 bg-secondary/10 hover:bg-secondary text-secondary hover:text-on-secondary border border-secondary/30 hover:border-secondary font-bold py-3.5 px-6 rounded-2xl shadow-sm hover:shadow transition-all duration-300 hover:-translate-y-0.5">
-                    <span class="material-symbols-outlined text-[20px]">assignment_ind</span>
-                    <span>Continue as Demo Student</span>
-                </a>
-                <p class="text-[11px] text-outline text-center md:text-left">
-                    One-tap access as a test student — no credentials required. Only available in development mode.
-                </p>
             </div>
-            {% endif %}
         </div>
         
     </div>

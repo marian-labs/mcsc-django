@@ -357,7 +357,7 @@
         <span class="text-secondary font-label-lg text-xs sm:text-sm font-extrabold tracking-wider">Academic Year {{ academic_year }}</span>
         <h1 class="font-display-lg text-3xl md:text-4xl font-bold text-primary">Our Representatives</h1>
         <p class="font-body-md text-on-surface-variant max-w-xl">
-            Meet the student leaders of Marian College — from executive office bearers to class representatives.
+            Meet the student leaders of Marian College — let's bring the change together.
         </p>
     </section>
 
@@ -387,12 +387,12 @@
     <section class="flex flex-col gap-6 reveal" style="transition-delay:120ms;">
         <div class="reps-section-label">
             <span
-                class="text-xs font-bold uppercase tracking-widest text-on-surface-variant font-label-lg shrink-0">Executive
+                class="text-sm sm:text-base font-extrabold uppercase tracking-widest text-on-surface font-label-lg shrink-0">Executive
                 Leadership</span>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 max-w-2xl mx-auto w-full gap-6">
             {% for rep in executives %}
-            <div class="exec-card hover-lift group">
+            <div class="exec-card hover-lift group cursor-pointer" onclick="openRepModal('{{ rep.name|escapejs }}', '{{ rep.position|escapejs }}', '{% if rep.photo_url %}{{ rep.photo_url|escapejs }}{% endif %}')">
                 <!-- Avatar -->
                 <div class="relative">
                     <div class="w-28 h-28 rounded-full bg-gradient-to-tr from-primary to-secondary p-[3px] shadow-lg">
@@ -426,12 +426,29 @@
                     class="font-display-lg text-xl font-bold text-on-background group-hover:text-primary transition-colors leading-snug">
                     {{ rep.name }}
                 </h3>
-                <!-- Email button -->
-                <a href="mailto:{{ rep.name|lower|cut:' ' }}@mariancollege.org"
-                    class="flex items-center gap-2 text-primary border border-primary/25 bg-primary/5 text-xs font-semibold px-4 py-2 rounded-full hover:bg-primary hover:text-white transition-all duration-200">
-                    <span class="material-symbols-outlined text-[15px]">mail</span>
-                    Contact
-                </a>
+                <!-- Contact Action Buttons -->
+                <div class="flex items-center justify-center gap-3 mt-1">
+                    {% if rep.position == 'Chairman' %}
+                    <a href="mailto:richard.24uma118@mariancollege.org" onclick="event.stopPropagation()" title="Email Chairman (richard.24uma118@mariancollege.org)"
+                        class="w-10 h-10 rounded-full flex items-center justify-center text-primary border border-primary/25 bg-primary/5 hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110 shadow-sm">
+                        <span class="material-symbols-outlined text-[18px]">mail</span>
+                    </a>
+                    <a href="tel:9656108743" onclick="event.stopPropagation()" title="Call Chairman (9656108743)"
+                        class="w-10 h-10 rounded-full flex items-center justify-center text-secondary border border-secondary/25 bg-secondary/10 hover:bg-secondary hover:text-on-secondary transition-all duration-300 hover:scale-110 shadow-sm">
+                        <span class="material-symbols-outlined text-[18px]">call</span>
+                    </a>
+                    {% elif rep.position == 'Vice Chairperson' %}
+                    <a href="mailto:agnes.25usw106@mariancollege.org" onclick="event.stopPropagation()" title="Email Vice Chairperson (agnes.25usw106@mariancollege.org)"
+                        class="w-10 h-10 rounded-full flex items-center justify-center text-primary border border-primary/25 bg-primary/5 hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110 shadow-sm">
+                        <span class="material-symbols-outlined text-[18px]">mail</span>
+                    </a>
+                    {% else %}
+                    <a href="mailto:{{ rep.name|lower|cut:' ' }}@mariancollege.org" onclick="event.stopPropagation()" title="Email {{ rep.name }}"
+                        class="w-10 h-10 rounded-full flex items-center justify-center text-primary border border-primary/25 bg-primary/5 hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110 shadow-sm">
+                        <span class="material-symbols-outlined text-[18px]">mail</span>
+                    </a>
+                    {% endif %}
+                </div>
             </div>
             {% endfor %}
         </div>
@@ -442,37 +459,91 @@
     {% if other_representatives %}
     <section class="flex flex-col gap-6 reveal" style="transition-delay:160ms;">
         <div class="reps-section-label">
-            <span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant font-label-lg shrink-0">
+            <span class="text-sm sm:text-base font-extrabold uppercase tracking-widest text-on-surface font-label-lg shrink-0">
                 Council Members
             </span>
         </div>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6">
             {% for rep in other_representatives %}
             <div
-                class="council-card hover-lift flex flex-col items-center gap-2.5 p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 transition-all duration-300 group text-center">
-                <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-primary/20 to-secondary/20 p-0.5 shadow-sm">
+                class="council-card hover-lift flex flex-col items-center gap-3 p-5 sm:p-6 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 transition-all duration-300 group text-center cursor-pointer" onclick="openRepModal('{{ rep.name|escapejs }}', '{{ rep.position|escapejs }}', '{% if rep.photo_url %}{{ rep.photo_url|escapejs }}{% endif %}')">
+                <div class="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-gradient-to-tr from-primary/25 to-secondary/25 p-[2.5px] shadow-sm group-hover:shadow-md transition-all duration-300">
                     <div class="w-full h-full rounded-full bg-white overflow-hidden flex items-center justify-center">
                         {% if rep.photo_url %}
-                        <img class="w-full h-full object-cover" src="{{ rep.photo_url }}" alt="{{ rep.name }}" loading="lazy" decoding="async">
+                        <img class="w-full h-full object-cover" src="{{ rep.photo_url }}" alt="{{ rep.name }}" loading="eager" decoding="async">
                         {% else %}
                         <div
                             class="w-full h-full bg-gradient-to-tr from-[#daeaff] to-[#f5f8ff] flex items-center justify-center">
-                            <span class="text-primary font-bold text-sm">{{ rep.name|slice:":2"|upper }}</span>
+                            <span class="text-primary font-bold text-base sm:text-lg">{{ rep.name|slice:":2"|upper }}</span>
                         </div>
                         {% endif %}
                     </div>
                 </div>
                 <div>
                     <p
-                        class="font-bold text-on-surface text-sm leading-tight group-hover:text-primary transition-colors">
+                        class="font-bold text-on-surface text-sm sm:text-base leading-snug group-hover:text-primary transition-colors">
                         {{ rep.name }}</p>
-                    <p class="text-[10px] font-semibold text-secondary uppercase tracking-wider mt-0.5">{{ rep.position }}</p>
+                    <p class="text-[11px] sm:text-xs font-extrabold text-secondary uppercase tracking-wider mt-1">{{ rep.position }}</p>
                 </div>
             </div>
             {% endfor %}
         </div>
     </section>
     {% endif %}
+
+    <!-- ── Representative Quick Popup Modal ───────────────────────── -->
+    <div id="rep-modal-backdrop"
+         class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-200"
+         onclick="if(event.target === this) closeRepModal()">
+        <div id="rep-modal-card"
+             class="bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 sm:p-7 max-w-xs sm:max-w-sm w-full shadow-2xl transform scale-95 transition-all duration-200 text-center relative overflow-hidden flex flex-col items-center gap-4">
+            
+            <!-- Close Button -->
+            <button onclick="closeRepModal()" type="button" aria-label="Close"
+                    class="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-on-surface-variant flex items-center justify-center transition-colors">
+                <span class="material-symbols-outlined text-[18px]">close</span>
+            </button>
+
+            <!-- Avatar Image / Initial Box -->
+            <div class="relative mt-2">
+                <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-gradient-to-tr from-primary to-secondary p-[3.5px] shadow-xl mx-auto">
+                    <div class="w-full h-full rounded-full bg-white overflow-hidden flex items-center justify-center relative">
+                        <img id="rep-modal-img" class="w-full h-full object-cover hidden" src="" alt="">
+                        <div id="rep-modal-initials-box" class="w-full h-full bg-gradient-to-tr from-[#daeaff] to-[#f5f8ff] flex items-center justify-center">
+                            <span id="rep-modal-initials" class="text-primary font-bold text-3xl"></span>
+                        </div>
+                    </div>
+                </div>
+                <span id="rep-modal-badge" class="absolute -top-1 -right-1 w-8 h-8 rounded-full bg-secondary text-on-secondary hidden items-center justify-center shadow-md border-2 border-white text-xs">
+                    <span class="material-symbols-outlined text-[16px]" style="font-variation-settings:'FILL' 1">military_tech</span>
+                </span>
+            </div>
+
+            <!-- Role Badge -->
+            <span id="rep-modal-role" class="bg-secondary/10 text-secondary text-[11px] font-extrabold px-4 py-1.5 rounded-full uppercase tracking-wider border border-secondary/20 w-fit">
+            </span>
+
+            <!-- Name -->
+            <div class="space-y-1">
+                <h3 id="rep-modal-name" class="font-display-lg text-xl sm:text-2xl font-bold text-on-surface leading-tight"></h3>
+                <p class="text-xs text-on-surface-variant font-medium">Marian College Students Council</p>
+            </div>
+
+            <!-- Contact Actions (Email & Call for Chairman, Email for Vice Chairperson) -->
+            <div id="rep-modal-actions" class="hidden items-center justify-center gap-2.5 mt-1 pt-3 border-t border-outline-variant/20 w-full">
+                <a id="rep-modal-email-btn" href="#" title="Email Representative"
+                   class="flex-1 py-2.5 px-3 rounded-xl bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-white font-label-lg text-xs font-bold transition-all duration-200 hidden items-center justify-center gap-1.5 shadow-xs">
+                    <span class="material-symbols-outlined text-[18px]">mail</span>
+                    <span>Send Email</span>
+                </a>
+                <a id="rep-modal-call-btn" href="#" title="Call Representative"
+                   class="flex-1 py-2.5 px-3 rounded-xl bg-secondary/10 text-secondary border border-secondary/20 hover:bg-secondary hover:text-on-secondary font-label-lg text-xs font-bold transition-all duration-200 hidden items-center justify-center gap-1.5 shadow-xs">
+                    <span class="material-symbols-outlined text-[18px]">call</span>
+                    <span>Call</span>
+                </a>
+            </div>
+        </div>
+    </div>
 
 </main>
 {% endblock %}
@@ -482,6 +553,17 @@
 <script>
     (function () {
         'use strict';
+
+        /* ── Instant Parallel Image Preloader ────────────────────────────── */
+        var repImageUrls = [
+            {% for rep in all_representatives %}{% if rep.photo_url %}"{{ rep.photo_url|escapejs }}"{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}
+        ];
+        repImageUrls.forEach(function(url) {
+            if (url) {
+                var img = new Image();
+                img.src = url;
+            }
+        });
 
         /* ── Slide data (executives first, then rest) ────────────────────────── */
         var slides = [
@@ -601,15 +683,11 @@
             var ry = -rel * TILT;
 
             c.el.style.opacity = vis ? String(1 - (ax > 0 ? ax * DIM_SIDE : 0)) : '0';
-            c.el.style.pointerEvents = vis ? 'auto' : 'none';
-            c.el.classList.toggle('cf-visible', vis);
-            c.el.classList.toggle('cf-active', act);
-
             c.el.style.transform =
-                'translate(-50%,-50%)' +
-                'translateX(' + tx + 'px)' +
-                'translateZ(' + tz + 'px)' +
-                'rotateY(' + ry + 'deg)' +
+                'translate(-50%,-50%) ' +
+                'translateX(' + tx + 'px) ' +
+                'translateZ(' + tz + 'px) ' +
+                'rotateY(' + ry + 'deg) ' +
                 'scale(' + sc + ')';
 
             /* Avatar size morphs between active and side sizes */
@@ -620,9 +698,8 @@
             c.name.style.fontSize = act ? '14px' : '11px';
         });
 
-        /* Dots */
-        dots.forEach(function (d, i) {
-            d.classList.toggle('on', i === active);
+        dots.forEach(function (d, idx) {
+            d.classList.toggle('on', idx === active);
         });
     }
 
@@ -630,9 +707,9 @@
     function go(idx) {
         if (locked) return;
         locked = true;
-        active = ((idx % n) + n) % n;
+        active = (idx + n) % n;
         render();
-        setTimeout(function () { locked = false; }, 600);
+        setTimeout(function () { locked = false; }, 320);
     }
 
     function step(dir) { go(active + dir); }
@@ -674,6 +751,109 @@
     startAuto();
 
 }) ();
+
+/* ── Global Fast Quick Popup Modal JS ───────────────────────────────────── */
+window.openRepModal = function(name, position, photoUrl) {
+    const backdrop = document.getElementById('rep-modal-backdrop');
+    const card = document.getElementById('rep-modal-card');
+    const img = document.getElementById('rep-modal-img');
+    const initialsBox = document.getElementById('rep-modal-initials-box');
+    const initials = document.getElementById('rep-modal-initials');
+    const role = document.getElementById('rep-modal-role');
+    const nameEl = document.getElementById('rep-modal-name');
+    const badge = document.getElementById('rep-modal-badge');
+    const actions = document.getElementById('rep-modal-actions');
+    const emailBtn = document.getElementById('rep-modal-email-btn');
+    const callBtn = document.getElementById('rep-modal-call-btn');
+
+    if (!backdrop || !card) return;
+
+    nameEl.textContent = name;
+    role.textContent = position;
+
+    // Photo / Initials
+    if (photoUrl && photoUrl.trim() !== '' && photoUrl !== 'None' && photoUrl !== 'null') {
+        img.src = photoUrl;
+        img.classList.remove('hidden');
+        initialsBox.classList.add('hidden');
+    } else {
+        img.src = '';
+        img.classList.add('hidden');
+        initialsBox.classList.remove('hidden');
+        initials.textContent = name ? name.substring(0, 2).toUpperCase() : 'MS';
+    }
+
+    // Chairman / Vice Chairperson Contact Actions & Badges
+    if (position === 'Chairman') {
+        badge.classList.remove('hidden');
+        badge.classList.add('flex');
+        
+        emailBtn.href = 'mailto:richard.24uma118@mariancollege.org';
+        emailBtn.classList.remove('hidden');
+        emailBtn.classList.add('flex');
+
+        callBtn.href = 'tel:9656108743';
+        callBtn.classList.remove('hidden');
+        callBtn.classList.add('flex');
+
+        actions.classList.remove('hidden');
+        actions.classList.add('flex');
+    } else if (position === 'Vice Chairperson') {
+        badge.classList.add('hidden');
+        badge.classList.remove('flex');
+
+        emailBtn.href = 'mailto:agnes.25usw106@mariancollege.org';
+        emailBtn.classList.remove('hidden');
+        emailBtn.classList.add('flex');
+
+        callBtn.classList.add('hidden');
+        callBtn.classList.remove('flex');
+
+        actions.classList.remove('hidden');
+        actions.classList.add('flex');
+    } else {
+        badge.classList.add('hidden');
+        badge.classList.remove('flex');
+
+        emailBtn.classList.add('hidden');
+        emailBtn.classList.remove('flex');
+
+        callBtn.classList.add('hidden');
+        callBtn.classList.remove('flex');
+
+        actions.classList.add('hidden');
+        actions.classList.remove('flex');
+    }
+
+    // Disable background scroll & clicks
+    document.body.style.overflow = 'hidden';
+
+    // Reveal Modal instantly with smooth 200ms scale/fade
+    backdrop.classList.remove('opacity-0', 'pointer-events-none');
+    backdrop.classList.add('opacity-100', 'pointer-events-auto');
+    card.classList.remove('scale-95');
+    card.classList.add('scale-100');
+};
+
+window.closeRepModal = function() {
+    const backdrop = document.getElementById('rep-modal-backdrop');
+    const card = document.getElementById('rep-modal-card');
+    if (!backdrop || !card) return;
+
+    // Restore background scroll
+    document.body.style.overflow = '';
+
+    backdrop.classList.remove('opacity-100', 'pointer-events-auto');
+    backdrop.classList.add('opacity-0', 'pointer-events-none');
+    card.classList.remove('scale-100');
+    card.classList.add('scale-95');
+};
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        window.closeRepModal();
+    }
+});
 </script>
 {% endif %}
 {% endblock %}

@@ -1516,7 +1516,10 @@
             }
             createSpinTimeline();
 
+            let lastMousePos = { x: 0, y: 0 };
             function moveCursor(x, y) {
+                lastMousePos.x = x;
+                lastMousePos.y = y;
                 const { x: offsetX, y: offsetY } = getOffset();
                 if (!initialized) {
                     initialized = true;
@@ -1528,6 +1531,20 @@
                     duration: 0.1,
                     ease: 'power3.out'
                 });
+
+                // Disable rotating cursor and render clean square dot for 3D image gallery (#cf-root) and popup modals (#rep-modal-backdrop)
+                const elUnder = document.elementFromPoint(x, y);
+                const isSquareDotArea = elUnder && (elUnder.closest('#cf-root') || elUnder.closest('#rep-modal-backdrop') || elUnder.closest('[data-square-dot="true"]'));
+                if (isSquareDotArea) {
+                    gsap.killTweensOf(cursor, 'rotation');
+                    spinTl?.pause();
+                    gsap.set(cursor, { rotation: 0 });
+                    corners.forEach(c => gsap.to(c, { opacity: 0, duration: 0.15, overwrite: 'auto' }));
+                    if (dot) gsap.to(dot, { borderRadius: '2px', scale: 1.25, backgroundColor: '#005c9b', duration: 0.15, overwrite: 'auto' });
+                } else if (!activeTarget) {
+                    corners.forEach(c => gsap.to(c, { opacity: 1, duration: 0.15, overwrite: 'auto' }));
+                    if (dot) gsap.to(dot, { borderRadius: '50%', scale: 1, backgroundColor: cursorColor, duration: 0.15, overwrite: 'auto' });
+                }
             }
 
             const tickerFn = () => {
@@ -1697,6 +1714,12 @@
                     });
 
                     resumeTimeout = setTimeout(() => {
+                        const elUnder = document.elementFromPoint(lastMousePos.x, lastMousePos.y);
+                        if (elUnder && (elUnder.closest('#cf-root') || elUnder.closest('#rep-modal-backdrop') || elUnder.closest('[data-square-dot="true"]'))) {
+                            gsap.killTweensOf(cursor, 'rotation');
+                            gsap.set(cursor, { rotation: 0 });
+                            return;
+                        }
                         if (!activeTarget && cursor && spinTl) {
                             const currentRotation = gsap.getProperty(cursor, 'rotation');
                             const normalizedRotation = currentRotation % 360;

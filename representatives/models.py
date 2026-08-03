@@ -6,9 +6,12 @@ from django.templatetags.static import static
 
 STATIC_REP_IMAGES = {
     'richard joseph': 'richard_joseph.webp',
+    'agnes sebastian': 'agnes_sebastian.webp',
     'mariya benny': 'mariya_benny.webp',
+    'davis tom': 'davis_tom.webp',
     'tony kurian': 'tony_kurian.webp',
     'aromal jaimon': 'aromal_jaimon.webp',
+    'arjun r': 'arjun_R.webp',
     'sneha maria sajji': 'sneha_maria_saji.webp',
     'sneha maria saji': 'sneha_maria_saji.webp',
     'fathima rifa v': 'fathima_rifa_v.webp',
