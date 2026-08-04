@@ -182,13 +182,23 @@
         cursor: pointer;
         color: #005c9b;
         transition: all 0.2s ease;
+        -webkit-tap-highlight-color: transparent;
+        outline: none;
     }
 
-    .cf-arrow:hover {
+    @media (hover: hover) {
+        .cf-arrow:hover {
+            background: #005c9b;
+            color: #fff;
+            box-shadow: 0 5px 18px rgba(0, 92, 155, 0.28);
+            transform: translateY(-50%) scale(1.1);
+        }
+    }
+
+    .cf-arrow:active {
         background: #005c9b;
         color: #fff;
-        box-shadow: 0 5px 18px rgba(0, 92, 155, 0.28);
-        transform: translateY(-50%) scale(1.1);
+        transform: translateY(-50%) scale(0.95);
     }
 
     #cf-prev {
@@ -714,8 +724,16 @@
 
     function step(dir) { go(active + dir); }
 
-    document.getElementById('cf-prev').addEventListener('click', function () { step(-1); });
-    document.getElementById('cf-next').addEventListener('click', function () { step(1); });
+    var prevBtn = document.getElementById('cf-prev');
+    var nextBtn = document.getElementById('cf-next');
+    if (prevBtn) {
+        prevBtn.addEventListener('click', function () { step(-1); this.blur(); });
+        prevBtn.addEventListener('touchend', function () { this.blur(); }, { passive: true });
+    }
+    if (nextBtn) {
+        nextBtn.addEventListener('click', function () { step(1); this.blur(); });
+        nextBtn.addEventListener('touchend', function () { this.blur(); }, { passive: true });
+    }
 
     dots.forEach(function (d) {
         d.addEventListener('click', function () {
