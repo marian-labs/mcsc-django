@@ -48,9 +48,11 @@ def grievance_portal(request):
         'resolved': resolved,
         'latest_notification': latest_notification,
         'unread_notifications_count': unread_notifications_count,
-        'has_updates': unread_notifications_count > 0,
-    }
-    return render(request, 'grievances/submit.html', context)
+    response = render(request, 'grievances/submit.html', context)
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 @login_required
 def grievance_detail(request, pk):

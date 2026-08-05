@@ -382,11 +382,43 @@
         }
     });
 
-    window.addEventListener('pageshow', (event) => {
-        if (event.persisted && grievanceForm) {
+    function resetSubmitFormState() {
+        if (grievanceForm) {
             grievanceForm.reset();
-            isFormDirty = false;
         }
+        isFormDirty = false;
+        isFormSubmitting = false;
+
+        const submitBtn = document.getElementById('submit-grievance-btn');
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+            submitBtn.innerHTML = `
+                <span>Submit Grievance</span>
+                <span class="material-symbols-outlined text-[20px]">send</span>
+            `;
+        }
+
+        const tracker = document.getElementById('submitting-tracker');
+        if (tracker) {
+            tracker.classList.add('hidden');
+        }
+
+        const progressBar = document.getElementById('tracker-progress-bar');
+        if (progressBar) progressBar.style.width = '0%';
+
+        const percentage = document.getElementById('tracker-percentage');
+        if (percentage) percentage.textContent = '0%';
+
+        const label = document.getElementById('file-upload-label');
+        if (label) label.textContent = 'Upload attachment';
+
+        const dragDropText = document.getElementById('drag-drop-text');
+        if (dragDropText) dragDropText.style.display = 'inline';
+    }
+
+    window.addEventListener('pageshow', (event) => {
+        resetSubmitFormState();
     });
 </script>
 {% endblock %}
