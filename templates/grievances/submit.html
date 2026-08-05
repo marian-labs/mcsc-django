@@ -278,5 +278,24 @@
             }
         });
     }
+
+    // Alert user if navigating away while typing form
+    let isFormDirty = false;
+    let isFormSubmitting = false;
+
+    const grievanceForm = document.querySelector('form');
+    if (grievanceForm) {
+        grievanceForm.addEventListener('input', () => { isFormDirty = true; });
+        grievanceForm.addEventListener('change', () => { isFormDirty = true; });
+        grievanceForm.addEventListener('submit', () => { isFormSubmitting = true; });
+    }
+
+    window.addEventListener('beforeunload', (e) => {
+        if (isFormDirty && !isFormSubmitting) {
+            e.preventDefault();
+            e.returnValue = 'You have unsaved changes in your grievance form. Are you sure you want to leave?';
+            return e.returnValue;
+        }
+    });
 </script>
 {% endblock %}

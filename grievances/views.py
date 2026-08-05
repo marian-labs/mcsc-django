@@ -139,16 +139,21 @@ def download_attachment(request, pk):
         return HttpResponseForbidden("You are not authorized to access this attachment.")
     
     if not grievance.attachment:
-        raise Http404("Attachment not found.")
-        
-    if settings.USE_SUPABASE_STORAGE:
-        return redirect(grievance.attachment.url)
+        raise Http404("No attachment associated with this grievance.")
         
     try:
-        return FileResponse(
-            grievance.attachment.open('rb'),
-            as_attachment=True,
-            filename=os.path.basename(grievance.attachment.name)
-        )
-    except FileNotFoundError:
+        if settings.USE_SUPABASE_STORAGE:
+            return redirect(grievance.attachment.url)
+
+        if grievance.attachment.storage.exists(grievance.attachment.name):
+            file_handle = grievance.attachment.storage.open(grievance.attachment.name, 'rb')
+            return FileResponse(
+                file_handle,
+                as_attachment=True,
+                filename=os.path.basename(grievance.attachment.name)
+            )
+        return redirect(grievance.attachment.url)
+    except Exception:
+        if grievance.attachment and hasattr(grievance.attachment, 'url'):
+            return redirect(grievance.attachment.url)
         raise Http404("Attachment file does not exist.")
