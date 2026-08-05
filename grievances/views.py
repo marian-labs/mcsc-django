@@ -141,19 +141,17 @@ def download_attachment(request, pk):
     if not grievance.attachment:
         raise Http404("No attachment associated with this grievance.")
         
-    try:
-        if settings.USE_SUPABASE_STORAGE:
-            return redirect(grievance.attachment.url)
-
-        if grievance.attachment.storage.exists(grievance.attachment.name):
-            file_handle = grievance.attachment.storage.open(grievance.attachment.name, 'rb')
-            return FileResponse(
-                file_handle,
-                as_attachment=True,
-                filename=os.path.basename(grievance.attachment.name)
-            )
+    if getattr(settings, 'USE_SUPABASE_STORAGE', False):
         return redirect(grievance.attachment.url)
-    except Exception:
-        if grievance.attachment and hasattr(grievance.attachment, 'url'):
-            return redirect(grievance.attachment.url)
-        raise Http404("Attachment file does not exist.")
+
+    try:
+        file_path = grievance.attachment.path
+        if os.path.exists(file_path):
+            f = open(file_path, 'rb')
+            filename = os.path.basename(file_path)
+            return FileResponse(f, as_attachment=True, filename=filename)
+        else:
+            raise Http404(f"Attachment file '{os.path.basename(file_path)}' was not found on local disk.")
+    except Exception as e:
+        print(f"Error serving local attachment for grievance {pk}: {e}")
+        raise Http404("Attachment file could not be read.")
