@@ -1,4 +1,4 @@
-from django.db.models.signals import post_save, pre_delete
+from django.db.models.signals import post_save, pre_delete, post_delete
 from django.dispatch import receiver
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
@@ -20,6 +20,16 @@ def handle_reply_posted(sender, instance, created, **kwargs):
 def handle_grievance_status_changed(sender, instance, created, **kwargs):
     if not created:
         send_status_update(instance)
+
+
+@receiver(post_delete, sender=Grievance)
+def auto_delete_attachment_on_delete(sender, instance, **kwargs):
+    """
+    Automatically deletes the attachment file from storage (Supabase S3 or Local)
+    when a Grievance record is deleted by an admin or system.
+    """
+    if instance.attachment:
+        instance.attachment.delete(save=False)
 
 
 @receiver(pre_delete, sender=settings.AUTH_USER_MODEL)
