@@ -141,10 +141,33 @@
 
                     <!-- Submit Button (Full Width) -->
                     <div class="md:col-span-2 pt-2">
-                        <button class="w-full bg-gradient-to-r from-secondary to-amber-500 text-on-secondary font-bold text-sm sm:text-base py-3.5 rounded-full hover:scale-[1.005] active:scale-95 transition-all shadow-lg shadow-amber-500/20 flex justify-center items-center gap-2" type="submit">
+                        <button id="submit-grievance-btn" class="w-full bg-gradient-to-r from-secondary to-amber-500 text-on-secondary font-bold text-sm sm:text-base py-3.5 rounded-full hover:scale-[1.005] active:scale-95 transition-all shadow-lg shadow-amber-500/20 flex justify-center items-center gap-2" type="submit">
                             <span>Submit Grievance</span>
                             <span class="material-symbols-outlined text-[20px]">send</span>
                         </button>
+                    </div>
+
+                    <!-- Submission Progress Tracker Card (Hidden by default, shown on submit) -->
+                    <div id="submitting-tracker" class="hidden md:col-span-2 mt-2 p-4 rounded-2xl bg-surface-container-low border border-primary/20 shadow-md">
+                        <div class="flex items-center justify-between gap-3 mb-2">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin shrink-0"></span>
+                                <span id="tracker-status-text" class="text-xs sm:text-sm font-bold text-primary">
+                                    Submitting your grievance...
+                                </span>
+                            </div>
+                            <span id="tracker-percentage" class="text-xs font-mono font-extrabold text-secondary">0%</span>
+                        </div>
+
+                        <!-- Animated Progress Bar Track -->
+                        <div class="w-full bg-outline-variant/30 rounded-full h-2 overflow-hidden relative">
+                            <div id="tracker-progress-bar" class="h-full bg-gradient-to-r from-primary via-secondary to-amber-500 rounded-full w-0 transition-all duration-300 ease-out"></div>
+                        </div>
+
+                        <p class="text-[11px] text-on-surface-variant/70 mt-2 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[13px] text-amber-500">lock</span>
+                            Your details and attachments are securely processed. Please stay on this page.
+                        </p>
                     </div>
                 </div>
                 
@@ -287,7 +310,57 @@
     if (grievanceForm) {
         grievanceForm.addEventListener('input', () => { isFormDirty = true; });
         grievanceForm.addEventListener('change', () => { isFormDirty = true; });
-        grievanceForm.addEventListener('submit', () => { isFormSubmitting = true; });
+        
+        grievanceForm.addEventListener('submit', (e) => {
+            isFormSubmitting = true;
+
+            const submitBtn = document.getElementById('submit-grievance-btn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
+                submitBtn.innerHTML = `
+                    <span class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                    <span>Submitting Grievance...</span>
+                `;
+            }
+
+            const tracker = document.getElementById('submitting-tracker');
+            const progressBar = document.getElementById('tracker-progress-bar');
+            const percentage = document.getElementById('tracker-percentage');
+            const statusText = document.getElementById('tracker-status-text');
+
+            if (tracker) {
+                tracker.classList.remove('hidden');
+                
+                let progress = 12;
+                if (progressBar) progressBar.style.width = progress + '%';
+                if (percentage) percentage.textContent = progress + '%';
+
+                const hasAttachment = fileInput && fileInput.files && fileInput.files.length > 0;
+                
+                const interval = setInterval(() => {
+                    if (progress < 92) {
+                        progress += Math.floor(Math.random() * 12) + 6;
+                        if (progress > 92) progress = 92;
+
+                        if (progressBar) progressBar.style.width = progress + '%';
+                        if (percentage) percentage.textContent = progress + '%';
+
+                        if (statusText) {
+                            if (progress > 30 && progress <= 65) {
+                                statusText.textContent = hasAttachment 
+                                    ? 'Uploading attachment securely to cloud storage...' 
+                                    : 'Encrypting and saving grievance details...';
+                            } else if (progress > 65) {
+                                statusText.textContent = 'Finalizing ticket registration...';
+                            }
+                        }
+                    } else {
+                        clearInterval(interval);
+                    }
+                }, 250);
+            }
+        });
     }
 
     function navigateToTicket(url) {
