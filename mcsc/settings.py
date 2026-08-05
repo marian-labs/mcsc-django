@@ -177,6 +177,8 @@ if USE_SUPABASE_STORAGE and SUPABASE_URL and AWS_ACCESS_KEY_ID and AWS_SECRET_AC
     # Supabase uses S3 compatible interface via endpoint
     AWS_S3_ENDPOINT_URL = f"{SUPABASE_URL}/storage/v1/s3"
     AWS_STORAGE_BUCKET_NAME = SUPABASE_STORAGE_BUCKET_NAME
+    AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME', default='ap-northeast-2')
+    AWS_S3_ADDRESSING_STYLE = 'path'
     AWS_S3_SIGNATURE_VERSION = 's3v4'
     AWS_S3_FILE_OVERWRITE = False
     AWS_DEFAULT_ACL = None
