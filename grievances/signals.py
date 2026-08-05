@@ -29,7 +29,11 @@ def auto_delete_attachment_on_delete(sender, instance, **kwargs):
     when a Grievance record is deleted by an admin or system.
     """
     if instance.attachment:
-        instance.attachment.delete(save=False)
+        try:
+            instance.attachment.delete(save=False)
+        except Exception as e:
+            import logging
+            logging.warning(f"Could not delete attachment '{instance.attachment.name}' from storage: {e}")
 
 
 @receiver(pre_delete, sender=settings.AUTH_USER_MODEL)
