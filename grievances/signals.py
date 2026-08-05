@@ -22,15 +22,16 @@ def handle_grievance_status_changed(sender, instance, created, **kwargs):
         send_status_update(instance)
 
 
-@receiver(post_delete, sender=Grievance)
+@receiver(pre_delete, sender=Grievance)
 def auto_delete_attachment_on_delete(sender, instance, **kwargs):
     """
     Automatically deletes the attachment file from storage (Supabase S3 or Local)
     when a Grievance record is deleted by an admin or system.
     """
-    if instance.attachment:
+    if instance.attachment and instance.attachment.name:
         try:
-            instance.attachment.delete(save=False)
+            clean_name = instance.attachment.name.replace('\\', '/')
+            instance.attachment.storage.delete(clean_name)
         except Exception as e:
             import logging
             logging.warning(f"Could not delete attachment '{instance.attachment.name}' from storage: {e}")
