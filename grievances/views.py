@@ -32,7 +32,7 @@ def grievance_portal(request):
             grievance.student = student
             grievance.save()
             messages.success(request, "Your grievance has been submitted successfully.")
-            return redirect('grievance_portal')
+            return redirect('grievance_detail', pk=grievance.pk)
     else:
         form = GrievanceForm()
         

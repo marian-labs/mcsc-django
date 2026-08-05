@@ -183,7 +183,7 @@
     <!-- Drawer Content (List of Tickets) -->
     <div class="flex-grow overflow-y-auto p-4 sm:p-6 space-y-3.5">
         {% for grv in my_grievances %}
-        <div onclick="window.location='{% url 'grievance_detail' grv.pk %}'"
+        <div onclick="navigateToTicket('{% url 'grievance_detail' grv.pk %}')"
             class="bg-white border border-outline-variant/40 rounded-2xl p-4 sm:p-5 hover:border-primary/50 hover:shadow-md transition-all cursor-pointer flex flex-col gap-3 relative group">
             
             <div class="flex items-center justify-between gap-2">
@@ -290,11 +290,29 @@
         grievanceForm.addEventListener('submit', () => { isFormSubmitting = true; });
     }
 
+    function navigateToTicket(url) {
+        if (isFormDirty && !isFormSubmitting) {
+            if (confirm("You have an unsaved grievance draft. Are you sure you want to leave and view this ticket?")) {
+                isFormDirty = false;
+                window.location.href = url;
+            }
+        } else {
+            window.location.href = url;
+        }
+    }
+
     window.addEventListener('beforeunload', (e) => {
         if (isFormDirty && !isFormSubmitting) {
             e.preventDefault();
             e.returnValue = 'You have unsaved changes in your grievance form. Are you sure you want to leave?';
             return e.returnValue;
+        }
+    });
+
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted && grievanceForm) {
+            grievanceForm.reset();
+            isFormDirty = false;
         }
     });
 </script>
