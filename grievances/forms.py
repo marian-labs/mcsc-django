@@ -1,7 +1,21 @@
 from django import forms
+from django.core.validators import FileExtensionValidator
+from django.core.exceptions import ValidationError
 from .models import Grievance
 
+ALLOWED_EXTENSIONS = ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'webp', 'txt', 'zip', 'rar']
+MAX_FILE_SIZE = 3 * 1024 * 1024  # 3 MB
+
 class GrievanceForm(forms.ModelForm):
+    attachment = forms.FileField(
+        required=False,
+        validators=[FileExtensionValidator(allowed_extensions=ALLOWED_EXTENSIONS)],
+        widget=forms.ClearableFileInput(attrs={
+            'class': 'sr-only',
+            'id': 'file-upload'
+        })
+    )
+
     class Meta:
         model = Grievance
         fields = ['title', 'category', 'description', 'attachment']
@@ -18,8 +32,11 @@ class GrievanceForm(forms.ModelForm):
                 'placeholder': 'Provide as much detail as possible to help us address the issue.',
                 'rows': 4
             }),
-            'attachment': forms.ClearableFileInput(attrs={
-                'class': 'sr-only',
-                'id': 'file-upload'
-            })
         }
+
+    def clean_attachment(self):
+        attachment = self.cleaned_data.get('attachment')
+        if attachment:
+            if attachment.size > MAX_FILE_SIZE:
+                raise ValidationError("File size must not exceed 3 MB.")
+        return attachment

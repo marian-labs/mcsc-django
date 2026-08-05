@@ -3,12 +3,15 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.conf import settings
+from django.utils.http import url_has_allowed_host_and_scheme
 from core.ratelimit import ratelimit
 from .models import PushSubscription
 
 @ratelimit(rate='5/m', key='ip')
 def login_view(request):
-    next_url = request.GET.get('next') or request.POST.get('next') or 'grievance_portal'
+    next_url = request.GET.get('next') or request.POST.get('next')
+    if not next_url or not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+        next_url = 'grievance_portal'
     
     if request.user.is_authenticated:
         return redirect(next_url)

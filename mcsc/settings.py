@@ -179,7 +179,8 @@ if USE_SUPABASE_STORAGE and SUPABASE_URL and AWS_ACCESS_KEY_ID and AWS_SECRET_AC
     AWS_S3_SIGNATURE_VERSION = 's3v4'
     AWS_S3_FILE_OVERWRITE = False
     AWS_DEFAULT_ACL = None
-    AWS_QUERYSTRING_AUTH = False
+    AWS_QUERYSTRING_AUTH = True
+    AWS_QUERYSTRING_EXPIRE = config('AWS_QUERYSTRING_EXPIRE', default=3600, cast=int)  # 1 hour signed URL expiration
 else:
     # Local fallback
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'

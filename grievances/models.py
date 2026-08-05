@@ -1,5 +1,8 @@
 from django.db import models
 from django.conf import settings
+from django.core.validators import FileExtensionValidator
+
+ALLOWED_ATTACHMENT_EXTENSIONS = ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'webp', 'txt', 'zip', 'rar']
 
 class Grievance(models.Model):
     CATEGORY_CHOICES = (
@@ -20,7 +23,12 @@ class Grievance(models.Model):
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, db_index=True)
     title = models.CharField(max_length=200)
     description = models.TextField()
-    attachment = models.FileField(upload_to='grievance_attachments/', null=True, blank=True)
+    attachment = models.FileField(
+        upload_to='grievance_attachments/',
+        null=True,
+        blank=True,
+        validators=[FileExtensionValidator(allowed_extensions=ALLOWED_ATTACHMENT_EXTENSIONS)]
+    )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open', db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)

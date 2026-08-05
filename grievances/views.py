@@ -1,9 +1,11 @@
+import os
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
-from django.http import JsonResponse, HttpResponseForbidden
+from django.http import JsonResponse, HttpResponseForbidden, FileResponse, Http404
 from django.db.models import Count
 from django.contrib import messages
+from django.conf import settings
 from core.ratelimit import ratelimit
 from .models import Grievance, GrievanceReply, Notification
 from .forms import GrievanceForm
@@ -62,7 +64,7 @@ def grievance_detail(request, pk):
     if request.user == grievance.student:
         Notification.objects.filter(user=request.user, grievance=grievance, is_read=False).update(is_read=True)
         
-    if request.method == 'POST' and (request.user.is_staff or request.user.role != 'admin'):
+    if request.method == 'POST' and (request.user.is_staff or request.user.role == 'admin'):
         reply_text = request.POST.get('reply_text')
         if reply_text:
             GrievanceReply.objects.create(
@@ -129,3 +131,24 @@ def api_stats(request):
         'status_data': status_counts,
         'category_data': category_counts,
     })
+
+@login_required
+def download_attachment(request, pk):
+    grievance = get_object_or_404(Grievance, pk=pk)
+    if grievance.student != request.user and not request.user.is_staff and request.user.role != 'admin':
+        return HttpResponseForbidden("You are not authorized to access this attachment.")
+    
+    if not grievance.attachment:
+        raise Http404("Attachment not found.")
+        
+    if settings.USE_SUPABASE_STORAGE:
+        return redirect(grievance.attachment.url)
+        
+    try:
+        return FileResponse(
+            grievance.attachment.open('rb'),
+            as_attachment=True,
+            filename=os.path.basename(grievance.attachment.name)
+        )
+    except FileNotFoundError:
+        raise Http404("Attachment file does not exist.")

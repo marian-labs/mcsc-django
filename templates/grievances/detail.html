@@ -112,7 +112,7 @@
                                     <span class="material-symbols-outlined text-primary text-xl bg-primary/10 p-2 rounded-lg">attach_file</span>
                                     <p class="text-sm font-semibold text-on-surface truncate">{{ grievance.attachment.name }}</p>
                                 </div>
-                                <a href="{{ grievance.attachment.url }}" download
+                                <a href="{% url 'grievance_download_attachment' grievance.pk %}"
                                    class="shrink-0 bg-primary text-white text-xs font-bold px-4 py-1.5 rounded-full hover:bg-primary/90 transition-colors flex items-center gap-1">
                                     <span class="material-symbols-outlined text-[14px]">download</span>
                                     Download
