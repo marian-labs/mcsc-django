@@ -5,7 +5,6 @@ from django.utils.text import slugify
 
 class NewsPost(models.Model):
     title = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200, unique=True, blank=True)
     content = models.TextField(help_text="Full news article content")
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='news_posts')
     is_published = models.BooleanField(default=True, db_index=True)
@@ -19,17 +18,10 @@ class NewsPost(models.Model):
             models.Index(fields=['is_published', '-published_at']),
         ]
 
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title)
-            # Ensure slug is unique
-            original_slug = self.slug
-            queryset = NewsPost.objects.all()
-            count = 1
-            while queryset.filter(slug=self.slug).exists():
-                self.slug = f"{original_slug}-{count}"
-                count += 1
-        super().save(*args, **kwargs)
+    # Title dynamically generated as URL slug
+    @property
+    def slug(self):
+        return slugify(self.title)
 
     def __str__(self):
         return self.title

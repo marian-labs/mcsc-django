@@ -4,7 +4,6 @@ from django.utils import timezone
 
 class Event(models.Model):
     title = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200, unique=True, blank=True)
     description = models.TextField()
     event_date = models.DateTimeField(db_index=True, help_text="Date and time of the event")
     venue = models.CharField(max_length=200)
@@ -20,16 +19,10 @@ class Event(models.Model):
             models.Index(fields=['is_published', 'event_date']),
         ]
 
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title)
-            original_slug = self.slug
-            queryset = Event.objects.all()
-            count = 1
-            while queryset.filter(slug=self.slug).exists():
-                self.slug = f"{original_slug}-{count}"
-                count += 1
-        super().save(*args, **kwargs)
+    # Title dynamically generated as URL slug
+    @property
+    def slug(self):
+        return slugify(self.title)
 
     @property
     def is_upcoming(self):
@@ -37,3 +30,18 @@ class Event(models.Model):
 
     def __str__(self):
         return f"{self.title} on {self.event_date.strftime('%Y-%m-%d')}"
+
+# NEW: Optional Multiple Dates for Events
+class EventDate(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='additional_dates')
+    date = models.DateTimeField(help_text="Additional event date and time")
+    label = models.CharField(max_length=100, blank=True, help_text="Optional label e.g., 'Day 2' or 'Session 2'")
+
+    class Meta:
+        ordering = ['date']
+
+    def __str__(self):
+        if self.label:
+            return f"{self.label}: {self.date.strftime('%Y-%m-%d %H:%M')}"
+        return self.date.strftime('%Y-%m-%d %H:%M')
+

@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.template.loader import render_to_string
 from .models import NewsPost
 from events.models import Event
@@ -37,7 +37,10 @@ def load_more_news(request):
     })
 
 def news_detail(request, slug):
-    post = get_object_or_404(NewsPost, slug=slug, is_published=True)
+    posts = NewsPost.objects.filter(is_published=True)
+    post = next((p for p in posts if p.slug == slug or str(p.id) == slug), None)
+    if not post:
+        raise Http404("News post not found")
     recent_news = NewsPost.objects.filter(is_published=True).exclude(id=post.id).order_by('-published_at')[:4]
     context = {
         'post': post,

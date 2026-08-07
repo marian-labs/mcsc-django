@@ -204,7 +204,7 @@
                     <div
                         class="flex items-center gap-2 sm:gap-3 min-w-0 w-full text-center sm:text-left justify-center sm:justify-start">
                         <span class="text-secondary text-xs sm:text-sm font-bold shrink-0">[{{ entry.obj.event_date|date:"d M Y" }}]</span>
-                        <a href="{% url 'event_detail' entry.obj.pk %}"
+                        <a href="{% url 'event_detail' entry.obj.slug %}"
                             class="text-on-primary-fixed hover:text-secondary font-display-lg text-xs sm:text-base font-bold shrink-0 max-w-[200px] md:max-w-xs truncate transition-colors leading-tight">
                             {{ entry.obj.title }}
                         </a>

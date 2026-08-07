@@ -42,9 +42,18 @@
                 {% endif %}
             </div>
             <div class="p-stack-md flex flex-col flex-grow">
-                <div class="flex items-center gap-2 text-primary font-label-sm text-label-sm mb-2">
-                    <span class="material-symbols-outlined text-[16px]">calendar_month</span> {{ event.event_date|date:"M d, Y" }}
-                    <span class="material-symbols-outlined text-[16px] ml-2">schedule</span> {{ event.event_date|date:"h:i A" }}
+                <div class="flex flex-col gap-1 mb-2">
+                    <div class="flex items-center gap-2 text-primary font-label-sm text-label-sm">
+                        <span class="material-symbols-outlined text-[16px]">calendar_month</span> {{ event.event_date|date:"M d, Y" }}
+                        <span class="material-symbols-outlined text-[16px] ml-2">schedule</span> {{ event.event_date|date:"h:i A" }}
+                    </div>
+                    {% for add_date in event.additional_dates.all %}
+                        <div class="flex items-center gap-2 text-outline font-label-sm text-[11px]">
+                            <span class="material-symbols-outlined text-[14px]">event_repeat</span>
+                            {% if add_date.label %}<span class="font-semibold text-secondary">{{ add_date.label }}:</span>{% endif %}
+                            {{ add_date.date|date:"M d, Y, h:i A" }}
+                        </div>
+                    {% endfor %}
                 </div>
                 <h3 class="font-headline-md text-headline-md text-on-surface mb-2">
                     <a href="{% url 'event_detail' event.slug %}" class="hover:text-primary transition-colors">{{ event.title }}</a>
