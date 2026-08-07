@@ -21,7 +21,10 @@ class NewsPost(models.Model):
     # Title dynamically generated as URL slug
     @property
     def slug(self):
-        return slugify(self.title)
+        s = slugify(self.title, allow_unicode=True)
+        if not s or s.strip('-') == '':
+            return str(self.id) if self.id else "news"
+        return s
 
     def __str__(self):
         return self.title
