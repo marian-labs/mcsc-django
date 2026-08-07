@@ -11,7 +11,8 @@ class NewsPost(models.Model):
     content = models.TextField(help_text="Full news article content")
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='news_posts', limit_choices_to={'is_staff': True})
     event = models.ForeignKey('events.Event', on_delete=models.SET_NULL, null=True, blank=True, related_name='news_posts', help_text="Optionally link an event to share its poster image with this news post")
-    use_default_poster = models.BooleanField(default=False, help_text="Use general MCSC Logo as news poster/cover if no attachment/event poster is linked")
+    poster_image = models.ImageField(upload_to='news_posters/', null=True, blank=True, help_text="Upload custom poster image for this news article")
+    use_default_poster = models.BooleanField(default=False, help_text="Use general MCSC Logo as news poster (instead of custom poster image)")
     is_published = models.BooleanField(default=True, db_index=True)
     published_at = models.DateTimeField(default=timezone.now, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -41,17 +42,22 @@ class NewsPost(models.Model):
                 return default_storage.url(DEFAULT_POSTER_PATH)
             except Exception:
                 return f"/media/{DEFAULT_POSTER_PATH}"
-        
-        # Smart check: look for any image attachment or image file extension
-        for att in self.attachments.all():
-            if att.file and att.file.name:
-                ext = os.path.splitext(att.file.name)[1].lower()
-                if att.file_type == 'image' or ext in ['.jpg', '.jpeg', '.png', '.webp', '.gif']:
-                    try:
-                        return att.file.url
-                    except Exception:
-                        pass
+        if self.poster_image:
+            try:
+                return self.poster_image.url
+            except Exception:
+                pass
         return None
+
+    def clean(self):
+        super().clean()
+        if self.use_default_poster and self.poster_image:
+            self.poster_image = None
+
+    def save(self, *args, **kwargs):
+        if self.use_default_poster and self.poster_image:
+            self.poster_image = None
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title

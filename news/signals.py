@@ -22,9 +22,17 @@ def auto_delete_news_attachment_file(sender, instance, **kwargs):
 @receiver(pre_delete, sender=NewsPost)
 def auto_delete_news_post_attachments(sender, instance, **kwargs):
     """
-    Deletes all associated attachment files from storage
+    Deletes news poster image and all associated attachment files from storage
     when a parent NewsPost is deleted.
     """
+    if instance.poster_image and instance.poster_image.name:
+        try:
+            clean_name = instance.poster_image.name.replace('\\', '/')
+            instance.poster_image.storage.delete(clean_name)
+            logger.info(f"Successfully deleted poster '{clean_name}' from storage on NewsPost deletion.")
+        except Exception as e:
+            logger.warning(f"Failed to delete poster '{instance.poster_image.name}' from storage: {e}")
+
     for attachment in instance.attachments.all():
         if attachment.file and attachment.file.name:
             try:
