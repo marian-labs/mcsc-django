@@ -19,9 +19,9 @@
             </header>
             
             <!-- Linked Event Poster Image / Featured Cover -->
-            {% if post.poster_image %}
-                <div class="mb-8 rounded-xl overflow-hidden shadow-sm max-h-[480px] flex justify-center bg-black/5">
-                    <img src="{{ post.poster_image.url }}" alt="{{ post.title }}" class="object-contain max-h-[480px]">
+            {% if post.poster_url %}
+                <div class="mb-8 rounded-xl overflow-hidden shadow-sm max-h-[480px] flex justify-center {% if post.use_default_poster %}bg-white p-6 border border-outline-variant/30{% else %}bg-black/5{% endif %}">
+                    <img src="{{ post.poster_url }}" alt="{{ post.title }}" class="object-contain max-h-[480px]">
                 </div>
             {% endif %}
 
