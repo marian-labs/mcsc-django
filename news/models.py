@@ -41,12 +41,16 @@ class NewsPost(models.Model):
                 return default_storage.url(DEFAULT_POSTER_PATH)
             except Exception:
                 return f"/media/{DEFAULT_POSTER_PATH}"
-        first_img = self.attachments.filter(file_type='image').first()
-        if first_img and first_img.file:
-            try:
-                return first_img.file.url
-            except Exception:
-                pass
+        
+        # Smart check: look for any image attachment or image file extension
+        for att in self.attachments.all():
+            if att.file and att.file.name:
+                ext = os.path.splitext(att.file.name)[1].lower()
+                if att.file_type == 'image' or ext in ['.jpg', '.jpeg', '.png', '.webp', '.gif']:
+                    try:
+                        return att.file.url
+                    except Exception:
+                        pass
         return None
 
     def __str__(self):
@@ -60,6 +64,15 @@ class NewsAttachment(models.Model):
     news_post = models.ForeignKey(NewsPost, on_delete=models.CASCADE, related_name='attachments')
     file = models.FileField(upload_to='news_attachments/')
     file_type = models.CharField(max_length=20, choices=FILE_TYPE_CHOICES, default='document')
+
+    def save(self, *args, **kwargs):
+        if self.file and self.file.name:
+            ext = os.path.splitext(self.file.name)[1].lower()
+            if ext in ['.jpg', '.jpeg', '.png', '.webp', '.gif']:
+                self.file_type = 'image'
+            elif ext in ['.pdf', '.doc', '.docx', '.txt', '.zip', '.rar']:
+                self.file_type = 'document'
+        super().save(*args, **kwargs)
 
     @property
     def generic_filename(self):
