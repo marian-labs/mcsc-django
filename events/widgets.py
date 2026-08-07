@@ -115,11 +115,11 @@ class Split12HourDateTimeWidget(widgets.MultiWidget):
         ]
         date_str, time_str, meridiem = vals[0], vals[1], vals[2]
         if not date_str or not date_str.strip():
-            return None
+            return [None, None]
         
         date_str = date_str.strip()
         if not time_str or not time_str.strip():
-            return f"{date_str} 00:00:00"
+            return [date_str, '00:00:00']
         
         time_str = time_str.strip()
         try:
@@ -136,6 +136,6 @@ class Split12HourDateTimeWidget(widgets.MultiWidget):
             elif meridiem == 'AM' and h == 12:
                 h = 0
             
-            return f"{date_str} {h:02d}:{m:02d}:{s:02d}"
+            return [date_str, f"{h:02d}:{m:02d}:{s:02d}"]
         except (ValueError, TypeError):
-            return f"{date_str} {time_str}"
+            return [date_str, time_str]
