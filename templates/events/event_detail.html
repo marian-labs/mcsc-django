@@ -32,7 +32,7 @@
                     {% for add_date in event.additional_dates.all %}
                         <p class="text-xs text-on-surface-variant font-medium mt-1">
                             {% if add_date.label %}<span class="font-bold text-primary">{{ add_date.label }}:</span> {% endif %}
-                            {{ add_date.date|date:"F d, Y, h:i A" }}
+                            {{ add_date.date|date:"F d, Y" }}{% if add_date.time %}, {{ add_date.time|date:"h:i A" }}{% endif %}
                         </p>
                     {% endfor %}
                 </div>

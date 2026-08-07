@@ -51,7 +51,7 @@
                         <div class="flex items-center gap-2 text-outline font-label-sm text-[11px]">
                             <span class="material-symbols-outlined text-[14px]">event_repeat</span>
                             {% if add_date.label %}<span class="font-semibold text-secondary">{{ add_date.label }}:</span>{% endif %}
-                            {{ add_date.date|date:"M d, Y, h:i A" }}
+                            {{ add_date.date|date:"M d, Y" }}{% if add_date.time %}, {{ add_date.time|date:"h:i A" }}{% endif %}
                         </div>
                     {% endfor %}
                 </div>

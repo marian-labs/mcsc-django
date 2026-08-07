@@ -34,14 +34,16 @@ class Event(models.Model):
 # NEW: Optional Multiple Dates for Events
 class EventDate(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='additional_dates')
-    date = models.DateTimeField(help_text="Additional event date and time")
+    date = models.DateField(help_text="Additional event date")
+    time = models.TimeField(null=True, blank=True, help_text="Optional event time (12-hour format e.g. 02:20 PM)")
     label = models.CharField(max_length=100, blank=True, help_text="Optional label e.g., 'Day 2' or 'Session 2'")
 
     class Meta:
-        ordering = ['date']
+        ordering = ['date', 'time']
 
     def __str__(self):
+        time_str = f", {self.time.strftime('%I:%M %p')}" if self.time else ""
         if self.label:
-            return f"{self.label}: {self.date.strftime('%Y-%m-%d %H:%M')}"
-        return self.date.strftime('%Y-%m-%d %H:%M')
+            return f"{self.label}: {self.date.strftime('%Y-%m-%d')}{time_str}"
+        return f"{self.date.strftime('%Y-%m-%d')}{time_str}"
 
