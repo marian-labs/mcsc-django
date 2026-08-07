@@ -2,7 +2,9 @@
 {% for post in news_posts %}
 <article class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden hover-lift flex flex-col h-full relative animate-fade-in">
     <div class="w-full aspect-[16/9] bg-surface-variant relative overflow-hidden flex items-center justify-center">
-        {% if post.attachments.first %}
+        {% if post.poster_image %}
+            <img class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" src="{{ post.poster_image.url }}" alt="{{ post.title }}">
+        {% elif post.attachments.first %}
             <img class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" src="{{ post.attachments.first.file.url }}" alt="{{ post.title }}">
         {% else %}
             <div class="w-full h-full bg-gradient-to-tr from-primary/10 to-secondary/10 flex items-center justify-center text-primary">

@@ -8,6 +8,7 @@ class NewsPost(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField(help_text="Full news article content")
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='news_posts', limit_choices_to={'is_staff': True})
+    event = models.ForeignKey('events.Event', on_delete=models.SET_NULL, null=True, blank=True, related_name='news_posts', help_text="Optionally link an event to share its poster image with this news post")
     is_published = models.BooleanField(default=True, db_index=True)
     published_at = models.DateTimeField(default=timezone.now, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -26,6 +27,12 @@ class NewsPost(models.Model):
         if not s or s.strip('-') == '':
             return str(self.id) if self.id else "news"
         return s
+
+    @property
+    def poster_image(self):
+        if self.event and self.event.poster_image:
+            return self.event.poster_image
+        return None
 
     def __str__(self):
         return self.title
