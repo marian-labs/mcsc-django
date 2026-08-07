@@ -16,6 +16,11 @@
 
 {% block extrahead %}
 {{ block.super }}
-<link rel="stylesheet" href="{% static 'css/admin_clock.css' %}">
-<script src="{% static 'js/admin_clock.js' %}" defer></script>
+<script>
+    // Suppress beforeunload alert messages when adding/editing forms or going back in admin
+    window.onbeforeunload = null;
+    window.addEventListener('beforeunload', function (e) {
+        e.stopImmediatePropagation();
+    }, true);
+</script>
 {% endblock %}

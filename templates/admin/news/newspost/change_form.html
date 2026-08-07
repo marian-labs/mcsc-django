@@ -1,0 +1,18 @@
+{% extends "admin/change_form.html" %}
+
+{% block extrahead %}
+{{ block.super }}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        window.onbeforeunload = null;
+        window.addEventListener('beforeunload', function (e) {
+            e.stopImmediatePropagation();
+        }, true);
+
+        // Remove window.onbeforeunload set by changeform.js
+        if (typeof (django) !== 'undefined' && django.jQuery) {
+            django.jQuery(window).off('beforeunload');
+        }
+    });
+</script>
+{% endblock %}
