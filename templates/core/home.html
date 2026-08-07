@@ -487,7 +487,7 @@
                         <!-- Cover Image if uploaded -->
                         <div
                             class="h-32 bg-surface-variant relative overflow-hidden flex items-center justify-center border-b border-outline-variant/30">
-                            <img class="w-full h-full {% if event.use_default_poster %}object-contain p-2 bg-white{% else %}object-cover{% endif %} transition-transform duration-500 hover:scale-105"
+                            <img class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                                 src="{{ event.poster_url }}" alt="{{ event.title }}">
                             <!-- Date overlay tag -->
                             <div
