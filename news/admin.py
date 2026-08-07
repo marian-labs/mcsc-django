@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
+from django.db import models
 from events.models import Event
 from .models import NewsPost, NewsAttachment
 
@@ -9,8 +10,8 @@ class NewsAttachmentInline(admin.TabularInline):
 
 @admin.register(NewsPost)
 class NewsPostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'event', 'is_published', 'published_at')
-    list_filter = ('is_published', 'published_at', 'author', 'event')
+    list_display = ('title', 'author', 'event', 'use_default_poster', 'is_published', 'published_at')
+    list_filter = ('is_published', 'use_default_poster', 'published_at', 'author', 'event')
     search_fields = ('title', 'content')
     inlines = [NewsAttachmentInline]
 
@@ -18,6 +19,8 @@ class NewsPostAdmin(admin.ModelAdmin):
         if db_field.name == "author":
             kwargs["queryset"] = get_user_model().objects.filter(is_staff=True)
         elif db_field.name == "event":
-            # Show events with poster images uploaded
-            kwargs["queryset"] = Event.objects.exclude(poster_image='').exclude(poster_image__isnull=True).order_by('-event_date')
+            # Show events with poster image or default poster checked
+            kwargs["queryset"] = Event.objects.filter(
+                models.Q(use_default_poster=True) | (models.Q(poster_image__isnull=False) & ~models.Q(poster_image=''))
+            ).order_by('-event_date')
         return super().formfield_for_foreignkey(db_field, request, **kwargs)

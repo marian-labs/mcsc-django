@@ -2,12 +2,15 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils import timezone
 
+DEFAULT_POSTER_PATH = 'general/mcsc_logo.png'
+
 class Event(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
     event_date = models.DateTimeField(db_index=True, help_text="Date and time of the event")
     venue = models.CharField(max_length=200)
-    poster_image = models.ImageField(upload_to='event_posters/', null=True, blank=True)
+    poster_image = models.ImageField(upload_to='event_posters/', null=True, blank=True, help_text="Upload custom poster image")
+    use_default_poster = models.BooleanField(default=False, help_text="Use general MCSC Logo as poster (instead of custom poster image)")
     registration_link = models.URLField(blank=True, null=True, help_text="Link to external registration form if applicable")
     is_published = models.BooleanField(default=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -28,8 +31,33 @@ class Event(models.Model):
         return s
 
     @property
+    def poster_url(self):
+        if self.use_default_poster:
+            try:
+                from django.core.files.storage import default_storage
+                return default_storage.url(DEFAULT_POSTER_PATH)
+            except Exception:
+                return f"/media/{DEFAULT_POSTER_PATH}"
+        if self.poster_image:
+            try:
+                return self.poster_image.url
+            except Exception:
+                pass
+        return None
+
+    @property
     def is_upcoming(self):
         return self.event_date >= timezone.now()
+
+    def clean(self):
+        super().clean()
+        if self.use_default_poster and self.poster_image:
+            self.poster_image = None
+
+    def save(self, *args, **kwargs):
+        if self.use_default_poster and self.poster_image:
+            self.poster_image = None
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.title} on {self.event_date.strftime('%Y-%m-%d')}"

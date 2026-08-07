@@ -483,12 +483,12 @@
                     {% for event in upcoming_events|slice:":2" %}
                     <div
                         class="bg-surface border border-outline-variant/30 rounded-xl overflow-hidden hover-lift flex flex-col">
-                        {% if event.poster_image %}
+                        {% if event.poster_url %}
                         <!-- Cover Image if uploaded -->
                         <div
                             class="h-32 bg-surface-variant relative overflow-hidden flex items-center justify-center border-b border-outline-variant/30">
                             <img class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                                src="{{ event.poster_image.url }}" alt="{{ event.title }}">
+                                src="{{ event.poster_url }}" alt="{{ event.title }}">
                             <!-- Date overlay tag -->
                             <div
                                 class="absolute top-2 left-2 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-center shadow-sm">

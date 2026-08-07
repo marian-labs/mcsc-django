@@ -14,9 +14,9 @@
         </header>
         
         <!-- Poster Image -->
-        {% if event.poster_image %}
+        {% if event.poster_url %}
             <div class="mb-8 rounded-xl overflow-hidden shadow-sm max-h-[480px] flex justify-center bg-black/5">
-                <img src="{{ event.poster_image.url }}" alt="{{ event.title }}" class="object-contain max-h-[480px]">
+                <img src="{{ event.poster_url }}" alt="{{ event.title }}" class="object-contain max-h-[480px]">
             </div>
         {% endif %}
         

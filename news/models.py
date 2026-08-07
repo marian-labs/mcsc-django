@@ -4,11 +4,14 @@ from django.utils import timezone
 from django.utils.text import slugify
 import os
 
+DEFAULT_POSTER_PATH = 'general/mcsc_logo.png'
+
 class NewsPost(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField(help_text="Full news article content")
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='news_posts', limit_choices_to={'is_staff': True})
     event = models.ForeignKey('events.Event', on_delete=models.SET_NULL, null=True, blank=True, related_name='news_posts', help_text="Optionally link an event to share its poster image with this news post")
+    use_default_poster = models.BooleanField(default=False, help_text="Use general MCSC Logo as news poster/cover if no attachment/event poster is linked")
     is_published = models.BooleanField(default=True, db_index=True)
     published_at = models.DateTimeField(default=timezone.now, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -29,9 +32,21 @@ class NewsPost(models.Model):
         return s
 
     @property
-    def poster_image(self):
-        if self.event and self.event.poster_image:
-            return self.event.poster_image
+    def poster_url(self):
+        if self.event and self.event.poster_url:
+            return self.event.poster_url
+        if self.use_default_poster:
+            try:
+                from django.core.files.storage import default_storage
+                return default_storage.url(DEFAULT_POSTER_PATH)
+            except Exception:
+                return f"/media/{DEFAULT_POSTER_PATH}"
+        first_img = self.attachments.filter(file_type='image').first()
+        if first_img and first_img.file:
+            try:
+                return first_img.file.url
+            except Exception:
+                pass
         return None
 
     def __str__(self):
