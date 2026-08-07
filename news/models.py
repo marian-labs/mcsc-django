@@ -2,11 +2,12 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 from django.utils.text import slugify
+import os
 
 class NewsPost(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField(help_text="Full news article content")
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='news_posts')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='news_posts', limit_choices_to={'is_staff': True})
     is_published = models.BooleanField(default=True, db_index=True)
     published_at = models.DateTimeField(default=timezone.now, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -37,6 +38,21 @@ class NewsAttachment(models.Model):
     news_post = models.ForeignKey(NewsPost, on_delete=models.CASCADE, related_name='attachments')
     file = models.FileField(upload_to='news_attachments/')
     file_type = models.CharField(max_length=20, choices=FILE_TYPE_CHOICES, default='document')
+
+    @property
+    def generic_filename(self):
+        if not self.file or not self.file.name:
+            return "attachment"
+        ext = os.path.splitext(self.file.name)[1].lower()
+        if ext in ['.jpg', '.jpeg', '.png', '.webp', '.gif']:
+            return f"image{ext if ext else '.jpg'}"
+        elif ext in ['.pdf']:
+            return "report.pdf"
+        elif ext in ['.doc', '.docx']:
+            return f"report{ext}"
+        elif ext:
+            return f"document{ext}"
+        return "attachment"
 
     def __str__(self):
         return f"Attachment for {self.news_post.title} ({self.file_type})"

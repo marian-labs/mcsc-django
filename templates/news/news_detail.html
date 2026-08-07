@@ -47,8 +47,12 @@
                         {% for attachment in post.attachments.all %}
                             {% if attachment.file_type == 'document' %}
                             <li class="flex items-center justify-between p-3 bg-surface rounded-lg hover:bg-surface-container transition-colors">
-                                <span class="text-sm font-medium truncate max-w-xs md:max-w-md">{{ attachment.file.name|urlencode }}</span>
-                                <a href="{{ attachment.file.url }}" download class="bg-primary text-on-primary px-4 py-1.5 rounded-full font-nav-button text-xs uppercase tracking-wider hover-lift">
+                                <span class="text-sm font-medium truncate max-w-xs md:max-w-md flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[18px] text-primary">description</span>
+                                    {{ attachment.generic_filename }}
+                                </span>
+                                <a href="{{ attachment.file.url }}" target="_blank" download="{{ attachment.generic_filename }}" class="bg-primary text-on-primary px-4 py-1.5 rounded-full font-nav-button text-xs uppercase tracking-wider hover-lift flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[14px]">open_in_new</span>
                                     Download
                                 </a>
                             </li>
