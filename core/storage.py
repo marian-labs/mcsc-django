@@ -2,14 +2,22 @@ from storages.backends.s3boto3 import S3Boto3Storage
 from botocore.exceptions import ClientError, BotoCoreError
 from django.core.files.storage import FileSystemStorage
 from django.core.cache import cache
+from django.conf import settings
 import logging
 
 logger = logging.getLogger(__name__)
 
+# Cache signed URLs for 90% of their expiry time so cached URLs are always valid.
+# AWS_QUERYSTRING_EXPIRE controls how long Supabase signed URLs remain valid (default 3600s).
+_URL_EXPIRY = getattr(settings, 'AWS_QUERYSTRING_EXPIRE', 3600)
+_URL_CACHE_TTL = int(_URL_EXPIRY * 0.9)  # e.g. 3240s when expiry is 3600s
+
+
 class SupabaseS3Storage(S3Boto3Storage):
     """
     Custom S3Boto3Storage for Supabase S3 API compatibility.
-    Caches generated URLs so browsers aggressively cache images and don't re-download on every request.
+    Caches generated signed URLs for 90% of their signed expiry window so that
+    the cached URL is always valid when returned (never returns an already-expired URL).
     """
     def url(self, name, parameters=None, expire=None, http_method=None):
         if not name:
@@ -19,10 +27,10 @@ class SupabaseS3Storage(S3Boto3Storage):
         cached_url = cache.get(cache_key)
         if cached_url:
             return cached_url
-        
+
         url = super().url(clean_name, parameters=parameters, expire=expire, http_method=http_method)
-        # Cache generated URL for 1 day (86400 seconds) so URLs remain stable for browser caching
-        cache.set(cache_key, url, 86400)
+        # Cache for 90% of the signed URL's lifetime so it's refreshed before it expires
+        cache.set(cache_key, url, _URL_CACHE_TTL)
         return url
 
     def exists(self, name):
