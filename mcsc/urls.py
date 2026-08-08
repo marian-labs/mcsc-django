@@ -23,3 +23,8 @@ urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 if (settings.BASE_DIR / 'static').exists():
     urlpatterns += static(settings.STATIC_URL, document_root=settings.BASE_DIR / 'static')
+
+# Custom error handlers — Django picks these up automatically
+handler404 = 'django.views.defaults.page_not_found'
+handler500 = 'django.views.defaults.server_error'
+

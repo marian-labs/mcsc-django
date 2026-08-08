@@ -1,0 +1,212 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found &middot; MCSC</title>
+
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary:   '#005c9b',
+                        'primary-container': '#2e75b6',
+                        secondary: '#f5a623',
+                        surface:   '#f8f9ff',
+                        'on-surface': '#001d35',
+                        'surface-container-low': '#eef4ff',
+                        'surface-container': '#e4efff',
+                        'outline-variant': '#c1c7d2',
+                    },
+                    fontFamily: {
+                        sans:    ["'Plus Jakarta Sans'", 'Outfit', 'sans-serif'],
+                        display: ['Outfit', "'Plus Jakarta Sans'", 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * { font-family: 'Plus Jakarta Sans', Outfit, sans-serif; }
+
+        body {
+            background: #f8f9ff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-pattern {
+            background-image: radial-gradient(rgba(0, 95, 170, 0.08) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 9999px;
+            filter: blur(80px);
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50%       { transform: translateY(-16px); }
+        }
+        .float { animation: float 5s ease-in-out infinite; }
+
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
+        .spin-slow { animation: spin-slow 18s linear infinite; }
+
+        @keyframes spin-slow-ccw {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(-360deg); }
+        }
+        .spin-ccw { animation: spin-slow-ccw 12s linear infinite; }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(28px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in  { animation: fadeSlideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+        .delay-1  { animation-delay: 0.1s; }
+        .delay-2  { animation-delay: 0.22s; }
+        .delay-3  { animation-delay: 0.36s; }
+        .delay-4  { animation-delay: 0.5s; }
+
+        .btn-primary {
+            background: #005c9b;
+            color: #fff;
+            transition: background 0.2s, transform 0.18s, box-shadow 0.18s;
+        }
+        .btn-primary:hover {
+            background: #004880;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px -4px rgba(0, 92, 155, 0.35);
+        }
+        .btn-ghost {
+            border: 1.5px solid #c1c7d2;
+            color: #001d35;
+            transition: border-color 0.2s, background 0.2s, transform 0.18s;
+        }
+        .btn-ghost:hover {
+            border-color: #005c9b;
+            background: #eef4ff;
+            transform: translateY(-2px);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-pattern">
+
+    <!-- Background orbs -->
+    <div class="orb w-96 h-96 bg-blue-300 top-[-80px] left-[-80px]"></div>
+    <div class="orb w-80 h-80 bg-yellow-300 bottom-[-60px] right-[-60px]"></div>
+    <div class="orb w-64 h-64 bg-blue-400 bottom-[20%] left-[5%]"></div>
+
+    <!-- Minimal top bar -->
+    <nav class="relative z-10 flex items-center justify-between px-6 py-4 max-w-6xl mx-auto">
+        <a href="/" class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                <span class="text-white font-bold text-xs font-display">MC</span>
+            </div>
+            <span class="font-semibold text-on-surface text-sm tracking-wide">MCSC</span>
+        </a>
+        <a href="/" class="text-sm text-primary font-semibold flex items-center gap-1 hover:gap-2 transition-all duration-200">
+            <span class="material-symbols-outlined text-base">arrow_back</span>
+            Back to home
+        </a>
+    </nav>
+
+    <!-- Main content -->
+    <main class="relative z-10 flex flex-col items-center justify-center min-h-[85vh] px-6 text-center">
+
+        <!-- Orbit decoration + big 404 -->
+        <div class="relative flex items-center justify-center mb-8 fade-in">
+            <!-- Outer orbit ring -->
+            <div class="absolute w-64 h-64 sm:w-72 sm:h-72 rounded-full border-2 border-dashed border-blue-200 spin-slow"></div>
+
+            <!-- Small orbiting dot -->
+            <div class="absolute w-64 h-64 sm:w-72 sm:h-72 rounded-full spin-slow" style="animation-delay:-4s;">
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-secondary shadow-lg"></div>
+            </div>
+
+            <!-- Inner ring -->
+            <div class="absolute w-44 h-44 sm:w-52 sm:h-52 rounded-full border border-blue-100 spin-ccw opacity-70"></div>
+
+            <!-- Big number -->
+            <div class="float relative z-10 select-none">
+                <span class="font-display font-black text-[5.5rem] sm:text-[8rem] leading-none
+                             bg-gradient-to-br from-primary via-primary-container to-blue-400
+                             bg-clip-text text-transparent">
+                    404
+                </span>
+            </div>
+        </div>
+
+        <!-- Badge -->
+        <div class="fade-in delay-1 inline-flex items-center gap-2 bg-white border border-outline-variant
+                    rounded-full px-4 py-1.5 mb-5 text-sm font-medium text-on-surface shadow-sm">
+            <span>🔍</span>
+            <span>Page Not Found</span>
+        </div>
+
+        <!-- Heading -->
+        <h1 class="fade-in delay-2 font-display font-extrabold text-3xl sm:text-4xl text-on-surface mb-3 leading-tight">
+            Oops! We lost this page.
+        </h1>
+
+        <!-- Subtext -->
+        <p class="fade-in delay-3 text-base sm:text-lg text-gray-500 max-w-md mb-8 leading-relaxed">
+            The page you're looking for may have been moved, renamed, or never existed.
+            Don't worry &mdash; let's get you back on track.
+        </p>
+
+        <!-- Action buttons -->
+        <div class="fade-in delay-4 flex flex-col sm:flex-row gap-3 items-center">
+            <a href="/" class="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm shadow-md">
+                <span class="material-symbols-outlined text-base">home</span>
+                Go to Homepage
+            </a>
+            <a href="javascript:history.back()" class="btn-ghost inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm bg-white">
+                <span class="material-symbols-outlined text-base">arrow_back</span>
+                Go Back
+            </a>
+        </div>
+
+        <!-- Quick nav links -->
+        <div class="fade-in delay-4 mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-primary font-medium">
+            <a href="/events/" class="hover:underline underline-offset-4 transition-all">Events</a>
+            <a href="/news/" class="hover:underline underline-offset-4 transition-all">News</a>
+            <a href="/representatives/" class="hover:underline underline-offset-4 transition-all">Representatives</a>
+            <a href="/grievances/" class="hover:underline underline-offset-4 transition-all">Grievances</a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 text-center pb-6 text-xs text-gray-400">
+        Marian College Students Council &copy; {% now "Y" %}
+    </footer>
+
+</body>
+</html>

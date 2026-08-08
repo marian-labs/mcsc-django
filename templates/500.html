@@ -1,0 +1,276 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Error &middot; MCSC</title>
+
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary:   '#005c9b',
+                        'primary-container': '#2e75b6',
+                        secondary: '#f5a623',
+                        surface:   '#f8f9ff',
+                        'on-surface': '#001d35',
+                        'surface-container': '#e4efff',
+                        'outline-variant': '#c1c7d2',
+                    },
+                    fontFamily: {
+                        sans:    ["'Plus Jakarta Sans'", 'Outfit', 'sans-serif'],
+                        display: ['Outfit', "'Plus Jakarta Sans'", 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * { font-family: 'Plus Jakarta Sans', Outfit, sans-serif; }
+
+        body {
+            background: #f8f9ff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-pattern {
+            background-image: radial-gradient(rgba(0, 95, 170, 0.08) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 9999px;
+            filter: blur(80px);
+            opacity: 0.28;
+            pointer-events: none;
+        }
+
+        /* Gear spin */
+        @keyframes gear-spin {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
+        @keyframes gear-spin-ccw {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(-360deg); }
+        }
+
+        .gear-a { animation: gear-spin 8s linear infinite; transform-origin: center; }
+        .gear-b { animation: gear-spin-ccw 5s linear infinite; transform-origin: center; }
+
+        /* Pulse on the warning dot */
+        @keyframes pulse-ring {
+            0%   { box-shadow: 0 0 0 0   rgba(245, 166, 35, 0.5); }
+            70%  { box-shadow: 0 0 0 14px rgba(245, 166, 35, 0); }
+            100% { box-shadow: 0 0 0 0   rgba(245, 166, 35, 0); }
+        }
+        .pulse-ring { animation: pulse-ring 2s ease-out infinite; }
+
+        /* Float */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50%       { transform: translateY(-14px); }
+        }
+        .float { animation: float 4.5s ease-in-out infinite; }
+
+        /* Entrance */
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(28px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in  { animation: fadeSlideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+        .delay-1  { animation-delay: 0.1s; }
+        .delay-2  { animation-delay: 0.22s; }
+        .delay-3  { animation-delay: 0.36s; }
+        .delay-4  { animation-delay: 0.5s; }
+
+        /* Countdown bar */
+        @keyframes countdown {
+            from { width: 100%; }
+            to   { width: 0%; }
+        }
+        .countdown-bar { animation: countdown 15s linear forwards; }
+
+        .btn-primary {
+            background: #005c9b;
+            color: #fff;
+            transition: background 0.2s, transform 0.18s, box-shadow 0.18s;
+        }
+        .btn-primary:hover {
+            background: #004880;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px -4px rgba(0, 92, 155, 0.35);
+        }
+        .btn-ghost {
+            border: 1.5px solid #c1c7d2;
+            color: #001d35;
+            transition: border-color 0.2s, background 0.2s, transform 0.18s;
+        }
+        .btn-ghost:hover {
+            border-color: #005c9b;
+            background: #eef4ff;
+            transform: translateY(-2px);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-pattern">
+
+    <!-- Background orbs — warmer tone for 500 vs 404's cool blue -->
+    <div class="orb w-96 h-96 bg-amber-200 top-[-80px] right-[-80px]"></div>
+    <div class="orb w-80 h-80 bg-blue-300 bottom-[-60px] left-[-60px]"></div>
+    <div class="orb w-56 h-56 bg-orange-200 top-[30%] right-[5%]"></div>
+
+    <!-- Minimal top bar -->
+    <nav class="relative z-10 flex items-center justify-between px-6 py-4 max-w-6xl mx-auto">
+        <a href="/" class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                <span class="text-white font-bold text-xs font-display">MC</span>
+            </div>
+            <span class="font-semibold text-on-surface text-sm tracking-wide">MCSC</span>
+        </a>
+        <a href="/" class="text-sm text-primary font-semibold flex items-center gap-1 hover:gap-2 transition-all duration-200">
+            <span class="material-symbols-outlined text-base">home</span>
+            Homepage
+        </a>
+    </nav>
+
+    <!-- Main content -->
+    <main class="relative z-10 flex flex-col items-center justify-center min-h-[85vh] px-6 text-center">
+
+        <!-- Gear illustration -->
+        <div class="relative flex items-center justify-center mb-8 fade-in" style="height:180px; width:180px;">
+
+            <!-- Large gear (outer) -->
+            <svg class="gear-a absolute" width="140" height="140" viewBox="0 0 100 100" fill="none"
+                 xmlns="http://www.w3.org/2000/svg" style="opacity:0.18;">
+                <path d="M50 20a30 30 0 1 0 0 60 30 30 0 0 0 0-60zm0 10a20 20 0 1 1 0 40 20 20 0 0 1 0-40z"
+                      fill="#005c9b"/>
+                <rect x="46" y="5"  width="8" height="14" rx="3" fill="#005c9b"/>
+                <rect x="46" y="81" width="8" height="14" rx="3" fill="#005c9b"/>
+                <rect x="5"  y="46" width="14" height="8" rx="3" fill="#005c9b"/>
+                <rect x="81" y="46" width="14" height="8" rx="3" fill="#005c9b"/>
+                <rect x="19.4" y="15.9" width="8" height="14" rx="3" transform="rotate(45 19.4 15.9)" fill="#005c9b"/>
+                <rect x="66.6" y="70.1" width="8" height="14" rx="3" transform="rotate(45 66.6 70.1)" fill="#005c9b"/>
+                <rect x="15.9" y="66.6" width="14" height="8" rx="3" transform="rotate(45 15.9 66.6)" fill="#005c9b"/>
+                <rect x="70.1" y="19.4" width="14" height="8" rx="3" transform="rotate(45 70.1 19.4)" fill="#005c9b"/>
+            </svg>
+
+            <!-- Small gear (inner) -->
+            <svg class="gear-b absolute" width="72" height="72" viewBox="0 0 100 100" fill="none"
+                 xmlns="http://www.w3.org/2000/svg" style="opacity:0.22; left:60px; top:20px;">
+                <path d="M50 25a25 25 0 1 0 0 50 25 25 0 0 0 0-50zm0 8a17 17 0 1 1 0 34 17 17 0 0 1 0-34z"
+                      fill="#f5a623"/>
+                <rect x="46" y="8"  width="8" height="12" rx="3" fill="#f5a623"/>
+                <rect x="46" y="80" width="8" height="12" rx="3" fill="#f5a623"/>
+                <rect x="8"  y="46" width="12" height="8" rx="3" fill="#f5a623"/>
+                <rect x="80" y="46" width="12" height="8" rx="3" fill="#f5a623"/>
+            </svg>
+
+            <!-- Central icon bubble (floating) -->
+            <div class="float relative z-10 w-20 h-20 rounded-2xl bg-white shadow-xl border border-outline-variant
+                        flex items-center justify-center">
+                <span class="material-symbols-outlined text-4xl" style="color:#f5a623; font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 48;">
+                    warning
+                </span>
+            </div>
+        </div>
+
+        <!-- Big 500 label -->
+        <div class="fade-in mb-1 select-none">
+            <span class="font-display font-black text-[4.5rem] sm:text-[6.5rem] leading-none
+                         bg-gradient-to-br from-amber-500 via-orange-400 to-secondary
+                         bg-clip-text text-transparent">
+                500
+            </span>
+        </div>
+
+        <!-- Badge -->
+        <div class="fade-in delay-1 inline-flex items-center gap-2 bg-white border border-outline-variant
+                    rounded-full px-4 py-1.5 mb-5 text-sm font-medium text-on-surface shadow-sm">
+            <span class="pulse-ring inline-block w-2 h-2 rounded-full bg-secondary"></span>
+            <span>Server Error</span>
+        </div>
+
+        <!-- Heading -->
+        <h1 class="fade-in delay-2 font-display font-extrabold text-3xl sm:text-4xl text-on-surface mb-3 leading-tight">
+            Something went wrong on our end.
+        </h1>
+
+        <!-- Subtext -->
+        <p class="fade-in delay-3 text-base sm:text-lg text-gray-500 max-w-md mb-3 leading-relaxed">
+            Our team has been notified and we're already on it.
+            This is not your fault &mdash; please try again in a moment.
+        </p>
+
+        <!-- Auto-retry countdown bar -->
+        <div class="fade-in delay-3 w-full max-w-xs mb-8">
+            <div class="flex justify-between text-xs text-gray-400 mb-1">
+                <span>Auto-retrying in 15s&hellip;</span>
+                <span id="countdown-label">15</span>
+            </div>
+            <div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+                <div class="countdown-bar h-full bg-gradient-to-r from-primary to-secondary rounded-full"></div>
+            </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="fade-in delay-4 flex flex-col sm:flex-row gap-3 items-center">
+            <a href="javascript:location.reload()" class="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm shadow-md">
+                <span class="material-symbols-outlined text-base">refresh</span>
+                Try Again
+            </a>
+            <a href="/" class="btn-ghost inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm bg-white">
+                <span class="material-symbols-outlined text-base">home</span>
+                Go to Homepage
+            </a>
+        </div>
+
+        <!-- Support note -->
+        <p class="fade-in delay-4 mt-8 text-xs text-gray-400">
+            If this keeps happening, reach out via
+            <a href="/grievances/" class="text-primary font-semibold hover:underline underline-offset-4">Grievance Portal</a>
+        </p>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 text-center pb-6 text-xs text-gray-400">
+        Marian College Students Council &copy; {% now "Y" %}
+    </footer>
+
+    <script>
+        // Countdown ticker and auto-reload
+        let secs = 15;
+        const label = document.getElementById('countdown-label');
+        const timer = setInterval(() => {
+            secs -= 1;
+            if (label) label.textContent = secs;
+            if (secs <= 0) {
+                clearInterval(timer);
+                location.reload();
+            }
+        }, 1000);
+    </script>
+
+</body>
+</html>
