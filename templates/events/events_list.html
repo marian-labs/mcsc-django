@@ -26,11 +26,11 @@
     <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter animate-fade-in" id="section-upcoming">
         {% for event in upcoming_events %}
         <article class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden hover-lift flex flex-col h-full relative">
-            {% if forloop.first %}
-            <div class="absolute top-4 left-4 z-10 bg-secondary text-on-secondary px-3 py-1 rounded-full font-label-sm text-label-sm font-bold flex items-center gap-1 shadow-md animate-pulse">
-                <span class="material-symbols-outlined text-[14px]">event_upcoming</span> Up Next
+        {% if event.is_featured %}
+            <div class="absolute top-4 left-4 z-10 bg-secondary text-on-secondary px-3 py-1 rounded-full font-label-sm text-label-sm font-bold flex items-center gap-1 shadow-md">
+                <span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 20;">star</span> Featured
             </div>
-            {% endif %}
+        {% endif %}
             <div class="h-48 bg-surface-variant relative overflow-hidden flex items-center justify-center">
                 {% if event.poster_url %}
                     <img class="w-full h-full {% if event.use_default_poster %}object-contain p-3 bg-white{% else %}object-cover{% endif %} transition-transform duration-500 hover:scale-105" src="{{ event.poster_url }}" alt="{{ event.title }}">

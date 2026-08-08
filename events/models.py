@@ -13,6 +13,7 @@ class Event(models.Model):
     use_default_poster = models.BooleanField(default=False, help_text="Use general MCSC Logo as poster (instead of custom poster image)")
     registration_link = models.URLField(blank=True, null=True, help_text="Link to external registration form if applicable")
     is_published = models.BooleanField(default=True, db_index=True)
+    is_featured = models.BooleanField(default=False, db_index=True, help_text="Mark as featured — shows a 'Featured' badge on the event card")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -47,7 +48,14 @@ class Event(models.Model):
 
     @property
     def is_upcoming(self):
-        return self.event_date >= timezone.now()
+        """Returns True if the event hasn't fully finished yet.
+        For multi-day events, stays True until the last additional date has passed.
+        """
+        now = timezone.now()
+        # Check if any additional date is still in the future or today
+        if self.additional_dates.filter(date__gte=now.date()).exists():
+            return True
+        return self.event_date >= now
 
     def clean(self):
         super().clean()

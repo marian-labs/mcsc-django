@@ -12,8 +12,9 @@ class EventDateInline(admin.TabularInline):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    list_display = ('title', 'event_date', 'venue', 'use_default_poster', 'is_published')
-    list_filter = ('is_published', 'use_default_poster', 'event_date', 'venue')
+    list_display = ('title', 'event_date', 'venue', 'is_featured', 'is_published', 'use_default_poster')
+    list_filter = ('is_published', 'is_featured', 'use_default_poster', 'event_date', 'venue')
+    list_editable = ('is_featured', 'is_published')
     search_fields = ('title', 'description', 'venue')
     inlines = [EventDateInline]
     formfield_overrides = {
