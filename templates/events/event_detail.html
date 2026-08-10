@@ -1,4 +1,5 @@
 {% extends "core/base.html" %}
+{% load static %}
 
 {% block title %}{{ event.title }} | Events Calendar{% endblock %}
 
@@ -16,7 +17,7 @@
         <!-- Poster Image -->
         {% if event.poster_url %}
             <div class="mb-8 rounded-xl overflow-hidden shadow-sm max-h-[480px] flex justify-center {% if event.use_default_poster %}bg-white p-6 border border-outline-variant/30{% else %}bg-black/5{% endif %}">
-                <img src="{{ event.poster_url }}" alt="{{ event.title }}" class="object-contain max-h-[480px]">
+                <img src="{{ event.poster_url }}" alt="{{ event.title }}" class="object-contain max-h-[480px]" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='{% static 'images/mcsc_logo.png' %}';">
             </div>
         {% endif %}
         

@@ -38,10 +38,9 @@ class NewsPost(models.Model):
             return self.event.poster_url
         if self.use_default_poster:
             try:
-                from django.core.files.storage import default_storage
-                return default_storage.url(DEFAULT_POSTER_PATH)
+                return f"{settings.STATIC_URL}images/mcsc_logo.png"
             except Exception:
-                return f"/media/{DEFAULT_POSTER_PATH}"
+                return "/static/images/mcsc_logo.png"
         if self.poster_image:
             try:
                 return self.poster_image.url

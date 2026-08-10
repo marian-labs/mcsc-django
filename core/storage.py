@@ -7,17 +7,16 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Cache signed URLs for 90% of their expiry time so cached URLs are always valid.
-# AWS_QUERYSTRING_EXPIRE controls how long Supabase signed URLs remain valid (default 3600s).
-_URL_EXPIRY = getattr(settings, 'AWS_QUERYSTRING_EXPIRE', 3600)
-_URL_CACHE_TTL = int(_URL_EXPIRY * 0.9)  # e.g. 3240s when expiry is 3600s
+# Short-lived URL cache TTL (5 minutes max) so presigned URLs always have fresh timestamps
+# for new visitors while avoiding redundant URL signing on simultaneous requests.
+_URL_CACHE_TTL = 300
 
 
 class SupabaseS3Storage(S3Boto3Storage):
     """
     Custom S3Boto3Storage for Supabase S3 API compatibility.
-    Caches generated signed URLs for 90% of their signed expiry window so that
-    the cached URL is always valid when returned (never returns an already-expired URL).
+    Caches generated signed URLs for a maximum of 5 minutes so that
+    new visitors always receive freshly-signed valid URLs with current timestamps.
     """
     def url(self, name, parameters=None, expire=None, http_method=None):
         if not name:
@@ -29,7 +28,6 @@ class SupabaseS3Storage(S3Boto3Storage):
             return cached_url
 
         url = super().url(clean_name, parameters=parameters, expire=expire, http_method=http_method)
-        # Cache for 90% of the signed URL's lifetime so it's refreshed before it expires
         cache.set(cache_key, url, _URL_CACHE_TTL)
         return url
 
