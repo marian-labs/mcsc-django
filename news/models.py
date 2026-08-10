@@ -34,6 +34,11 @@ class NewsPost(models.Model):
 
     @property
     def poster_url(self):
+        if self.poster_image:
+            try:
+                return self.poster_image.url
+            except Exception:
+                pass
         if self.event and self.event.poster_url:
             return self.event.poster_url
         if self.use_default_poster:
@@ -41,21 +46,16 @@ class NewsPost(models.Model):
                 return f"{settings.STATIC_URL}images/mcsc_logo.png"
             except Exception:
                 return "/static/images/mcsc_logo.png"
-        if self.poster_image:
-            try:
-                return self.poster_image.url
-            except Exception:
-                pass
         return None
 
     def clean(self):
         super().clean()
-        if self.use_default_poster and self.poster_image:
-            self.poster_image = None
+        if self.poster_image:
+            self.use_default_poster = False
 
     def save(self, *args, **kwargs):
-        if self.use_default_poster and self.poster_image:
-            self.poster_image = None
+        if self.poster_image:
+            self.use_default_poster = False
         super().save(*args, **kwargs)
 
     def __str__(self):
