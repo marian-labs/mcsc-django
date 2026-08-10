@@ -7,9 +7,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Short-lived URL cache TTL (5 minutes max) so presigned URLs always have fresh timestamps
-# for new visitors while avoiding redundant URL signing on simultaneous requests.
-_URL_CACHE_TTL = 300
+# Long-lived URL cache TTL (24 hours) so presigned URLs remain stable for browser caching
+# while ensuring signatures are valid for 7 days (AWS_QUERYSTRING_EXPIRE).
+_URL_CACHE_TTL = 86400
 
 
 class SupabaseS3Storage(S3Boto3Storage):
