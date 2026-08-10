@@ -12,24 +12,26 @@ logger = logging.getLogger(__name__)
 _URL_CACHE_TTL = 86400
 
 
+import urllib.parse
+
+
 class SupabaseS3Storage(S3Boto3Storage):
     """
-    Custom S3Boto3Storage for Supabase S3 API compatibility.
-    Caches generated signed URLs for a maximum of 5 minutes so that
-    new visitors always receive freshly-signed valid URLs with current timestamps.
+    Custom S3Boto3Storage for Supabase Storage.
+    Generates clean, permanent, public URLs without presigned query parameters.
+    Allows browsers, CDNs, and first-time visitors to load images reliably and cache them permanently.
     """
     def url(self, name, parameters=None, expire=None, http_method=None):
         if not name:
             return ""
         clean_name = str(name).replace('\\', '/')
-        cache_key = f"supabase_url:{clean_name}"
-        cached_url = cache.get(cache_key)
-        if cached_url:
-            return cached_url
+        supabase_url = getattr(settings, 'SUPABASE_URL', '')
+        bucket_name = getattr(settings, 'SUPABASE_STORAGE_BUCKET_NAME', '')
+        if supabase_url and bucket_name:
+            qname = urllib.parse.quote(clean_name, safe='/')
+            return f"{supabase_url}/storage/v1/object/public/{bucket_name}/{qname}"
 
-        url = super().url(clean_name, parameters=parameters, expire=expire, http_method=http_method)
-        cache.set(cache_key, url, _URL_CACHE_TTL)
-        return url
+        return super().url(clean_name, parameters=parameters, expire=expire, http_method=http_method)
 
     def exists(self, name):
         try:
