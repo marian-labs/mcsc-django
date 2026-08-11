@@ -1,0 +1,17 @@
+.git
+.gitignore
+.dockerignore
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.env.example
+*.sqlite3
+staticfiles/
+media/
+.vscode/
+.idea/
+Procfile
+HOSTINGER_DOCKER_SETUP.md

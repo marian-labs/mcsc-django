@@ -33,6 +33,11 @@ RENDER_EXTERNAL_HOSTNAME = config('RENDER_EXTERNAL_HOSTNAME', default='')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
+_csrf_trusted = config('CSRF_TRUSTED_ORIGINS', default='')
+if _csrf_trusted:
+    CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf_trusted.split(',') if o.strip()]
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

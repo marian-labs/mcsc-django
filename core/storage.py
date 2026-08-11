@@ -6,9 +6,6 @@ from django.conf import settings
 import logging
 
 logger = logging.getLogger(__name__)
-
-# Long-lived URL cache TTL (24 hours) so presigned URLs remain stable for browser caching
-# while ensuring signatures are valid for 7 days (AWS_QUERYSTRING_EXPIRE).
 _URL_CACHE_TTL = 86400
 
 
