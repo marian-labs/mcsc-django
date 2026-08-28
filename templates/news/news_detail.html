@@ -21,8 +21,13 @@
             
             <!-- Linked Event Poster Image / Featured Cover -->
             {% if post.poster_url %}
-                <div class="mb-8 rounded-xl overflow-hidden shadow-sm max-h-[480px] flex justify-center {% if post.use_default_poster %}bg-white p-6 border border-outline-variant/30{% else %}bg-black/5{% endif %}">
-                    <img src="{{ post.poster_url }}" alt="{{ post.title }}" class="object-contain max-h-[480px]" loading="lazy" decoding="async">
+                <div class="w-full h-64 sm:h-80 md:h-[420px] rounded-2xl overflow-hidden shadow-sm cursor-pointer group relative bg-surface-container-high border border-outline-variant/20 mb-8"
+                    onclick="openImageModal('{{ post.poster_url }}', '{{ post.title|escapejs }}')">
+                    <img src="{{ post.poster_url }}" alt="{{ post.title }}" class="w-full h-full {% if post.use_default_poster %}object-contain p-6 bg-white{% else %}object-cover object-top{% endif %} group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async">
+                    <div class="absolute bottom-3 right-3 bg-slate-950/75 backdrop-blur-md text-white text-[11px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity shadow-md">
+                        <span class="material-symbols-outlined text-[16px]">zoom_in</span>
+                        Tap to expand
+                    </div>
                 </div>
             {% endif %}
 
@@ -43,8 +48,13 @@
                 <div class="mb-8 space-y-4">
                     {% for attachment in post.attachments.all %}
                         {% if attachment.file_type == 'image' %}
-                            <div class="rounded-xl overflow-hidden shadow-sm">
-                                <img src="{{ attachment.file.url }}" alt="Attachment" class="w-full h-auto object-cover max-h-[480px]">
+                            <div class="w-full h-64 sm:h-80 md:h-[420px] rounded-2xl overflow-hidden shadow-sm cursor-pointer group relative bg-surface-container-high border border-outline-variant/20"
+                                onclick="openImageModal('{{ attachment.file.url }}', 'Attachment')">
+                                <img src="{{ attachment.file.url }}" alt="Attachment" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500">
+                                <div class="absolute bottom-3 right-3 bg-slate-950/75 backdrop-blur-md text-white text-[11px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity shadow-md">
+                                    <span class="material-symbols-outlined text-[16px]">zoom_in</span>
+                                    Tap to expand
+                                </div>
                             </div>
                         {% endif %}
                     {% endfor %}

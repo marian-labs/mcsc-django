@@ -16,6 +16,7 @@ services:
       - static_data:/app/staticfiles
     depends_on:
       - db
+      - db_pooler
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:${PORT:-8000}/ || exit 1"]
       interval: 30s
@@ -33,8 +34,10 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+    # Host port mapping removed for security & networking efficiency (app connects via db_pooler:6432 internally).
+    # To expose Postgres directly to host tools (e.g. pgAdmin/DBeaver), uncomment below:
+    # ports:
+    #   - "5432:5432"
 
   db_pooler:
     image: edoburu/pgbouncer:latest

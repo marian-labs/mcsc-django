@@ -13,6 +13,7 @@ class NewsPost(models.Model):
     event = models.ForeignKey('events.Event', on_delete=models.SET_NULL, null=True, blank=True, related_name='news_posts', help_text="Optionally link an event to share its poster image with this news post")
     poster_image = models.ImageField(upload_to='news_posters/', null=True, blank=True, help_text="Upload custom poster image for this news article")
     use_default_poster = models.BooleanField(default=False, help_text="Use general MCSC Logo as news poster (instead of custom poster image)")
+    slug = models.SlugField(max_length=220, unique=True, blank=True, db_index=True, allow_unicode=True)
     is_published = models.BooleanField(default=True, db_index=True)
     published_at = models.DateTimeField(default=timezone.now, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -24,13 +25,19 @@ class NewsPost(models.Model):
             models.Index(fields=['is_published', '-published_at']),
         ]
 
-    # Title dynamically generated as URL slug
-    @property
-    def slug(self):
-        s = slugify(self.title, allow_unicode=True)
-        if not s or s.strip('-') == '':
-            return str(self.id) if self.id else "news"
-        return s
+    def generate_unique_slug(self):
+        base_slug = slugify(self.title, allow_unicode=True)
+        if not base_slug or base_slug.strip('-') == '':
+            base_slug = str(self.id) if self.id else "news"
+        slug_candidate = base_slug
+        counter = 1
+        qs = NewsPost.objects.all()
+        if self.pk:
+            qs = qs.exclude(pk=self.pk)
+        while qs.filter(slug=slug_candidate).exists():
+            counter += 1
+            slug_candidate = f"{base_slug}-{counter}"
+        return slug_candidate
 
     @property
     def poster_url(self):
@@ -56,6 +63,8 @@ class NewsPost(models.Model):
     def save(self, *args, **kwargs):
         if self.poster_image:
             self.use_default_poster = False
+        if not self.slug:
+            self.slug = self.generate_unique_slug()
         super().save(*args, **kwargs)
 
     def __str__(self):

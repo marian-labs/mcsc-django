@@ -60,12 +60,20 @@ def events_list(request):
     return render(request, 'events/events_list.html', context)
 
 def event_detail(request, slug):
-    events = Event.objects.filter(is_published=True).prefetch_related('additional_dates')
-    event = next((e for e in events if e.slug == slug or str(e.id) == slug), None)
+    event = Event.objects.filter(is_published=True, slug=slug).prefetch_related('additional_dates').first()
+    if not event:
+        try:
+            event = Event.objects.filter(is_published=True, pk=int(slug)).prefetch_related('additional_dates').first()
+        except (ValueError, TypeError):
+            event = None
     if not event:
         raise Http404("Event not found")
+    
+    other_events = Event.objects.filter(is_published=True).exclude(pk=event.pk).order_by('-event_date')[:5]
+    
     context = {
         'event': event,
+        'other_events': other_events,
     }
     return render(request, 'events/event_detail.html', context)
 

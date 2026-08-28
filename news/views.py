@@ -3,42 +3,14 @@ from django.utils import timezone
 from django.http import JsonResponse, Http404
 from django.template.loader import render_to_string
 from .models import NewsPost
-from events.models import Event
 
 def news_list(request):
-    now = timezone.now()
     news_posts = NewsPost.objects.filter(is_published=True).order_by('-published_at')[:9]
     total_count = NewsPost.objects.filter(is_published=True).count()
-    
-    today = now.date()
-    from django.db import models as db_models
-
-    upcoming_events = (
-        Event.objects.filter(is_published=True)
-        .filter(
-            db_models.Q(event_date__gte=now) |
-            db_models.Q(additional_dates__date__gte=today)
-        )
-        .distinct()
-        .order_by('event_date')
-        .prefetch_related('additional_dates')[:3]
-    )
-    past_events = (
-        Event.objects.filter(is_published=True)
-        .exclude(
-            db_models.Q(event_date__gte=now) |
-            db_models.Q(additional_dates__date__gte=today)
-        )
-        .distinct()
-        .order_by('-event_date')
-        .prefetch_related('additional_dates')[:3]
-    )
     
     context = {
         'news_posts': news_posts,
         'total_count': total_count,
-        'upcoming_events': upcoming_events,
-        'past_events': past_events,
     }
     return render(request, 'news/news_list.html', context)
 
@@ -58,8 +30,12 @@ def load_more_news(request):
     })
 
 def news_detail(request, slug):
-    posts = NewsPost.objects.filter(is_published=True)
-    post = next((p for p in posts if p.slug == slug or str(p.id) == slug), None)
+    post = NewsPost.objects.filter(is_published=True, slug=slug).first()
+    if not post:
+        try:
+            post = NewsPost.objects.filter(is_published=True, pk=int(slug)).first()
+        except (ValueError, TypeError):
+            post = None
     if not post:
         raise Http404("News post not found")
     recent_news = NewsPost.objects.filter(is_published=True).exclude(id=post.id).order_by('-published_at')[:4]

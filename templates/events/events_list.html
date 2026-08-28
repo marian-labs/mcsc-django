@@ -7,313 +7,6 @@
 <!-- Main Content Canvas -->
 <main class="flex-grow pb-stack-lg w-full">
 
-    <!-- ═══════════════════════════════════════════════════════════════════
-         ONAM PRAKAMBANAM — FULL-WIDTH HERO CARD
-    ═══════════════════════════════════════════════════════════════════ -->
-    {% now "Y-m-d" as today_str %}
-    <!-- ── ONAM PRAKAMBANAM SECTION ── -->
-    <section class="w-full bg-surface-container-lowest border-b border-outline-variant/30 {% if today_str > '2026-08-23' %}hidden{% endif %}" id="onam-prakambanam" data-onam-finished="{% if today_str > '2026-08-23' %}true{% else %}false{% endif %}">
-        <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-8 pb-10">
-
-            {% if today_str > "2026-08-23" %}
-            <!-- Full-Color Finished Status Banner -->
-            <div class="mb-6 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 p-4 rounded-2xl text-slate-950 font-black text-sm sm:text-base flex items-center justify-between shadow-lg border border-amber-300">
-                <span class="flex items-center gap-2">
-                    <span class="text-2xl animate-bounce">🏆</span>
-                    ONAM PRAKAMBANAM 2026 — OFFICIAL CHAMPIONSHIP RESULTS & CONCLUDED
-                </span>
-                <span class="bg-slate-950/15 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider text-slate-950">Concluded</span>
-            </div>
-            {% endif %}
-
-            <!-- Full-Width Onam Logo -->
-            <div class="w-full mb-10" style="max-height: calc(100vh - 120px);">
-                <img
-                    src="{% static 'images/onam 26/onam_logo.webp' %}"
-                    alt="Onam Celebration 2026"
-                    class="w-full h-full object-contain object-top"
-                    style="max-height: calc(100vh - 120px);"
-                >
-            </div>
-
-                <!-- ── Live Scoreboard (Full Width) ── -->
-                <div class="w-full mb-6">
-                    <div class="bg-surface-container border border-outline-variant/30 rounded-2xl overflow-hidden">
-                        <!-- Header -->
-                        <div class="bg-surface-container-high border-b border-outline-variant/30 px-6 py-4 flex items-center gap-3">
-                            <span class="material-symbols-outlined text-secondary text-xl" style="font-variation-settings:'FILL' 1;">emoji_events</span>
-                            <h3 class="text-on-surface font-black text-sm uppercase tracking-wider">Live Scoreboard</h3>
-                            <span class="ml-auto text-on-surface-variant text-[10px] font-bold uppercase tracking-widest">Points</span>
-                        </div>
-
-                        {% if onam_settings.show_overall_winner %}
-                            {% with winner=departments_ranked.0 %}
-                            {% if winner %}
-                            <!-- 🏆 OVERALL CHAMPION ANNOUNCEMENT BANNER 🏆 -->
-                            <div class="bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 p-6 text-slate-900 border-b border-amber-300 shadow-inner flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-                                <div class="flex items-center gap-4">
-                                    <span class="text-4xl sm:text-5xl animate-bounce">🏆</span>
-                                    <div>
-                                        <span class="text-[10px] font-black uppercase tracking-widest bg-slate-950/15 px-3 py-1 rounded-full text-slate-950 font-mono">OFFICIAL OVERALL CHAMPION 2026</span>
-                                        <h2 class="text-2xl sm:text-3xl font-black text-slate-950 mt-1 drop-shadow-sm">{{ winner.name }}</h2>
-                                    </div>
-                                </div>
-                                <div class="bg-slate-950/10 backdrop-blur-md px-5 py-3 rounded-2xl border border-slate-950/20 text-center shrink-0">
-                                    <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-800">Total Points</span>
-                                    <span class="text-2xl font-black text-slate-950">{{ winner.points }} PTS</span>
-                                </div>
-                            </div>
-                            {% endif %}
-                            {% endwith %}
-                        {% else %}
-                            <!-- Pending Announcement Bar -->
-                            <div class="bg-amber-500/10 border-b border-amber-500/20 px-6 py-3 flex items-center justify-between gap-3 text-xs">
-                                <span class="font-bold text-amber-700 flex items-center gap-1.5">
-                                    <span class="material-symbols-outlined text-sm">schedule</span>
-                                    Overall Champion Announcement: <strong class="underline decoration-amber-400">{{ onam_settings.announcement_date|default:"August 21, 2026" }}</strong>
-                                </span>
-                            </div>
-                        {% endif %}
-
-                        {% if departments_ranked %}
-                        <!-- Department rows — horizontal wrap for full-width feel -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 divide-outline-variant/20">
-                            {% for dept in departments_ranked %}
-                            <div class="flex items-center gap-3 px-5 py-4 border-b border-r border-outline-variant/20 hover:bg-surface-container-high transition-colors {% if forloop.counter == 1 and onam_settings.show_overall_winner %}bg-amber-400/15 font-black{% endif %}">
-                                <!-- Rank badge -->
-                                <div class="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-base font-black
-                                    {% if forloop.counter == 1 %}bg-amber-400 text-white shadow-sm
-                                    {% elif forloop.counter == 2 %}bg-slate-300 text-slate-700
-                                    {% elif forloop.counter == 3 %}bg-orange-300 text-orange-800
-                                    {% else %}bg-surface-container-high text-on-surface-variant{% endif %}">
-                                    {% if forloop.counter == 1 %}🥇
-                                    {% elif forloop.counter == 2 %}🥈
-                                    {% elif forloop.counter == 3 %}🥉
-                                    {% else %}{{ forloop.counter }}{% endif %}
-                                </div>
-                                <!-- Dept name -->
-                                <div class="flex-1 min-w-0">
-                                    <span class="text-on-surface font-bold text-sm truncate block {% if forloop.counter <= 3 %}text-on-surface{% else %}text-on-surface-variant{% endif %}">
-                                        {{ dept.name }}
-                                    </span>
-                                    {% if forloop.counter == 1 %}
-                                        {% if onam_settings.show_overall_winner %}
-                                            <span class="text-amber-600 text-[10px] font-black uppercase tracking-wider">🏆 CHAMPION</span>
-                                        {% else %}
-                                            <span class="text-amber-500 text-[10px] font-bold uppercase tracking-wider">Leading 🏆</span>
-                                        {% endif %}
-                                    {% endif %}
-                                </div>
-                                <!-- Points pill -->
-                                <span class="shrink-0 px-3 py-1 rounded-full text-xs font-black
-                                    {% if forloop.counter == 1 %}bg-secondary text-on-secondary
-                                    {% elif forloop.counter <= 3 %}bg-surface-container-highest text-on-surface
-                                    {% else %}bg-surface-container text-on-surface-variant{% endif %}">
-                                    {{ dept.points }} pts
-                                </span>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        {% else %}
-                        <div class="flex flex-col items-center justify-center gap-3 py-10 px-6 text-center">
-                            <span class="text-4xl">⏳</span>
-                            <p class="text-on-surface-variant text-sm font-semibold">Games not started yet.</p>
-                            <p class="text-outline text-xs">Scoreboard updates live as results are entered.</p>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- ── Championship Games (Full Width, 2 per row) ── -->
-                <div class="w-full">
-                    <div class="bg-surface-container border border-outline-variant/30 rounded-2xl overflow-hidden">
-                        <!-- Header -->
-                        <div class="bg-surface-container-high border-b border-outline-variant/30 px-6 py-4 flex items-center gap-3">
-                            <span class="material-symbols-outlined text-primary text-xl" style="font-variation-settings:'FILL' 1;">sports</span>
-                            <h3 class="text-on-surface font-black text-sm uppercase tracking-wider">Championship Games</h3>
-                            <span class="ml-auto text-on-surface-variant text-[10px] font-bold uppercase tracking-widest">{{ onam_games|length }} Games</span>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4">
-                            {% for game in onam_games %}
-                            <div class="relative rounded-2xl overflow-hidden border {% if game.is_mavelikoppam %}border-secondary/60 col-span-1 sm:col-span-2{% else %}border-white/10{% endif %} hover:shadow-xl transition-all duration-300 hover:-translate-y-1 min-h-[200px]">
-
-                                <!-- Background image: VPS upload → static fallback -->
-                                {% if game.image %}
-                                <img src="{{ game.image.url }}" alt="{{ game.name }}"
-                                    class="absolute inset-0 w-full h-full object-cover" style="opacity: 0.55;">
-                                {% elif game.static_bg_image %}
-                                <img src="{% static game.static_bg_image %}" alt="{{ game.name }}"
-                                    class="absolute inset-0 w-full h-full object-cover" style="opacity: 0.55;">
-                                {% endif %}
-
-                                <!-- Dark gradient overlay for white text readability -->
-                                <div class="absolute inset-0 {% if game.is_mavelikoppam %}bg-gradient-to-br from-black/70 via-black/55 to-secondary/40{% else %}bg-gradient-to-br from-black/70 via-black/55 to-primary/30{% endif %}"></div>
-
-                                <!-- Card Content -->
-                                <div class="relative p-5 h-full flex flex-col">
-                                    <!-- Top row: name + badges -->
-                                    <div class="mb-3">
-                                        <h4 class="text-white font-black text-base leading-snug drop-shadow">{{ game.name }}</h4>
-                                        <div class="flex flex-wrap gap-1 mt-1">
-                                            {% if game.is_mavelikoppam %}
-                                            <span class="text-amber-300 text-[10px] font-bold uppercase tracking-wider bg-white/10 px-2 py-0.5 rounded-full">⭐ Mavelikoppam</span>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-
-                                    <!-- Date -->
-                                    <div class="flex items-center gap-1.5 mb-4">
-                                        <span class="material-symbols-outlined text-[14px] text-white/60">calendar_month</span>
-                                        {% if game.scheduled_date %}
-                                        <span class="text-xs font-semibold text-white/80">{{ game.scheduled_date|date:"M d, Y" }}</span>
-                                        {% else %}
-                                        <span class="text-xs text-white/40 italic">Date TBA</span>
-                                        {% endif %}
-                                    </div>
-
-                                    <!-- Results -->
-                                    <div class="flex flex-col gap-1.5 mt-auto">
-                                        {% if game.has_any_results %}
-
-                                            {% if game.has_gender_categories %}
-                                            <!-- â”€â”€ Boys Section â”€â”€ -->
-                                            <div class="mb-1">
-                                                <p class="text-[10px] font-black uppercase tracking-widest text-sky-300 mb-1.5">Boys</p>
-                                                {% if game.boys_result_1st %}
-                                                <div class="flex items-center gap-2 bg-black/30 backdrop-blur-sm rounded-xl px-3 py-1.5 mb-1">
-                                                    <span class="text-sm shrink-0">🥇</span>
-                                                    <div class="flex-1 min-w-0">
-                                                        <span class="text-white font-semibold text-xs truncate block">{{ game.boys_result_1st.department.name|default:"—" }}</span>
-                                                        {% if game.boys_result_1st.participant_name %}<span class="text-white/60 text-[10px] truncate block">{{ game.boys_result_1st.participant_name }}</span>{% endif %}
-                                                    </div>
-                                                    <span class="shrink-0 text-amber-300 text-[11px] font-black">+{{ game.boys_result_1st.points_value }}pts</span>
-                                                </div>
-                                                {% endif %}
-                                                {% if game.boys_result_2nd %}
-                                                <div class="flex items-center gap-2 bg-black/25 backdrop-blur-sm rounded-xl px-3 py-1.5 mb-1">
-                                                    <span class="text-sm shrink-0">🥈</span>
-                                                    <div class="flex-1 min-w-0">
-                                                        <span class="text-white font-semibold text-xs truncate block">{{ game.boys_result_2nd.department.name|default:"—" }}</span>
-                                                        {% if game.boys_result_2nd.participant_name %}<span class="text-white/60 text-[10px] truncate block">{{ game.boys_result_2nd.participant_name }}</span>{% endif %}
-                                                    </div>
-                                                    <span class="shrink-0 text-white/70 text-[11px] font-black">+{{ game.boys_result_2nd.points_value }}pts</span>
-                                                </div>
-                                                {% endif %}
-                                                {% if game.boys_result_3rd %}
-                                                <div class="flex items-center gap-2 bg-black/25 backdrop-blur-sm rounded-xl px-3 py-1.5">
-                                                    <span class="text-sm shrink-0">🥉</span>
-                                                    <div class="flex-1 min-w-0">
-                                                        <span class="text-white font-semibold text-xs truncate block">{{ game.boys_result_3rd.department.name|default:"—" }}</span>
-                                                        {% if game.boys_result_3rd.participant_name %}<span class="text-white/60 text-[10px] truncate block">{{ game.boys_result_3rd.participant_name }}</span>{% endif %}
-                                                    </div>
-                                                    <span class="shrink-0 text-white/70 text-[11px] font-black">+{{ game.boys_result_3rd.points_value }}pts</span>
-                                                </div>
-                                                {% endif %}
-                                                {% if not game.boys_result_1st and not game.boys_result_2nd and not game.boys_result_3rd %}
-                                                <p class="text-white/40 text-xs italic px-1">Awaitedâ€¦</p>
-                                                {% endif %}
-                                            </div>
-
-                                            <div class="border-t border-white/15 my-1"></div>
-
-                                            <!-- â”€â”€ Girls Section â”€â”€ -->
-                                            <div>
-                                                <p class="text-[10px] font-black uppercase tracking-widest text-pink-300 mb-1.5">Girls</p>
-                                                {% if game.girls_result_1st %}
-                                                <div class="flex items-center gap-2 bg-black/30 backdrop-blur-sm rounded-xl px-3 py-1.5 mb-1">
-                                                    <span class="text-sm shrink-0">🥇</span>
-                                                    <div class="flex-1 min-w-0">
-                                                        <span class="text-white font-semibold text-xs truncate block">{{ game.girls_result_1st.department.name|default:"—" }}</span>
-                                                        {% if game.girls_result_1st.participant_name %}<span class="text-white/60 text-[10px] truncate block">{{ game.girls_result_1st.participant_name }}</span>{% endif %}
-                                                    </div>
-                                                    <span class="shrink-0 text-amber-300 text-[11px] font-black">+{{ game.girls_result_1st.points_value }}pts</span>
-                                                </div>
-                                                {% endif %}
-                                                {% if game.girls_result_2nd %}
-                                                <div class="flex items-center gap-2 bg-black/25 backdrop-blur-sm rounded-xl px-3 py-1.5 mb-1">
-                                                    <span class="text-sm shrink-0">🥈</span>
-                                                    <div class="flex-1 min-w-0">
-                                                        <span class="text-white font-semibold text-xs truncate block">{{ game.girls_result_2nd.department.name|default:"—" }}</span>
-                                                        {% if game.girls_result_2nd.participant_name %}<span class="text-white/60 text-[10px] truncate block">{{ game.girls_result_2nd.participant_name }}</span>{% endif %}
-                                                    </div>
-                                                    <span class="shrink-0 text-white/70 text-[11px] font-black">+{{ game.girls_result_2nd.points_value }}pts</span>
-                                                </div>
-                                                {% endif %}
-                                                {% if game.girls_result_3rd %}
-                                                <div class="flex items-center gap-2 bg-black/25 backdrop-blur-sm rounded-xl px-3 py-1.5">
-                                                    <span class="text-sm shrink-0">🥉</span>
-                                                    <div class="flex-1 min-w-0">
-                                                        <span class="text-white font-semibold text-xs truncate block">{{ game.girls_result_3rd.department.name|default:"—" }}</span>
-                                                        {% if game.girls_result_3rd.participant_name %}<span class="text-white/60 text-[10px] truncate block">{{ game.girls_result_3rd.participant_name }}</span>{% endif %}
-                                                    </div>
-                                                    <span class="shrink-0 text-white/70 text-[11px] font-black">+{{ game.girls_result_3rd.points_value }}pts</span>
-                                                </div>
-                                                {% endif %}
-                                                {% if not game.girls_result_1st and not game.girls_result_2nd and not game.girls_result_3rd %}
-                                                <p class="text-white/40 text-xs italic px-1">Awaitedâ€¦</p>
-                                                {% endif %}
-                                            </div>
-
-                                            {% else %}
-                                            <!-- â”€â”€ Open results â”€â”€ -->
-                                            {% if game.result_1st %}
-                                            <div class="flex items-center gap-2 bg-black/30 backdrop-blur-sm rounded-xl px-3 py-2">
-                                                <span class="text-sm shrink-0">🥇</span>
-                                                <div class="flex-1 min-w-0">
-                                                    <span class="text-white font-semibold text-xs truncate block">{{ game.result_1st.department.name|default:"—" }}</span>
-                                                    {% if game.result_1st.participant_name %}<span class="text-white/60 text-[10px] truncate block">{{ game.result_1st.participant_name }}</span>{% endif %}
-                                                </div>
-                                                <span class="shrink-0 text-amber-300 text-[11px] font-black">+{{ game.result_1st.points_value }}pts</span>
-                                            </div>
-                                            {% endif %}
-                                            {% if game.result_2nd %}
-                                            <div class="flex items-center gap-2 bg-black/25 backdrop-blur-sm rounded-xl px-3 py-2">
-                                                <span class="text-sm shrink-0">🥈</span>
-                                                <div class="flex-1 min-w-0">
-                                                    <span class="text-white font-semibold text-xs truncate block">{{ game.result_2nd.department.name|default:"—" }}</span>
-                                                    {% if game.result_2nd.participant_name %}<span class="text-white/60 text-[10px] truncate block">{{ game.result_2nd.participant_name }}</span>{% endif %}
-                                                </div>
-                                                <span class="shrink-0 text-white/70 text-[11px] font-black">+{{ game.result_2nd.points_value }}pts</span>
-                                            </div>
-                                            {% endif %}
-                                            {% if game.result_3rd %}
-                                            <div class="flex items-center gap-2 bg-black/25 backdrop-blur-sm rounded-xl px-3 py-2">
-                                                <span class="text-sm shrink-0">🥉</span>
-                                                <div class="flex-1 min-w-0">
-                                                    <span class="text-white font-semibold text-xs truncate block">{{ game.result_3rd.department.name|default:"—" }}</span>
-                                                    {% if game.result_3rd.participant_name %}<span class="text-white/60 text-[10px] truncate block">{{ game.result_3rd.participant_name }}</span>{% endif %}
-                                                </div>
-                                                <span class="shrink-0 text-white/70 text-[11px] font-black">+{{ game.result_3rd.points_value }}pts</span>
-                                            </div>
-                                            {% endif %}
-                                            {% endif %}
-
-                                        {% else %}
-                                        <div class="flex items-center gap-1.5 text-white/40 text-xs italic py-1">
-                                            <span class="material-symbols-outlined text-[14px]">hourglass_empty</span>
-                                            Results awaitedâ€¦
-                                        </div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                            {% empty %}
-                            <div class="col-span-2 p-8 text-center text-on-surface-variant text-sm">No games configured.</div>
-                            {% endfor %}
-
-
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-
-    <!-- ═══════════════════════════════════════════════════════════════════
-         STANDARD EVENTS SECTION
-    ═══════════════════════════════════════════════════════════════════ -->
     <div class="pt-8 pb-stack-lg px-margin-desktop max-md:px-margin-mobile w-full max-w-container-max mx-auto">
 
         <!-- Page Header -->
@@ -331,6 +24,92 @@
                 <button class="flex-1 md:flex-none px-6 py-2 rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-all" id="tab-finished" onclick="switchTab('finished')">Finished</button>
             </div>
         </header>
+
+    <!-- ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═  
+         ONAM PRAKAMBANAM — FULL-WIDTH HERO CARD
+    ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═  -->
+    {% now "Y-m-d" as today_str %}
+    <!-- ── ONAM PRAKAMBANAM SECTION (Visible only in Finished section) ── -->
+    <section class="w-full bg-surface-container-lowest border-b border-outline-variant/30 hidden" id="onam-prakambanam">
+        <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-8 pb-10">
+
+            <!-- Full-Width Onam Logo -->
+            <div class="w-full mb-10" style="max-height: calc(100vh - 120px);">
+                <img
+                    src="{% static 'images/onam 26/onam_logo.webp' %}"
+                    alt="Onam Celebration 2026"
+                    class="w-full h-full object-contain object-top"
+                    style="max-height: calc(100vh - 120px);"
+                >
+            </div>
+
+                <!-- ── Onam Championship Winner Showcase ── -->
+                {% with winner=departments_ranked.0 %}
+                {% if winner %}
+                <div class="w-full mb-8">
+                    <div class="bg-surface-container border border-outline-variant/30 rounded-2xl p-8 sm:p-10 text-center shadow-sm relative overflow-hidden">
+                        <!-- Ambient subtle glow in theme color -->
+                        <div class="absolute -top-20 left-1/2 -translate-x-1/2 w-72 h-72 bg-secondary/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                        <!-- Light Floral Pookkalam Background Pattern (Right) -->
+                        <svg class="absolute -right-16 -bottom-16 w-80 h-80 text-secondary/10 pointer-events-none transform rotate-12" viewBox="0 0 200 200" fill="currentColor">
+                            <circle cx="100" cy="100" r="85" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4" />
+                            <circle cx="100" cy="100" r="55" fill="none" stroke="currentColor" stroke-width="1" />
+                            <g transform="translate(100,100)">
+                                <path d="M0 -75 C18 -50 18 -25 0 0 C-18 -25 -18 -50 0 -75 Z" fill="currentColor" />
+                                <path d="M0 -75 C18 -50 18 -25 0 0 C-18 -25 -18 -50 0 -75 Z" fill="currentColor" transform="rotate(45)" />
+                                <path d="M0 -75 C18 -50 18 -25 0 0 C-18 -25 -18 -50 0 -75 Z" fill="currentColor" transform="rotate(90)" />
+                                <path d="M0 -75 C18 -50 18 -25 0 0 C-18 -25 -18 -50 0 -75 Z" fill="currentColor" transform="rotate(135)" />
+                                <path d="M0 -75 C18 -50 18 -25 0 0 C-18 -25 -18 -50 0 -75 Z" fill="currentColor" transform="rotate(180)" />
+                                <path d="M0 -75 C18 -50 18 -25 0 0 C-18 -25 -18 -50 0 -75 Z" fill="currentColor" transform="rotate(225)" />
+                                <path d="M0 -75 C18 -50 18 -25 0 0 C-18 -25 -18 -50 0 -75 Z" fill="currentColor" transform="rotate(270)" />
+                                <path d="M0 -75 C18 -50 18 -25 0 0 C-18 -25 -18 -50 0 -75 Z" fill="currentColor" transform="rotate(315)" />
+                            </g>
+                        </svg>
+
+                        <!-- Light Floral Pookkalam Background Pattern (Left) -->
+                        <svg class="absolute -left-16 -top-16 w-80 h-80 text-primary/10 pointer-events-none transform -rotate-12" viewBox="0 0 200 200" fill="currentColor">
+                            <circle cx="100" cy="100" r="85" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4" />
+                            <circle cx="100" cy="100" r="55" fill="none" stroke="currentColor" stroke-width="1" />
+                            <g transform="translate(100,100)">
+                                <path d="M0 -75 C18 -50 18 -25 0 0 C-18 -25 -18 -50 0 -75 Z" fill="currentColor" />
+                                <path d="M0 -75 C18 -50 18 -25 0 0 C-18 -25 -18 -50 0 -75 Z" fill="currentColor" transform="rotate(45)" />
+                                <path d="M0 -75 C18 -50 18 -25 0 0 C-18 -25 -18 -50 0 -75 Z" fill="currentColor" transform="rotate(90)" />
+                                <path d="M0 -75 C18 -50 18 -25 0 0 C-18 -25 -18 -50 0 -75 Z" fill="currentColor" transform="rotate(135)" />
+                                <path d="M0 -75 C18 -50 18 -25 0 0 C-18 -25 -18 -50 0 -75 Z" fill="currentColor" transform="rotate(180)" />
+                                <path d="M0 -75 C18 -50 18 -25 0 0 C-18 -25 -18 -50 0 -75 Z" fill="currentColor" transform="rotate(225)" />
+                                <path d="M0 -75 C18 -50 18 -25 0 0 C-18 -25 -18 -50 0 -75 Z" fill="currentColor" transform="rotate(270)" />
+                                <path d="M0 -75 C18 -50 18 -25 0 0 C-18 -25 -18 -50 0 -75 Z" fill="currentColor" transform="rotate(315)" />
+                            </g>
+                        </svg>
+
+                        <div class="relative z-10 flex flex-col items-center justify-center gap-3">
+                            <span class="text-4xl sm:text-5xl mb-1 animate-bounce">🏆</span>
+
+                            <span class="bg-secondary/15 text-secondary font-extrabold text-[11px] uppercase tracking-widest px-4 py-1.5 rounded-full border border-secondary/20">
+                                Official Overall Champion 2026
+                            </span>
+
+                            <h2 class="font-display-lg text-4xl sm:text-5xl md:text-6xl font-black text-primary tracking-tight my-1">
+                                {{ winner.name }}
+                            </h2>
+
+                            <p class="text-on-surface-variant font-body-md text-sm sm:text-base font-semibold">
+                                Department of Commerce
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endwith %}
+
+            </div>
+        </section>
+
+
+    <!-- ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ 
+         STANDARD EVENTS SECTION
+    ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═  -->
 
         <!-- Upcoming Events Section -->
         <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter animate-fade-in" id="section-upcoming">
@@ -430,7 +209,6 @@
         const upcSec = document.getElementById('section-upcoming');
         const finSec = document.getElementById('section-finished');
         const onamSec = document.getElementById('onam-prakambanam');
-        const isOnamFinished = onamSec && onamSec.getAttribute('data-onam-finished') === 'true';
 
         if (tabId === 'upcoming') {
             upcBtn.classList.replace('text-on-surface-variant', 'text-primary');
@@ -440,13 +218,7 @@
             upcSec.classList.remove('hidden');
             upcSec.classList.add('grid');
             finSec.classList.add('hidden');
-            if (onamSec) {
-                if (isOnamFinished) {
-                    onamSec.classList.add('hidden');
-                } else {
-                    onamSec.classList.remove('hidden');
-                }
-            }
+            if (onamSec) onamSec.classList.add('hidden');
         } else {
             finBtn.classList.replace('text-on-surface-variant', 'text-primary');
             finBtn.classList.add('bg-surface-container-lowest', 'shadow-sm');
@@ -455,24 +227,14 @@
             finSec.classList.remove('hidden');
             upcSec.classList.add('hidden');
             upcSec.classList.remove('grid');
-            if (onamSec) {
-                if (isOnamFinished) {
-                    onamSec.classList.remove('hidden');
-                } else {
-                    onamSec.classList.add('hidden');
-                }
-            }
+            if (onamSec) onamSec.classList.remove('hidden');
         }
     }
 
-    // Auto-select Finished tab if URL contains #onam-prakambanam or #finished and Onam is finished
+    // Auto-select Finished tab if URL contains #onam-prakambanam or #finished
     window.addEventListener('DOMContentLoaded', function() {
-        const onamSec = document.getElementById('onam-prakambanam');
-        const isOnamFinished = onamSec && onamSec.getAttribute('data-onam-finished') === 'true';
-        if (isOnamFinished) {
-            if (window.location.hash === '#onam-prakambanam' || window.location.hash === '#finished') {
-                switchTab('finished');
-            }
+        if (window.location.hash === '#onam-prakambanam' || window.location.hash === '#finished') {
+            switchTab('finished');
         }
     });
 </script>

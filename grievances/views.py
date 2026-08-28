@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse, HttpResponseForbidden, FileResponse, Http404
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.contrib import messages
 from django.conf import settings
 from core.ratelimit import ratelimit
@@ -31,9 +31,14 @@ def grievance_portal(request):
     my_grievances = Grievance.objects.filter(student=student).order_by('-created_at')
     
     # Calculate stats
-    total_submitted = my_grievances.count()
-    in_review = my_grievances.filter(status='in-review').count()
-    resolved = my_grievances.filter(status='resolved').count()
+    stats = my_grievances.aggregate(
+        total_submitted=Count('id'),
+        in_review=Count('id', filter=Q(status='in-review')),
+        resolved=Count('id', filter=Q(status='resolved')),
+    )
+    total_submitted = stats['total_submitted'] or 0
+    in_review = stats['in_review'] or 0
+    resolved = stats['resolved'] or 0
     
     if request.method == 'POST':
         form = GrievanceForm(request.POST, request.FILES)

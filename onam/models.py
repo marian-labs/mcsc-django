@@ -1,4 +1,7 @@
 from django.db import models
+from django.core.cache import cache
+
+ONAM_SETTINGS_CACHE_KEY = 'onam_settings_singleton'
 
 
 # ---------------------------------------------------------------------------
@@ -75,48 +78,54 @@ class OnamGame(models.Model):
             return "1st: 10 pts · 2nd: 7 pts · 3rd: 5 pts"
         return "1st: 5 pts · 2nd: 3 pts · 3rd: 2 pts"
 
+    def _get_result(self, position, gender=''):
+        for r in self.results.all():
+            if r.position == position and r.gender == gender:
+                return r
+        return None
+
     # ── Open (non-gendered) result helpers ──────────────────────────────────
     @property
     def result_1st(self):
-        return self.results.filter(position=1, gender='').select_related('department').first()
+        return self._get_result(1, '')
 
     @property
     def result_2nd(self):
-        return self.results.filter(position=2, gender='').select_related('department').first()
+        return self._get_result(2, '')
 
     @property
     def result_3rd(self):
-        return self.results.filter(position=3, gender='').select_related('department').first()
+        return self._get_result(3, '')
 
     # ── Boys result helpers ─────────────────────────────────────────────────
     @property
     def boys_result_1st(self):
-        return self.results.filter(position=1, gender='M').select_related('department').first()
+        return self._get_result(1, 'M')
 
     @property
     def boys_result_2nd(self):
-        return self.results.filter(position=2, gender='M').select_related('department').first()
+        return self._get_result(2, 'M')
 
     @property
     def boys_result_3rd(self):
-        return self.results.filter(position=3, gender='M').select_related('department').first()
+        return self._get_result(3, 'M')
 
     # ── Girls result helpers ────────────────────────────────────────────────
     @property
     def girls_result_1st(self):
-        return self.results.filter(position=1, gender='F').select_related('department').first()
+        return self._get_result(1, 'F')
 
     @property
     def girls_result_2nd(self):
-        return self.results.filter(position=2, gender='F').select_related('department').first()
+        return self._get_result(2, 'F')
 
     @property
     def girls_result_3rd(self):
-        return self.results.filter(position=3, gender='F').select_related('department').first()
+        return self._get_result(3, 'F')
 
     @property
     def has_any_results(self):
-        return self.results.exists()
+        return bool(self.results.all())
 
     # Static image fallback mapping (used when no custom image is uploaded)
     _STATIC_BG_MAP = {
@@ -199,8 +208,15 @@ class OnamSettings(models.Model):
         status = "WINNER REVEALED" if self.show_overall_winner else f"Pending (Announcing {self.announcement_date})"
         return f"Onam Settings [{status}]"
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        cache.delete(ONAM_SETTINGS_CACHE_KEY)
+
     @classmethod
     def get_settings(cls):
-        obj, _ = cls.objects.get_or_create(id=1)
+        obj = cache.get(ONAM_SETTINGS_CACHE_KEY)
+        if obj is None:
+            obj, _ = cls.objects.get_or_create(id=1)
+            cache.set(ONAM_SETTINGS_CACHE_KEY, obj)
         return obj
 
