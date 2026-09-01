@@ -97,13 +97,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mcsc.wsgi.application'
 
-# Database configuration: High-performance VPS database with persistent connection pooling via DB_CONN_MAX_AGE
+# Database configuration: High-performance VPS database with PgBouncer connection pooler support
 _database_url = config('DATABASE_URL', default=f'sqlite:///{BASE_DIR / "db.sqlite3"}')
 _db_conn_max_age = config('DB_CONN_MAX_AGE', default=600, cast=int)
 db_config = dj_database_url.parse(_database_url, conn_max_age=0)
 
 if 'postgresql' in db_config.get('ENGINE', ''):
-    db_config['CONN_MAX_AGE'] = _db_conn_max_age
+    # When routing queries through PgBouncer in transaction mode, disable Django's internal connection retention
+    # (CONN_MAX_AGE = 0) so PgBouncer can efficiently multiplex and recycle backend connections.
+    is_pooler = '6432' in str(db_config.get('PORT', '')) or 'pooler' in str(db_config.get('HOST', ''))
+    db_config['CONN_MAX_AGE'] = 0 if is_pooler else _db_conn_max_age
     db_config['DISABLE_SERVER_SIDE_CURSORS'] = True
     db_config['CONN_HEALTH_CHECKS'] = True
 

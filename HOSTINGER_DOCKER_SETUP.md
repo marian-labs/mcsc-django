@@ -184,6 +184,25 @@ docker compose restart web
 docker compose exec web python manage.py migrate
 ```
 
+### Manual Database Backup & Restore
+```bash
+# Take immediate PostgreSQL backup
+docker exec mcsc_postgres_db pg_dump -U mcsc_user mcsc_db | gzip > /var/backups/mcsc_backup_$(date +%F).sql.gz
+
+# Restore database from backup
+gunzip < /var/backups/mcsc_backup_YYYY-MM-DD.sql.gz | docker exec -i mcsc_postgres_db psql -U mcsc_user mcsc_db
+```
+
+### Set Up Automated Daily Backups (Cron Job on VPS)
+1. Open crontab on the VPS:
+   ```bash
+   crontab -e
+   ```
+2. Add the following line to take a daily backup at 2:00 AM and keep backups safely organized:
+   ```bash
+   0 2 * * * mkdir -p /var/backups/mcsc && docker exec mcsc_postgres_db pg_dump -U mcsc_user mcsc_db | gzip > /var/backups/mcsc/db_$(date +\%F).sql.gz
+   ```
+
 ---
 
 ## 🔍 Troubleshooting

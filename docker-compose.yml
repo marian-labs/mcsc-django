@@ -15,8 +15,10 @@ services:
       - media_data:/app/media
       - static_data:/app/staticfiles
     depends_on:
-      - db
-      - db_pooler
+      db:
+        condition: service_healthy
+      db_pooler:
+        condition: service_started
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:${PORT:-8000}/ || exit 1"]
       interval: 30s
@@ -34,6 +36,12 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
     # Host port mapping removed for security & networking efficiency (app connects via db_pooler:6432 internally).
     # To expose Postgres directly to host tools (e.g. pgAdmin/DBeaver), uncomment below:
     # ports:
