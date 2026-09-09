@@ -12,6 +12,7 @@ class Event(models.Model):
     poster_image = models.ImageField(upload_to='event_posters/', null=True, blank=True, help_text="Upload custom poster image")
     use_default_poster = models.BooleanField(default=False, help_text="Use general MCSC Logo as poster (instead of custom poster image)")
     registration_link = models.URLField(blank=True, null=True, help_text="Link to external registration form if applicable")
+    slug = models.SlugField(max_length=220, unique=True, blank=True, db_index=True, allow_unicode=True)
     is_published = models.BooleanField(default=True, db_index=True)
     is_featured = models.BooleanField(default=False, db_index=True, help_text="Mark as featured — shows a 'Featured' badge on the event card")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -23,13 +24,19 @@ class Event(models.Model):
             models.Index(fields=['is_published', 'event_date']),
         ]
 
-    # Title dynamically generated as URL slug
-    @property
-    def slug(self):
-        s = slugify(self.title, allow_unicode=True)
-        if not s or s.strip('-') == '':
-            return str(self.id) if self.id else "event"
-        return s
+    def generate_unique_slug(self):
+        base_slug = slugify(self.title, allow_unicode=True)
+        if not base_slug or base_slug.strip('-') == '':
+            base_slug = str(self.id) if self.id else "event"
+        slug_candidate = base_slug
+        counter = 1
+        qs = Event.objects.all()
+        if self.pk:
+            qs = qs.exclude(pk=self.pk)
+        while qs.filter(slug=slug_candidate).exists():
+            counter += 1
+            slug_candidate = f"{base_slug}-{counter}"
+        return slug_candidate
 
     @property
     def poster_url(self):
@@ -65,6 +72,8 @@ class Event(models.Model):
     def save(self, *args, **kwargs):
         if self.poster_image:
             self.use_default_poster = False
+        if not self.slug:
+            self.slug = self.generate_unique_slug()
         super().save(*args, **kwargs)
 
     def __str__(self):

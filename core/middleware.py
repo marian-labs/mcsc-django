@@ -54,7 +54,7 @@ class SecurityHeadersMiddleware:
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://api.fontshare.com",
             "font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net https://api.fontshare.com",
             "img-src 'self' data: blob: https:",
-            "connect-src 'self' https://*.supabase.co https://accounts.google.com https://cdn.jsdelivr.net https://cdn.tailwindcss.com",
+            "connect-src 'self' https://accounts.google.com https://cdn.jsdelivr.net https://cdn.tailwindcss.com",
             "frame-src 'self' https://accounts.google.com",
             "object-src 'none'",
             "base-uri 'self'",

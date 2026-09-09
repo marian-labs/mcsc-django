@@ -458,7 +458,7 @@
             animation: auraBreath 6s ease-in-out infinite;
         }
 
-        /* ── Loading screen background layers ─────────────────────── */
+        /* â”€â”€ Loading screen background layers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         /* Slowly morphing mesh gradient on the screen itself */
         @keyframes meshShift {
             0% {
@@ -659,6 +659,8 @@
         }
     </style>
     {% block extra_head %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    {% block extra_css %}{% endblock %}
 </head>
 
 <body class="bg-background text-on-surface font-body-md antialiased min-h-screen flex flex-col pt-20 sm:pt-24">
@@ -777,7 +779,7 @@
 
                 <!-- Trailing Action -->
                 <div class="flex items-center gap-4">
-                    {% if user.is_staff or user.role == 'admin' %}
+                    {% if user.is_staff or user.role == 'admin' or user.role == 'faculty' or user.can_manage_grievance %}
                     <a class="bg-secondary text-on-secondary px-4 py-1.5 rounded-full font-label-lg text-xs font-bold hover:shadow-md hover:-translate-y-px transition-all"
                         href="{% url 'grievance_admin_dashboard' %}">
                         Dashboard
@@ -807,7 +809,7 @@
                     </div>
                 </a>
 
-                <!-- Grievance Portal Box -->
+                <!-- Suggestion Box Box -->
                 <a href="{% url 'grievance_portal' %}"
                     class="group flex items-center gap-3.5 bg-surface/95 border border-outline-variant/30 hover:border-secondary/50 shadow-md rounded-2xl px-5 py-2.5 transition-all duration-300 hover:scale-102 hover-lift">
                     <div
@@ -817,7 +819,7 @@
                     <div class="flex flex-col text-left">
                         <span
                             class="text-[10px] font-bold text-secondary uppercase tracking-wider leading-none mb-1">Support</span>
-                        <span class="text-sm font-bold text-on-surface leading-tight">Submit Grievance</span>
+                        <span class="text-sm font-bold text-on-surface leading-tight">Submit Suggestion</span>
                     </div>
                 </a>
             </div>
@@ -886,7 +888,7 @@
                 <a href="{% url 'grievance_portal' %}"
                     class="flex items-center gap-3.5 bg-gradient-to-r from-secondary to-amber-500 text-on-secondary px-5 py-3.5 rounded-2xl font-bold shadow-md shadow-amber-500/20 hover:scale-102 transition-transform justify-center">
                     <span class="material-symbols-outlined text-xl">edit_document</span>
-                    Submit Grievance
+                    Submit Suggestion
                 </a>
 
                 <a href="{{ PYQ_PORTAL_URL }}" target="_blank"
@@ -897,7 +899,7 @@
 
                 {% if user.is_authenticated %}
                 <div class="flex items-center gap-3 mt-2">
-                    {% if user.is_staff or user.role == 'admin' %}
+                    {% if user.is_staff or user.role == 'admin' or user.role == 'faculty' or user.can_manage_grievance %}
                     <a href="{% url 'grievance_admin_dashboard' %}"
                         class="flex-1 bg-primary text-white text-center py-2.5 rounded-xl font-bold text-xs">
                         Dashboard
@@ -1036,7 +1038,7 @@
 
                 <!-- Connect Icons & Copyright Credit -->
                 <div class="flex items-center justify-between pt-3 border-t border-outline-variant/20 mt-1">
-                    <!-- Minimal Connect Icons (Mail & Instagram) -->
+                    <!-- Minimal Connect Icons (Mail, Instagram, Location) -->
                     <div class="flex items-center gap-2.5">
                         <a class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-all shadow-sm"
                             href="mailto:mcsc@mariancollege.org" title="Email Us">
@@ -1048,6 +1050,10 @@
                                 <path
                                     d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
                             </svg>
+                        </a>
+                        <a class="w-8 h-8 rounded-full bg-rose-500/10 text-rose-600 flex items-center justify-center hover:bg-rose-600 hover:text-white transition-all shadow-sm"
+                            href="https://maps.app.goo.gl/335H6jNwAzFcxoNw5" target="_blank" rel="noopener noreferrer" title="Location on Google Maps">
+                            <span class="material-symbols-outlined text-[16px]" style="font-variation-settings:'FILL' 1;">location_on</span>
                         </a>
                     </div>
 
@@ -1114,12 +1120,14 @@
                                 </div>
                                 <span class="group-hover:underline">@mcscofficial</span>
                             </a>
-                        </div>
-
-                        <!-- Campus Location Badge -->
-                        <div class="mt-2 text-xs text-on-surface-variant/80 flex items-center gap-1.5 bg-surface-container-low px-3 py-2 rounded-xl border border-outline-variant/20 w-fit">
-                            <span class="material-symbols-outlined text-primary text-base">location_on</span>
-                            <span>Marian College Kuttikkanam (Autonomous)</span>
+                            <a class="flex items-center gap-2.5 text-sm text-on-surface-variant hover:text-rose-600 transition-colors group w-fit"
+                                href="https://maps.app.goo.gl/335H6jNwAzFcxoNw5" target="_blank" rel="noopener noreferrer"
+                                title="Open Marian College Kuttikkanam on Google Maps">
+                                <div class="w-8 h-8 rounded-full bg-rose-500/10 text-rose-600 flex items-center justify-center group-hover:bg-rose-600 group-hover:text-white transition-colors shadow-xs">
+                                    <span class="material-symbols-outlined text-[16px]" style="font-variation-settings:'FILL' 1;">location_on</span>
+                                </div>
+                                <span class="group-hover:underline">Marian College Kuttikkanam (Autonomous)</span>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -1325,7 +1333,7 @@
     </script>
 
 
-    <!-- ── TargetCursor System (React Bits Port for Django) ───────────────────── -->
+    <!-- â”€â”€ TargetCursor System (React Bits Port for Django) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
     <style>
         /* TargetCursor Styles */
         @media (pointer: fine) {
@@ -1857,6 +1865,26 @@
         </div>
     </div>
 
+    <!-- Site-wide Image Lightbox / Fullscreen Modal -->
+    <div id="image-modal-backdrop"
+        class="fixed inset-0 z-[999999] bg-black/90 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-200 flex items-center justify-center p-4 sm:p-6"
+        onclick="closeImageModal();">
+        
+        <!-- Close Button -->
+        <button onclick="closeImageModal()" type="button" aria-label="Close Preview"
+            class="absolute top-5 right-5 w-11 h-11 rounded-full bg-white/10 text-white hover:bg-rose-600 hover:scale-110 active:scale-95 transition-all duration-200 flex items-center justify-center shadow-lg cursor-pointer z-20 backdrop-blur-md">
+            <span class="material-symbols-outlined text-[24px]">close</span>
+        </button>
+
+        <!-- Modal Content Card -->
+        <div class="relative max-w-5xl max-h-[90vh] flex flex-col items-center justify-center transform scale-95 transition-transform duration-200"
+            onclick="event.stopPropagation()">
+            <img id="image-modal-src" src="" alt="Poster View"
+                class="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/10 select-none">
+            <p id="image-modal-caption" class="text-white/80 text-xs sm:text-sm font-semibold mt-3 text-center px-4 line-clamp-2"></p>
+        </div>
+    </div>
+
     <script>
         window.openDevModal = function() {
             const backdrop = document.getElementById('dev-modal-backdrop');
@@ -1882,9 +1910,42 @@
             card.classList.add('scale-95');
         };
 
+        window.openImageModal = function(src, alt) {
+            const backdrop = document.getElementById('image-modal-backdrop');
+            const img = document.getElementById('image-modal-src');
+            const caption = document.getElementById('image-modal-caption');
+            if (!backdrop || !img) return;
+            img.src = src;
+            if (caption) caption.textContent = alt || '';
+            document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
+            backdrop.classList.remove('opacity-0', 'pointer-events-none');
+            backdrop.classList.add('opacity-100', 'pointer-events-auto');
+            const card = backdrop.querySelector('div');
+            if (card) {
+                card.classList.remove('scale-95');
+                card.classList.add('scale-100');
+            }
+        };
+
+        window.closeImageModal = function() {
+            const backdrop = document.getElementById('image-modal-backdrop');
+            if (!backdrop) return;
+            document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
+            backdrop.classList.remove('opacity-100', 'pointer-events-auto');
+            backdrop.classList.add('opacity-0', 'pointer-events-none');
+            const card = backdrop.querySelector('div');
+            if (card) {
+                card.classList.remove('scale-100');
+                card.classList.add('scale-95');
+            }
+        };
+
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 window.closeDevModal();
+                window.closeImageModal();
             }
         });
     </script>

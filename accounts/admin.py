@@ -1,4 +1,5 @@
 import re
+from django import forms
 from django.contrib import admin, messages
 from django.contrib.auth.admin import UserAdmin
 from django.conf import settings
@@ -10,15 +11,81 @@ def get_protected_admins():
     return getattr(settings, 'PROTECTED_ADMIN_USERNAMES', set())
 
 
+class AdminAddUserForm(forms.ModelForm):
+    """User creation form for Django Admin: enter email & access rights directly."""
+    email = forms.EmailField(
+        required=True,
+        help_text="Required — Must be a @mariancollege.org email address."
+    )
+    first_name = forms.CharField(required=False, label="First Name")
+    last_name = forms.CharField(required=False, label="Last Name")
+    can_manage_grievance = forms.BooleanField(
+        required=False,
+        label="Can Manage Suggestions / Grievances",
+        help_text="Check to give access ONLY to the Suggestions/Grievance admin dashboard."
+    )
+    role = forms.ChoiceField(choices=User.ROLE_CHOICES, initial='student')
+    is_staff = forms.BooleanField(
+        required=False,
+        initial=True,
+        help_text="Designates whether user can log into the staff/admin views."
+    )
+
+    class Meta:
+        model = User
+        fields = ('email', 'first_name', 'last_name', 'can_manage_grievance', 'role', 'is_staff')
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email', '').strip().lower()
+        if not email.endswith('@mariancollege.org'):
+            raise forms.ValidationError("Email address must end with @mariancollege.org")
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("A user with this email address already exists.")
+        return email
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        email = self.cleaned_data['email'].strip().lower()
+        base_username = email.split('@')[0]
+        username = base_username
+        count = 1
+        while User.objects.filter(username=username).exists():
+            username = f"{base_username}_{count}"
+            count += 1
+        user.username = username
+        user.email = email
+        user.set_unusable_password()
+        if user.can_manage_grievance:
+            user.is_staff = True
+        if commit:
+            user.save()
+        return user
+
+
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
-    fieldsets = UserAdmin.fieldsets + (
-        ('MCSC Role', {'fields': ('role',)}),
+    add_form = AdminAddUserForm
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('email', 'first_name', 'last_name', 'can_manage_grievance', 'role', 'is_staff'),
+        }),
     )
-    list_display = ('username', 'full_name', 'email', 'role', 'is_staff', 'is_active')
-    list_filter = ('role', 'is_staff', 'is_active')
+    fieldsets = UserAdmin.fieldsets + (
+        ('MCSC Permissions & Access Rights', {'fields': ('can_manage_grievance', 'role')}),
+    )
+    list_display = ('username', 'full_name', 'email', 'can_manage_grievance', 'role', 'is_staff', 'is_active')
+    list_filter = ('can_manage_grievance', 'role', 'is_staff', 'is_active')
     search_fields = ('username', 'email', 'first_name', 'last_name')
     actions = ['block_users', 'unblock_users', 'delete_selected']
+
+    def has_module_permission(self, request):
+        if not request.user.is_authenticated:
+            return False
+        # If user ONLY has faculty or can_manage_grievance (and not full superuser/admin role), hide User app in Django Admin
+        if (request.user.can_manage_grievance or request.user.role == 'faculty') and not request.user.is_superuser and request.user.role != 'admin':
+            return False
+        return super().has_module_permission(request)
 
     @admin.display(description="Full Name")
     def full_name(self, obj):

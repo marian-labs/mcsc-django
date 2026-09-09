@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     
     # Third party apps
     'social_django',
-    'storages',
     'crispy_forms',
     
     # Custom MCSC apps
@@ -58,6 +57,7 @@ INSTALLED_APPS = [
     'news',
     'events',
     'grievances',
+    'onam',
 ]
 
 MIDDLEWARE = [
@@ -97,12 +97,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mcsc.wsgi.application'
 
-# Database configuration: uses Supabase pooler (PgBouncer) via DATABASE_URL; fallback to SQLite
+# Database configuration: High-performance VPS database with PgBouncer connection pooler support
 _database_url = config('DATABASE_URL', default=f'sqlite:///{BASE_DIR / "db.sqlite3"}')
+_db_conn_max_age = config('DB_CONN_MAX_AGE', default=600, cast=int)
 db_config = dj_database_url.parse(_database_url, conn_max_age=0)
+
 if 'postgresql' in db_config.get('ENGINE', ''):
+    # When routing queries through PgBouncer in transaction mode, disable Django's internal connection retention
+    # (CONN_MAX_AGE = 0) so PgBouncer can efficiently multiplex and recycle backend connections.
+    is_pooler = '6432' in str(db_config.get('PORT', '')) or 'pooler' in str(db_config.get('HOST', ''))
+    db_config['CONN_MAX_AGE'] = 0 if is_pooler else _db_conn_max_age
     db_config['DISABLE_SERVER_SIDE_CURSORS'] = True
     db_config['CONN_HEALTH_CHECKS'] = True
+
 DATABASES = {
     'default': db_config
 }
@@ -164,35 +171,10 @@ STATICFILES_DIRS = [
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 WHITENOISE_USE_FINDERS = True
 
-# Media files & Storage configuration
-USE_SUPABASE_STORAGE = config('USE_SUPABASE_STORAGE', default=False, cast=bool)
-SUPABASE_URL = config('SUPABASE_URL', default='')
-SUPABASE_KEY = config('SUPABASE_KEY', default='')
-SUPABASE_STORAGE_BUCKET_NAME = config('SUPABASE_STORAGE_BUCKET_NAME', default='')
-
+# Media files & Storage configuration (VPS Local Disk Storage)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-
-SUPABASE_ACCESS_KEY_ID = config('SUPABASE_ACCESS_KEY_ID', default=config('AWS_ACCESS_KEY_ID', default=''))
-SUPABASE_SECRET_ACCESS_KEY = config('SUPABASE_SECRET_ACCESS_KEY', default=config('AWS_SECRET_ACCESS_KEY', default=''))
-
-if USE_SUPABASE_STORAGE and SUPABASE_URL and SUPABASE_ACCESS_KEY_ID and SUPABASE_SECRET_ACCESS_KEY and SUPABASE_STORAGE_BUCKET_NAME:
-    DEFAULT_FILE_STORAGE = 'core.storage.SupabaseS3Storage'
-    AWS_ACCESS_KEY_ID = SUPABASE_ACCESS_KEY_ID
-    AWS_SECRET_ACCESS_KEY = SUPABASE_SECRET_ACCESS_KEY
-    # Supabase uses S3 compatible interface via endpoint
-    AWS_S3_ENDPOINT_URL = f"{SUPABASE_URL}/storage/v1/s3"
-    AWS_STORAGE_BUCKET_NAME = SUPABASE_STORAGE_BUCKET_NAME
-    AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME', default='ap-northeast-2')
-    AWS_S3_ADDRESSING_STYLE = 'path'
-    AWS_S3_SIGNATURE_VERSION = 's3v4'
-    AWS_S3_FILE_OVERWRITE = False
-    AWS_DEFAULT_ACL = None
-    AWS_QUERYSTRING_AUTH = False
-    AWS_QUERYSTRING_EXPIRE = config('AWS_QUERYSTRING_EXPIRE', default=604800, cast=int)
-else:
-    # Local fallback
-    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 # Crispy Forms
 CRISPY_TEMPLATE_PACK = 'bootstrap4'  # Using standard HTML styles in templates

@@ -1,6 +1,6 @@
-{% extends "core/base.html" %}
+﻿{% extends "core/base.html" %}
 
-{% block title %}Grievance Desk | MCSC{% endblock %}
+{% block title %}Suggestion Box | MCSC{% endblock %}
 
 {% block content %}
 <!-- Main Content Canvas -->
@@ -11,20 +11,20 @@
         <div>
             <h1 class="font-display-lg text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary flex items-center gap-3">
                 <span class="material-symbols-outlined text-secondary text-3xl sm:text-4xl">gavel</span>
-                Grievance Desk
+                Suggestion Box
             </h1>
             <p class="font-body-md text-sm sm:text-base text-on-surface-variant mt-1">
                 Raise your concerns directly to the Students Council for swift resolution and tracking.
             </p>
         </div>
 
-        <!-- "My Grievances" Action Button with Notification Dot -->
+        <!-- "My Suggestions" Action Button with Notification Dot -->
         <div class="flex items-center gap-3 shrink-0">
             <button id="open-drawer-btn" onclick="toggleGrievancesDrawer()"
                 class="relative inline-flex items-center gap-2.5 bg-surface-container-lowest border-2 border-primary/20 hover:border-primary text-primary font-bold px-5 py-2.5 rounded-full hover:bg-primary hover:text-white transition-all duration-300 shadow-md group">
                 
                 <span class="material-symbols-outlined text-secondary group-hover:text-white transition-colors">folder_open</span>
-                <span class="font-display text-sm font-bold">My Grievances</span>
+                <span class="font-display text-sm font-bold">My Suggestions</span>
                 
                 <!-- Count Pill -->
                 <span class="bg-primary/10 group-hover:bg-white/20 text-primary group-hover:text-white text-xs font-extrabold px-2 py-0.5 rounded-full transition-colors">
@@ -51,7 +51,7 @@
             </span>
             <div>
                 <p class="font-bold text-xs sm:text-sm text-primary">
-                    Update on Ticket #GRV-{{ latest_notification.grievance.created_at|date:"Y" }}-{{ latest_notification.grievance.pk }}
+                    Update on Ticket #SUG-{{ latest_notification.grievance.created_at|date:"Y" }}-{{ latest_notification.grievance.pk }}
                 </p>
                 <p class="text-xs text-on-surface-variant mt-0.5">
                     {% if latest_notification.type == 'reply_posted' %}
@@ -63,7 +63,7 @@
             </div>
         </div>
         <button onclick="toggleGrievancesDrawer()" class="text-xs font-bold text-primary hover:text-secondary underline underline-offset-4 shrink-0 sm:ml-auto">
-            View Ticket →
+            View Ticket â†’
         </button>
     </div>
     {% endif %}
@@ -79,7 +79,7 @@
                 <div>
                     <h2 class="font-display-lg text-xl sm:text-2xl font-bold text-primary flex items-center gap-2">
                         <span class="material-symbols-outlined text-secondary">edit_document</span>
-                        Submit a New Grievance
+                        Submit a New Suggestion
                     </h2>
                     <p class="text-xs sm:text-sm text-on-surface-variant mt-1">
                         Fill out the details below. All submissions are confidentially processed by the executive team.
@@ -142,7 +142,7 @@
                     <!-- Submit Button (Full Width) -->
                     <div class="md:col-span-2 pt-2">
                         <button id="submit-grievance-btn" class="w-full bg-gradient-to-r from-secondary to-amber-500 text-on-secondary font-bold text-sm sm:text-base py-3.5 rounded-full hover:scale-[1.005] active:scale-95 transition-all shadow-lg shadow-amber-500/20 flex justify-center items-center gap-2" type="submit">
-                            <span>Submit Grievance</span>
+                            <span>Submit Suggestion</span>
                             <span class="material-symbols-outlined text-[20px]">send</span>
                         </button>
                     </div>
@@ -153,7 +153,7 @@
                             <div class="flex items-center gap-2.5">
                                 <span class="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin shrink-0"></span>
                                 <span id="tracker-status-text" class="text-xs sm:text-sm font-bold text-primary">
-                                    Submitting your grievance...
+                                    Submitting your suggestion...
                                 </span>
                             </div>
                             <span id="tracker-percentage" class="text-xs font-mono font-extrabold text-secondary">0%</span>
@@ -179,7 +179,7 @@
     </div>
 </main>
 
-<!-- Slide-Over Drawer for "My Grievances" -->
+<!-- Slide-Over Drawer for "My Suggestions" -->
 <div id="grievances-drawer-overlay" onclick="toggleGrievancesDrawer()"
     class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[70] opacity-0 pointer-events-none transition-opacity duration-300"></div>
 
@@ -193,7 +193,7 @@
                 <span class="material-symbols-outlined">folder_open</span>
             </div>
             <div>
-                <h3 class="font-display-lg text-lg font-bold text-primary">My Submitted Grievances</h3>
+                <h3 class="font-display-lg text-lg font-bold text-primary">My Submitted Suggestions</h3>
                 <p class="text-xs text-on-surface-variant">Total {{ total_submitted }} ticket{% if total_submitted != 1 %}s{% endif %}</p>
             </div>
         </div>
@@ -212,7 +212,7 @@
             <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center gap-2">
                     <span class="text-xs font-mono font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">
-                        #GRV-{{ grv.created_at|date:"Y" }}-{{ grv.pk }}
+                        #SUG-{{ grv.created_at|date:"Y" }}-{{ grv.pk }}
                     </span>
                     <span class="text-[10px] font-bold uppercase tracking-wider bg-surface-container text-on-surface-variant px-2 py-0.5 rounded-full">
                         {{ grv.get_category_display }}
@@ -256,8 +256,8 @@
         {% empty %}
         <div class="text-center py-12 px-4 bg-surface-container-low rounded-2xl border border-dashed border-outline-variant">
             <span class="material-symbols-outlined text-4xl text-outline mb-2">folder_off</span>
-            <p class="font-bold text-sm text-on-surface">No Grievances Found</p>
-            <p class="text-xs text-on-surface-variant mt-1">You haven't submitted any grievance tickets yet.</p>
+            <p class="font-bold text-sm text-on-surface">No Suggestions Found</p>
+            <p class="text-xs text-on-surface-variant mt-1">You haven't submitted any suggestion tickets yet.</p>
         </div>
         {% endfor %}
     </div>
@@ -320,7 +320,7 @@
                 submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
                 submitBtn.innerHTML = `
                     <span class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                    <span>Submitting Grievance...</span>
+                    <span>Submitting Suggestion...</span>
                 `;
             }
 
@@ -350,7 +350,7 @@
                             if (progress > 30 && progress <= 65) {
                                 statusText.textContent = hasAttachment 
                                     ? 'Uploading attachment securely to cloud storage...' 
-                                    : 'Encrypting and saving grievance details...';
+                                    : 'Encrypting and saving suggestion details...';
                             } else if (progress > 65) {
                                 statusText.textContent = 'Finalizing ticket registration...';
                             }
@@ -365,7 +365,7 @@
 
     function navigateToTicket(url) {
         if (isFormDirty && !isFormSubmitting) {
-            if (confirm("You have an unsaved grievance draft. Are you sure you want to leave and view this ticket?")) {
+            if (confirm("You have an unsaved suggestion draft. Are you sure you want to leave and view this ticket?")) {
                 isFormDirty = false;
                 window.location.href = url;
             }
@@ -377,7 +377,7 @@
     window.addEventListener('beforeunload', (e) => {
         if (isFormDirty && !isFormSubmitting) {
             e.preventDefault();
-            e.returnValue = 'You have unsaved changes in your grievance form. Are you sure you want to leave?';
+            e.returnValue = 'You have unsaved changes in your suggestion form. Are you sure you want to leave?';
             return e.returnValue;
         }
     });
@@ -394,7 +394,7 @@
             submitBtn.disabled = false;
             submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
             submitBtn.innerHTML = `
-                <span>Submit Grievance</span>
+                <span>Submit Suggestion</span>
                 <span class="material-symbols-outlined text-[20px]">send</span>
             `;
         }
@@ -422,3 +422,4 @@
     });
 </script>
 {% endblock %}
+

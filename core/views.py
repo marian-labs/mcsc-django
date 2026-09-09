@@ -9,12 +9,23 @@ def home(request):
     ticker_posts = list(NewsPost.objects.filter(is_published=True).order_by('-published_at')[:6])
     news_posts = NewsPost.objects.filter(is_published=True).order_by('-published_at')[:2]
     
-    # Fetch upcoming events for ticker & bento widget
-    ticker_events = list(Event.objects.filter(is_published=True).order_by('event_date')[:6])
-    upcoming_events = Event.objects.filter(
-        is_published=True, 
-        event_date__gte=timezone.now()
-    ).order_by('event_date')[:3]
+    now = timezone.now()
+    today = now.date()
+    from django.db import models as db_models
+
+    # Fetch upcoming events for ticker & bento widget (including multi-day events until last date)
+    upcoming_events_qs = (
+        Event.objects.filter(is_published=True)
+        .filter(
+            db_models.Q(event_date__gte=now) |
+            db_models.Q(additional_dates__date__gte=today)
+        )
+        .distinct()
+        .order_by('event_date')
+        .prefetch_related('additional_dates')
+    )
+    ticker_events = list(upcoming_events_qs[:6])
+    upcoming_events = list(upcoming_events_qs[:3])
     
     # Build ticker slides containing 1 News item and 1 Event item
     ticker_slides = []
@@ -31,11 +42,25 @@ def home(request):
     # Fetch current council info
     council_info = CouncilInfo.objects.order_by('-academic_year').first()
 
+    # Onam Championship summary for home banner
+    try:
+        from onam.models import Department, OnamSettings
+        onam_leader = Department.objects.filter(points__gt=0).order_by('-points', 'name').first()
+        onam_total_departments = Department.objects.filter(points__gt=0).count()
+        onam_settings = OnamSettings.get_settings()
+    except Exception:
+        onam_leader = None
+        onam_total_departments = 0
+        onam_settings = None
+
     context = {
         'news_posts': news_posts,
         'ticker_slides': ticker_slides,
         'upcoming_events': upcoming_events,
         'council_info': council_info,
+        'onam_leader': onam_leader,
+        'onam_total_departments': onam_total_departments,
+        'onam_settings': onam_settings,
     }
     return render(request, 'core/home.html', context)
 

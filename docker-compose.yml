@@ -14,6 +14,11 @@ services:
     volumes:
       - media_data:/app/media
       - static_data:/app/staticfiles
+    depends_on:
+      db:
+        condition: service_healthy
+      db_pooler:
+        condition: service_started
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:${PORT:-8000}/ || exit 1"]
       interval: 30s
@@ -21,8 +26,50 @@ services:
       retries: 3
       start_period: 20s
 
+  db:
+    image: postgres:16-alpine
+    container_name: mcsc_postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    # Host port mapping removed for security & networking efficiency (app connects via db_pooler:6432 internally).
+    # To expose Postgres directly to host tools (e.g. pgAdmin/DBeaver), uncomment below:
+    # ports:
+    #   - "5432:5432"
+
+  db_pooler:
+    image: edoburu/pgbouncer:latest
+    container_name: mcsc_pgbouncer_pooler
+    restart: always
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DB}
+      POOL_MODE: transaction
+      MAX_CLIENT_CONN: 500
+      DEFAULT_POOL_SIZE: 25
+    ports:
+      - "6432:6432"
+    depends_on:
+      - db
+
 volumes:
   media_data:
     driver: local
   static_data:
     driver: local
+  postgres_data:
+    driver: local
+

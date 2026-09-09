@@ -1,8 +1,22 @@
-# Environment & Virtual Env
+# Environment & Local Secrets
+.env
+.env.*
+*.env
+SUPABASE_TO_VPS_MIGRATION_GUIDE.md
+
+# Virtual Environments
 venv/
 env/
 ENV/
-.env
+.venv/
+
+# Scratch & Temporary Migration Dump Files
+scratch/
+*.dump
+*.sql
+*.json_dump
+mcsc_data_backup.json
+mcsc_supabase_backup.dump
 
 # Python compilation / cache
 __pycache__/
@@ -10,9 +24,10 @@ __pycache__/
 *$py.class
 *.so
 
-# Django dynamic files
+# Django dynamic runtime files
 db.sqlite3
 db.sqlite3-journal
+db.sqlite33*
 staticfiles/
 media/
 
@@ -20,5 +35,6 @@ media/
 .vscode/
 .idea/
 .DS_Store
+Thumbs.db
 *.swp
 *.swo

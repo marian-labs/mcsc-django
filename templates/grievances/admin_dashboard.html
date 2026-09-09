@@ -1,4 +1,4 @@
-{% extends "core/base.html" %}
+﻿{% extends "core/base.html" %}
 
 {% block title %}Admin Grievance Dashboard | MCSC{% endblock %}
 
@@ -27,7 +27,7 @@
                 <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                     <span class="material-symbols-outlined text-2xl font-bold">admin_panel_settings</span>
                 </div>
-                <h2 class="font-display-lg text-xl md:text-2xl font-bold tracking-tight text-primary">Grievance Desk</h2>
+                <h2 class="font-display-lg text-xl md:text-2xl font-bold tracking-tight text-primary">Suggestion Box</h2>
             </div>
             <div class="flex items-center gap-2 bg-surface-container-low border border-outline-variant/20 rounded-2xl px-4 py-2 text-xs font-semibold text-on-surface-variant">
                 <span class="w-2 h-2 rounded-full bg-green-500 animate-ping"></span>
@@ -143,7 +143,7 @@
                 
                 <!-- Individual Grievance Card (Vertical Box Layout) -->
                 <div class="grievance-card bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all duration-300 hover-lift flex flex-col justify-between gap-5 min-h-[380px] w-full"
-                    data-ticket="GRV-{{ grv.created_at|date:"Y" }}-{{ grv.pk }}"
+                    data-ticket="SUG-{{ grv.created_at|date:"Y" }}-{{ grv.pk }}"
                     data-student="{{ grv.student.first_name|default:grv.student.get_full_name|default:grv.student.username }} {{ grv.student.username }} {{ grv.student.email }}"
                     data-title="{{ grv.title }}"
                     data-status="{{ grv.status }}"
@@ -153,7 +153,7 @@
                     <div class="flex justify-between items-start gap-2">
                         <div class="flex flex-col text-left">
                             <h4 class="text-sm font-bold text-on-surface leading-tight" data-raw-name="{{ grv.student.first_name|default:grv.student.get_full_name|default:grv.student.username }}">{{ grv.student.first_name|default:grv.student.get_full_name|default:grv.student.username }}</h4>
-                            <span class="text-xs text-outline leading-tight mt-0.5">GRV-{{ grv.created_at|date:"Y" }}-{{ grv.pk }}</span>
+                            <span class="text-xs text-outline leading-tight mt-0.5">SUG-{{ grv.created_at|date:"Y" }}-{{ grv.pk }}</span>
                         </div>
                         <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shrink-0
                             {% if grv.status == 'open' %}bg-red-50 text-red-700 border border-red-200/50
@@ -351,3 +351,4 @@
     });
 </script>
 {% endblock %}
+

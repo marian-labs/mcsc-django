@@ -25,7 +25,7 @@ def handle_grievance_status_changed(sender, instance, created, **kwargs):
 @receiver(pre_delete, sender=Grievance)
 def auto_delete_attachment_on_delete(sender, instance, **kwargs):
     """
-    Automatically deletes the attachment file from storage (Supabase S3 or Local)
+    Automatically deletes the attachment file from VPS local disk storage
     when a Grievance record is deleted by an admin or system.
     """
     if instance.attachment and instance.attachment.name:

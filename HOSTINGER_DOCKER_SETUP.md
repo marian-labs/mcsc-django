@@ -42,18 +42,13 @@ ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com,123.45.67.89
 # Security & Trusted Origins (Required for POST requests through domain/SSL)
 CSRF_TRUSTED_ORIGINS=https://yourdomain.com,https://www.yourdomain.com,http://123.45.67.89:8000
 
-# Database URL (Supabase PostgreSQL / Managed Database)
-DATABASE_URL=postgres://user:password@db.supabase.co:5432/postgres
+# Database URL & Connection Pooling (VPS PostgreSQL via PgBouncer or Direct)
+DATABASE_URL=postgresql://mcsc_user:YOUR_DB_PASSWORD@db_pooler:6432/mcsc_db
+DB_CONN_MAX_AGE=600
 
 # Google OAuth2 Credentials
 GOOGLE_OAUTH2_KEY=your-google-client-id.apps.googleusercontent.com
 GOOGLE_OAUTH2_SECRET=your-google-client-secret
-
-# Supabase S3 Media Storage (Optional)
-USE_SUPABASE_STORAGE=True
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_KEY=your-supabase-service-role-key
-SUPABASE_STORAGE_BUCKET_NAME=mcsc-media
 ```
 
 > **Note on Port Configuration:**
@@ -188,6 +183,25 @@ docker compose restart web
 ```bash
 docker compose exec web python manage.py migrate
 ```
+
+### Manual Database Backup & Restore
+```bash
+# Take immediate PostgreSQL backup
+docker exec mcsc_postgres_db pg_dump -U mcsc_user mcsc_db | gzip > /var/backups/mcsc_backup_$(date +%F).sql.gz
+
+# Restore database from backup
+gunzip < /var/backups/mcsc_backup_YYYY-MM-DD.sql.gz | docker exec -i mcsc_postgres_db psql -U mcsc_user mcsc_db
+```
+
+### Set Up Automated Daily Backups (Cron Job on VPS)
+1. Open crontab on the VPS:
+   ```bash
+   crontab -e
+   ```
+2. Add the following line to take a daily backup at 2:00 AM and keep backups safely organized:
+   ```bash
+   0 2 * * * mkdir -p /var/backups/mcsc && docker exec mcsc_postgres_db pg_dump -U mcsc_user mcsc_db | gzip > /var/backups/mcsc/db_$(date +\%F).sql.gz
+   ```
 
 ---
 

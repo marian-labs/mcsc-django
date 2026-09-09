@@ -6,3 +6,46 @@
     transform: translateY(-4px);
     box-shadow: 0 12px 24px -8px rgba(27, 58, 87, 0.12);
 }
+
+/* ── Onam Prakambanam — Banner ─────────────────────────── */
+.onam-banner {
+    background: linear-gradient(90deg, #fef3c7 0%, #fed7aa 40%, #fde68a 70%, #fef3c7 100%);
+    border-top: 1px solid rgba(217, 119, 6, 0.2);
+    border-bottom: 1px solid rgba(217, 119, 6, 0.25);
+    background-size: 200% 100%;
+    animation: onam-gradient-shift 6s ease-in-out infinite;
+}
+
+@keyframes onam-gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50%       { background-position: 100% 50%; }
+}
+
+.onam-shimmer {
+    background: linear-gradient(
+        105deg,
+        transparent 40%,
+        rgba(255, 255, 255, 0.35) 50%,
+        transparent 60%
+    );
+    background-size: 200% 100%;
+    animation: onam-shimmer-move 3s ease-in-out infinite;
+}
+
+@keyframes onam-shimmer-move {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+@keyframes onam-bounce {
+    0%, 100% { transform: translateY(0);    }
+    50%       { transform: translateY(-5px); }
+}
+
+@keyframes onam-bounce-delay {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50%       { transform: translateY(-5px) rotate(5deg); }
+}
+
+.onam-bounce       { animation: onam-bounce 2s ease-in-out infinite; }
+.onam-bounce-delay { animation: onam-bounce-delay 2.4s ease-in-out infinite 0.3s; }

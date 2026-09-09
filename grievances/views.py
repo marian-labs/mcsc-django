@@ -3,27 +3,42 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse, HttpResponseForbidden, FileResponse, Http404
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.contrib import messages
 from django.conf import settings
 from core.ratelimit import ratelimit
 from .models import Grievance, GrievanceReply, Notification
 from .forms import GrievanceForm
 
+
+def is_grievance_staff(user):
+    return user.is_authenticated and (
+        user.is_superuser or
+        user.is_staff or
+        user.role in ['admin', 'faculty'] or
+        getattr(user, 'can_manage_grievance', False)
+    )
+
+
 @login_required
 @ratelimit(rate='5/5m', key='user_or_ip')
 def grievance_portal(request):
-    # If the user is admin, redirect to the admin dashboard
-    if request.user.role == 'admin' or request.user.is_staff:
+    # If the user is admin or grievance manager, redirect to the admin dashboard
+    if is_grievance_staff(request.user):
         return redirect('grievance_admin_dashboard')
         
     student = request.user
     my_grievances = Grievance.objects.filter(student=student).order_by('-created_at')
     
     # Calculate stats
-    total_submitted = my_grievances.count()
-    in_review = my_grievances.filter(status='in-review').count()
-    resolved = my_grievances.filter(status='resolved').count()
+    stats = my_grievances.aggregate(
+        total_submitted=Count('id'),
+        in_review=Count('id', filter=Q(status='in-review')),
+        resolved=Count('id', filter=Q(status='resolved')),
+    )
+    total_submitted = stats['total_submitted'] or 0
+    in_review = stats['in_review'] or 0
+    resolved = stats['resolved'] or 0
     
     if request.method == 'POST':
         form = GrievanceForm(request.POST, request.FILES)
@@ -31,7 +46,7 @@ def grievance_portal(request):
             grievance = form.save(commit=False)
             grievance.student = student
             grievance.save()
-            messages.success(request, "Your grievance has been submitted successfully.")
+            messages.success(request, "Your suggestion has been submitted successfully.")
             return redirect('grievance_detail', pk=grievance.pk)
     else:
         form = GrievanceForm()
@@ -56,19 +71,20 @@ def grievance_portal(request):
     response['Expires'] = '0'
     return response
 
+
 @login_required
 def grievance_detail(request, pk):
     # View details of a single grievance including replies
     grievance = get_object_or_404(Grievance, pk=pk)
     # Check authorization
-    if grievance.student != request.user and not request.user.is_staff and request.user.role != 'admin':
-        return HttpResponseForbidden("You are not authorized to view this grievance.")
+    if grievance.student != request.user and not is_grievance_staff(request.user):
+        return HttpResponseForbidden("You are not authorized to view this ticket.")
     
     # Mark unread notifications as read if student views the ticket
     if request.user == grievance.student:
         Notification.objects.filter(user=request.user, grievance=grievance, is_read=False).update(is_read=True)
         
-    if request.method == 'POST' and (request.user.is_staff or request.user.role == 'admin'):
+    if request.method == 'POST' and is_grievance_staff(request.user):
         reply_text = request.POST.get('reply_text')
         if reply_text:
             GrievanceReply.objects.create(
@@ -91,8 +107,12 @@ def grievance_detail(request, pk):
     }
     return render(request, 'grievances/detail.html', context)
 
-@staff_member_required
+
+@login_required
 def admin_dashboard(request):
+    if not is_grievance_staff(request.user):
+        return HttpResponseForbidden("You do not have permission to access the Suggestion Admin Dashboard.")
+
     all_grievances = Grievance.objects.all().order_by('-created_at')
     
     # Simple stats for template
@@ -109,9 +129,12 @@ def admin_dashboard(request):
     }
     return render(request, 'grievances/admin_dashboard.html', context)
 
-@staff_member_required
+
+@login_required
 def api_stats(request):
-    # Returns aggregate counts for Chart.js
+    if not is_grievance_staff(request.user):
+        return JsonResponse({'status': 'error', 'message': 'Forbidden'}, status=403)
+
     status_counts = list(
         Grievance.objects.values('status')
         .annotate(count=Count('id'))
@@ -121,7 +144,6 @@ def api_stats(request):
         .annotate(count=Count('id'))
     )
     
-    # Format choice display names
     status_map = dict(Grievance.STATUS_CHOICES)
     category_map = dict(Grievance.CATEGORY_CHOICES)
     
@@ -136,18 +158,16 @@ def api_stats(request):
         'category_data': category_counts,
     })
 
+
 @login_required
 def download_attachment(request, pk):
     grievance = get_object_or_404(Grievance, pk=pk)
-    if grievance.student != request.user and not request.user.is_staff and request.user.role != 'admin':
+    if grievance.student != request.user and not is_grievance_staff(request.user):
         return HttpResponseForbidden("You are not authorized to access this attachment.")
     
     if not grievance.attachment:
-        raise Http404("No attachment associated with this grievance.")
+        raise Http404("No attachment associated with this ticket.")
         
-    if getattr(settings, 'USE_SUPABASE_STORAGE', False):
-        return redirect(grievance.attachment.url)
-
     try:
         file_path = grievance.attachment.path
         if os.path.exists(file_path):
@@ -159,3 +179,4 @@ def download_attachment(request, pk):
     except Exception as e:
         print(f"Error serving local attachment for grievance {pk}: {e}")
         raise Http404("Attachment file could not be read.")
+

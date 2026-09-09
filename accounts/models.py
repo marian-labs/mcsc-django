@@ -7,9 +7,25 @@ from django.core.exceptions import PermissionDenied
 class User(AbstractUser):
     ROLE_CHOICES = (
         ('student', 'Student'),
+        ('faculty', 'Faculty'),
         ('admin', 'Admin'),
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='student', db_index=True)
+    can_manage_grievance = models.BooleanField(
+        default=False,
+        verbose_name="Can Manage Suggestions / Grievances",
+        help_text="Grants access ONLY to the Suggestions/Grievance admin dashboard. Hides all other apps in Django Admin.",
+    )
+
+    def save(self, *args, **kwargs):
+        if self.role == 'faculty':
+            self.can_manage_grievance = True
+            self.is_staff = True
+        elif self.is_staff or self.is_superuser or self.role == 'admin':
+            self.can_manage_grievance = True
+        elif self.can_manage_grievance and not self.is_staff:
+            self.is_staff = True
+        super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         protected = getattr(settings, 'PROTECTED_ADMIN_USERNAMES', set())
