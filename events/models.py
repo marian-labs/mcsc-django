@@ -12,7 +12,7 @@ class Event(models.Model):
     poster_image = models.ImageField(upload_to='event_posters/', null=True, blank=True, help_text="Upload custom poster image")
     use_default_poster = models.BooleanField(default=False, help_text="Use general MCSC Logo as poster (instead of custom poster image)")
     registration_link = models.URLField(blank=True, null=True, help_text="Link to external registration form if applicable")
-    slug = models.SlugField(max_length=220, unique=True, blank=True, db_index=True, allow_unicode=True)
+    slug = models.SlugField(max_length=220, unique=True, blank=True, null=True, db_index=True, allow_unicode=True)
     is_published = models.BooleanField(default=True, db_index=True)
     is_featured = models.BooleanField(default=False, db_index=True, help_text="Mark as featured — shows a 'Featured' badge on the event card")
     created_at = models.DateTimeField(auto_now_add=True)
