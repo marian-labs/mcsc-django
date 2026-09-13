@@ -20,11 +20,13 @@ def _sync_user_staff_status(user):
 
 @receiver(m2m_changed)
 def handle_user_group_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
+    if kwargs.get('raw', False):
+        return
     if action in ['post_add', 'post_remove', 'post_clear']:
-        if sender == instance.groups.through:
+        from accounts.models import User
+        if isinstance(instance, User) and hasattr(instance, 'groups') and sender == instance.groups.through:
             _sync_user_staff_status(instance)
-        elif model == instance.__class__:
-            from accounts.models import User
+        elif isinstance(instance, Group) and model == User:
             for user in User.objects.filter(pk__in=pk_set or []):
                 _sync_user_staff_status(user)
 
