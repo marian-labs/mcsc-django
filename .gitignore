@@ -18,6 +18,8 @@ scratch/
 *.zip
 mcsc_data_backup.json
 mcsc_supabase_backup.dump
+data.json
+*.json
 
 # Python compilation / cache
 __pycache__/

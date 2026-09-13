@@ -229,6 +229,6 @@ if not DEBUG:
 _protected_admins_str = config('PROTECTED_ADMIN_USERNAMES', default='')
 PROTECTED_ADMIN_USERNAMES = {u.strip() for u in _protected_admins_str.split(',') if u.strip()}
 
-# External Portal Links (strictly loaded from .env)
-PYQ_PORTAL_URL = config('PYQ_PORTAL_URL')
+# External Portal Links (strictly loaded from .env with fallback)
+PYQ_PORTAL_URL = config('PYQ_PORTAL_URL', default='https://pyq.marian.cloud/')
 

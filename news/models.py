@@ -13,7 +13,7 @@ class NewsPost(models.Model):
     event = models.ForeignKey('events.Event', on_delete=models.SET_NULL, null=True, blank=True, related_name='news_posts', help_text="Optionally link an event to share its poster image with this news post")
     poster_image = models.ImageField(upload_to='news_posters/', null=True, blank=True, help_text="Upload custom poster image for this news article")
     use_default_poster = models.BooleanField(default=False, help_text="Use general MCSC Logo as news poster (instead of custom poster image)")
-    slug = models.SlugField(max_length=220, unique=True, blank=True, db_index=True, allow_unicode=True)
+    slug = models.SlugField(max_length=220, unique=True, blank=True, null=True, db_index=True, allow_unicode=True)
     is_published = models.BooleanField(default=True, db_index=True)
     published_at = models.DateTimeField(default=timezone.now, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)

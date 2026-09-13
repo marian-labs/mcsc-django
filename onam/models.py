@@ -56,7 +56,7 @@ class OnamGame(models.Model):
     image = models.ImageField(
         upload_to='onam_games/',
         null=True, blank=True,
-        help_text="Background image shown on the game card (uploaded to VPS storage).",
+        help_text="Background image shown on the game card (uploaded to Supabase).",
     )
     scheduled_date = models.DateField(
         null=True, blank=True,
