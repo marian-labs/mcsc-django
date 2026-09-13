@@ -2,6 +2,23 @@ from django.db import migrations, models
 from django.utils.text import slugify
 
 
+def drop_orphaned_indexes(apps, schema_editor):
+    if schema_editor.connection.vendor == 'postgresql':
+        with schema_editor.connection.cursor() as cursor:
+            cursor.execute("""
+                DO $$
+                DECLARE r RECORD;
+                BEGIN
+                    FOR r IN (
+                        SELECT indexname FROM pg_indexes 
+                        WHERE tablename = 'events_event' AND indexname LIKE '%slug%'
+                    ) LOOP
+                        EXECUTE 'DROP INDEX IF EXISTS ' || quote_ident(r.indexname) || ' CASCADE;';
+                    END LOOP;
+                END $$;
+            """)
+
+
 def backfill_event_slugs(apps, schema_editor):
     Event = apps.get_model('events', 'Event')
     for event in Event.objects.all():
@@ -29,10 +46,11 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(drop_orphaned_indexes, reverse_backfill),
         migrations.AddField(
             model_name='event',
             name='slug',
-            field=models.SlugField(allow_unicode=True, blank=True, null=True, max_length=220),
+            field=models.SlugField(allow_unicode=True, blank=True, null=True, max_length=220, db_index=False),
         ),
         migrations.RunPython(backfill_event_slugs, reverse_backfill),
         migrations.AlterField(

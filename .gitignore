@@ -15,6 +15,7 @@ scratch/
 *.dump
 *.sql
 *.json_dump
+*.zip
 mcsc_data_backup.json
 mcsc_supabase_backup.dump
 

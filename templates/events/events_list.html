@@ -44,8 +44,6 @@
             </div>
 
                 <!-- ── Onam Championship Winner Showcase ── -->
-                {% with winner=departments_ranked.0 %}
-                {% if winner %}
                 <div class="w-full mb-8">
                     <div class="bg-surface-container border border-outline-variant/30 rounded-2xl p-8 sm:p-10 text-center shadow-sm relative overflow-hidden">
                         <!-- Ambient subtle glow in theme color -->
@@ -91,7 +89,7 @@
                             </span>
 
                             <h2 class="font-display-lg text-4xl sm:text-5xl md:text-6xl font-black text-primary tracking-tight my-1">
-                                {{ winner.name }}
+                                B.Com
                             </h2>
 
                             <p class="text-on-surface-variant font-body-md text-sm sm:text-base font-semibold">
@@ -100,8 +98,6 @@
                         </div>
                     </div>
                 </div>
-                {% endif %}
-                {% endwith %}
 
             </div>
         </section>
