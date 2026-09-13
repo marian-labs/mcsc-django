@@ -18,11 +18,18 @@ urlpatterns = [
     path('oauth/', include('social_django.urls', namespace='social')),
 ]
 
-# Serve media files for uploaded images & attachments
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-if (settings.BASE_DIR / 'static').exists():
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.BASE_DIR / 'static')
+from django.views.static import serve
+from django.urls import re_path
+
+# Serve media files (both development and production when reverse proxy passes media to web)
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    if (settings.BASE_DIR / 'static').exists():
+        urlpatterns += static(settings.STATIC_URL, document_root=settings.BASE_DIR / 'static')
 
 # Custom error handlers — Django picks these up automatically
 handler404 = 'django.views.defaults.page_not_found'
