@@ -7,7 +7,6 @@ import sys
 import copy
 from pathlib import Path
 from decouple import config
-import dj_database_url
 import django.template.context
 
 # Python 3.14 compatibility patch for Django 4.2 BaseContext.__copy__
@@ -97,22 +96,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mcsc.wsgi.application'
 
-# Database configuration: High-performance VPS database with PgBouncer connection pooler support
-_database_url = config('DATABASE_URL', default=f'sqlite:///{BASE_DIR / "db.sqlite3"}')
-_db_conn_max_age = config('DB_CONN_MAX_AGE', default=600, cast=int)
-db_config = dj_database_url.parse(_database_url, conn_max_age=0)
+# Database configuration
+USE_POSTGRES = config('USE_POSTGRES', default=config('USE_POSTGRESS', default=False, cast=bool), cast=bool)
 
-if 'postgresql' in db_config.get('ENGINE', ''):
-    # When routing queries through PgBouncer in transaction mode, disable Django's internal connection retention
-    # (CONN_MAX_AGE = 0) so PgBouncer can efficiently multiplex and recycle backend connections.
-    is_pooler = '6432' in str(db_config.get('PORT', '')) or 'pooler' in str(db_config.get('HOST', ''))
-    db_config['CONN_MAX_AGE'] = 0 if is_pooler else _db_conn_max_age
-    db_config['DISABLE_SERVER_SIDE_CURSORS'] = True
-    db_config['CONN_HEALTH_CHECKS'] = True
-
-DATABASES = {
-    'default': db_config
-}
+if USE_POSTGRES:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('POSTGRES_DB', default='mcsc_db'),
+            'USER': config('POSTGRES_USER', default='postgres'),
+            'PASSWORD': config('POSTGRES_PASSWORD', default=''),
+            'HOST': config('POSTGRES_HOST', default='infra-postgres'),
+            'PORT': config('POSTGRES_PORT', default='5432'),
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Custom User Model
 AUTH_USER_MODEL = 'accounts.User'
